@@ -9,7 +9,7 @@ This model gives you:
 - The ability to **edit package source while inside any project**
 - **Explicit promotion** of changes (nothing breaks by surprise)
 - **Zero-build, source-first packages** powered by Bun
-- **Turbo repo orchestration** for running tasks across packages
+- **Turborepo orchestration** for running tasks across packages
 
 It combines the safety of versioned dependencies with the creative flow of workspace-style development—without introducing unnecessary build steps.
 
