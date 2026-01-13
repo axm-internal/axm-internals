@@ -37,6 +37,7 @@ Rules:
 * All packages are Bun‑first and ESM‑only
 * Entry point is always `src/index.ts`
 * No build step (TypeScript is consumed directly by Bun)
+* Turborepo orchestrates repo-wide tasks (lint, test, check-types, validate)
 * All packages are versioned and published via Changesets
 * `package.json` always follows the canonical form:
 

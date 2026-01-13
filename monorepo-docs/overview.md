@@ -9,6 +9,7 @@ This model gives you:
 - The ability to **edit package source while inside any project**
 - **Explicit promotion** of changes (nothing breaks by surprise)
 - **Zero-build, source-first packages** powered by Bun
+- **Turborepo orchestration** for running tasks across packages
 
 It combines the safety of versioned dependencies with the creative flow of workspace-style development—without introducing unnecessary build steps.
 
@@ -142,5 +143,22 @@ You get:
 - The safety and clarity of real versioning
 - Zero build overhead across your internal ecosystem
 
-This scales from solo hacking to full platform ownership without changing the philosophy—only the number of packages grows.
+---
 
+## Task Orchestration (Turbo)
+
+This monorepo uses **Turborepo** to orchestrate tasks across packages.
+
+From the repo root:
+
+```bash
+bun run dev
+bun run check-types
+bun run test
+bun run lint
+bun run validate
+```
+
+Packages opt into tasks by defining the corresponding scripts.
+
+This scales from solo hacking to full platform ownership without changing the philosophy—only the number of packages grows.

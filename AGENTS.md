@@ -9,6 +9,7 @@ This file summarizes the operating rules for AI agents working in the `axm-inter
 - Each package is a real npm package with its own version
 - Bun-first, ESM-only, buildless (source is published)
 - Entry point is always `src/index.ts`
+- Turborepo orchestrates repo-wide tasks (lint, test, check-types, validate)
 
 Canonical package layout:
 

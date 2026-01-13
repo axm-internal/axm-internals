@@ -147,6 +147,21 @@ Each internal package becomes a “virtual project” inside the monorepo.
 
 ---
 
+## Task Orchestration – Turborepo
+
+Repo‑wide quality tasks are orchestrated with Turborepo from the root:
+
+```bash
+bun run lint
+bun run check-types
+bun run test
+bun run validate
+```
+
+Packages opt into these tasks by defining matching scripts.
+
+---
+
 ## Code Quality – Qlty
 
 Qlty (formerly Code Climate) is used for structural quality and maintainability.
