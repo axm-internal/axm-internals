@@ -39,6 +39,14 @@ If prompts do not appear (non-interactive shell), you can set:
 - `AXM_PACKAGE_NAME`
 - `AXM_PACKAGE_DESC`
 
+Example (non-interactive):
+
+```bash
+AXM_PACKAGE_NAME=@axm/http-helper \
+AXM_PACKAGE_DESC="HTTP helpers for internal services." \
+bun create axm-package packages/http-helper
+```
+
 ## Creating a new template
 
 1. Create a new folder under `.bun-create/<template-name>/`.

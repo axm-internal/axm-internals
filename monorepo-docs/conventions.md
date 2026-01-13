@@ -78,6 +78,14 @@ This template:
 * Installs dev dependencies so the post-create hook can run
 * Removes the nested `.git` folder created by `bun create`
 
+Non-interactive usage:
+
+```bash
+AXM_PACKAGE_NAME=@axm/http-helper \
+AXM_PACKAGE_DESC="HTTP helpers for internal services." \
+bun create axm-package packages/http-helper
+```
+
 All packages are born correct.
 
 ---

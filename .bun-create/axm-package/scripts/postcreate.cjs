@@ -28,7 +28,7 @@ const path = require('node:path');
             shouldPrompt = false;
         }
     }
-    if (shouldPrompt || !packageName || !description) {
+  if (shouldPrompt && (!packageName || !description)) {
         const rl = readline.createInterface({ input: promptInput, output: promptOutput });
 
         const nameAnswer = shouldPrompt ? (await rl.question(`Package name (${defaultName}): `)).trim() : '';
