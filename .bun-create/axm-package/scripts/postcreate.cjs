@@ -48,8 +48,11 @@ const path = require('node:path');
     packageJson.name = packageName;
     packageJson.description = description;
 
-    // Remove bun-create metadata before writing final package.json.
-    delete packageJson['bun-create'];
+    const hasTemplateMarker = Boolean(packageJson['bun-create']);
+    if (hasTemplateMarker) {
+        // Remove bun-create metadata before writing final package.json.
+        delete packageJson['bun-create'];
+    }
 
     await writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
 
@@ -63,11 +66,21 @@ const path = require('node:path');
     await replaceTokens(path.join(cwd, 'llms.txt'));
     await replaceTokens(path.join(cwd, 'docs', 'README.md'));
 
-    // Remove template-only scripts folder from the generated package.
-    await rm(path.join(cwd, 'scripts'), { recursive: true, force: true });
+    const cleanupTargets = [
+        { label: 'scripts', target: path.join(cwd, 'scripts') },
+        { label: '.git', target: path.join(cwd, '.git') },
+    ];
 
-    // Remove nested git repository created by bun create.
-    await rm(path.join(cwd, '.git'), { recursive: true, force: true });
+    for (const { label, target } of cleanupTargets) {
+        try {
+            await rm(target, { recursive: true, force: true });
+        } catch (error) {
+            console.warn(
+                `Cleanup warning: failed to remove ${label}:`,
+                error instanceof Error ? error.message : error,
+            );
+        }
+    }
 })().catch((error) => {
     console.error(error instanceof Error ? error.message : error);
     process.exit(1);
