@@ -59,7 +59,7 @@ Example `package.json` snippet:
 ```json
 {
   "bun-create": {
-    "postinstall": "bun run scripts/postcreate.ts"
+    "postinstall": "node scripts/postcreate.cjs"
   }
 }
 ```
