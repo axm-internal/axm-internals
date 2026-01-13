@@ -1,0 +1,16 @@
+# __PACKAGE_NAME__
+
+Purpose:
+- __PACKAGE_DESC__
+
+Public surface:
+- export(s) from `src/index.ts`
+
+Intended usage:
+- Internal @axm consumers
+
+Non-goals:
+- External/public API stability
+
+Stability expectations:
+- Semver within axm-internals
