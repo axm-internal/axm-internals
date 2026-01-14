@@ -31,10 +31,6 @@ packages/<name>/
 - `package.json` must follow the canonical form:
   - Exception: `@axm/typescript-config` is config-only and non-published.
 
-## Dev-Complete Checklist
-
-See `monorepo-docs/package-checklist.md` before considering a package “dev complete.”
-
 ```
 {
   "name": "@axm/<name>",
@@ -46,6 +42,10 @@ See `monorepo-docs/package-checklist.md` before considering a package “dev com
   }
 }
 ```
+
+## Dev-Complete Checklist
+
+See `monorepo-docs/package-checklist.md` before considering a package “dev complete.”
 
 - No build step. No `dist/`. TypeScript is consumed directly by Bun.
 - All packages are versioned and published via Changesets.
