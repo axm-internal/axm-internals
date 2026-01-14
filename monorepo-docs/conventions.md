@@ -40,6 +40,7 @@ Rules:
 * Turborepo orchestrates repo-wide tasks (lint, test, check-types, validate)
 * All packages are versioned and published via Changesets
 * `package.json` always follows the canonical form:
+  * Exception: config-only, non-published support packages (e.g., `@axm/typescript-config`)
 
 ```json
 {
@@ -211,3 +212,7 @@ Rules:
 - A package is not “promotable” until both exist
 
 Documentation is part of the API.
+
+Each package README should include a short "Docs" section pointing to its `docs/` output and the command to regenerate it (typically `bun run docs`).
+
+Before calling a package “dev complete,” use the checklist in `monorepo-docs/package-checklist.md`.

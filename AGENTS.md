@@ -29,6 +29,11 @@ packages/<name>/
 
 - Package name: `@axm/<kebab-name>`
 - `package.json` must follow the canonical form:
+  - Exception: `@axm/typescript-config` is config-only and non-published.
+
+## Dev-Complete Checklist
+
+See `monorepo-docs/package-checklist.md` before considering a package “dev complete.”
 
 ```
 {

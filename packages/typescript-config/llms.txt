@@ -1,9 +1,8 @@
-# __PACKAGE_NAME__
-
-Version: __PACKAGE_VERSION__
+# @axm/typescript-config
+Version: 0.1.0
 
 Purpose:
-- __PACKAGE_DESC__
+- Shared TypeScript configurations
 
 Public surface:
 - export(s) from `src/index.ts`

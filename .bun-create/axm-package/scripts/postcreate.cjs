@@ -28,7 +28,7 @@ const path = require('node:path');
             shouldPrompt = false;
         }
     }
-  if (shouldPrompt && (!packageName || !description)) {
+    if (shouldPrompt && (!packageName || !description)) {
         const rl = readline.createInterface({ input: promptInput, output: promptOutput });
 
         const nameAnswer = shouldPrompt ? (await rl.question(`Package name (${defaultName}): `)).trim() : '';
@@ -58,7 +58,10 @@ const path = require('node:path');
 
     const replaceTokens = async (filePath) => {
         const contents = await readFile(filePath, 'utf8');
-        const next = contents.replaceAll('__PACKAGE_NAME__', packageName).replaceAll('__PACKAGE_DESC__', description);
+        const next = contents
+            .replaceAll('__PACKAGE_NAME__', packageName)
+            .replaceAll('__PACKAGE_DESC__', description)
+            .replaceAll('__PACKAGE_VERSION__', packageJson.version);
         await writeFile(filePath, next);
     };
 
@@ -75,10 +78,7 @@ const path = require('node:path');
         try {
             await rm(target, { recursive: true, force: true });
         } catch (error) {
-            console.warn(
-                `Cleanup warning: failed to remove ${label}:`,
-                error instanceof Error ? error.message : error,
-            );
+            console.warn(`Cleanup warning: failed to remove ${label}:`, error instanceof Error ? error.message : error);
         }
     }
 })().catch((error) => {

@@ -1,0 +1,17 @@
+{
+    "name": "@axm/typescript-config",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Config-only TypeScript configurations (non-published)",
+    "files": [
+        "tsconfig.json",
+        "tsconfig.apps.json",
+        "tsconfig.packages.json",
+        "tsconfig.decorators.json"
+    ],
+    "scripts": {
+        "check-types": "echo \"No types to check\"",
+        "test": "echo \"No tests to run\"",
+        "validate": "echo \"Validated\""
+    }
+}
