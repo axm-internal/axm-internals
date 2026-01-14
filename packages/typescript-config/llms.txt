@@ -5,7 +5,11 @@ Purpose:
 - Shared TypeScript configurations
 
 Public surface:
-- export(s) from `src/index.ts`
+- tsconfig.json
+- tsconfig.apps.json
+- tsconfig.packages.json
+- tsconfig.decorators.json
+- No runtime exports (config-only package)
 
 Intended usage:
 - Internal @axm consumers

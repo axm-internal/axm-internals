@@ -14,6 +14,17 @@ Because the template installs dev dependencies, the post-create hook runs automa
 removes its temporary `scripts/` folder.
 It also removes the nested `.git` folder created by `bun create`.
 
+## Packages
+
+- `packages/cli-helper/README.md`
+- `packages/zod-helpers/README.md`
+- `packages/typescript-config/README.md`
+- `apps/prompt-runner/README.md`
+
+## Docs
+
+- `monorepo-docs/package-checklist.md`
+
 To install dependencies:
 
 ```bash

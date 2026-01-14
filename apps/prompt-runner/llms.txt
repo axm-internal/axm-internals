@@ -1,0 +1,17 @@
+# @axm/prompt-runner
+Version: 0.1.0
+
+Purpose:
+- Run Codex prompt runners for repo workflows.
+
+Public surface:
+- CLI entry at `src/cli.ts`
+
+Intended usage:
+- Internal axm-internals maintainers automating checklist/llms/docs prompts.
+
+Non-goals:
+- General-purpose prompt runner outside this monorepo.
+
+Stability expectations:
+- Semver within axm-internals.

@@ -10,7 +10,8 @@
         "bun": ">=1.3"
     },
     "workspaces": [
-        "packages/*"
+        "packages/*",
+        "apps/*"
     ],
     "scripts": {
         "prepare": "lefthook install",
@@ -21,6 +22,7 @@
         "lint": "turbo run lint",
         "lint:root": "biome check --write --config-path=biome.root.json",
         "lint:fix": "bun lint:root && turbo run lint:fix",
+        "prompt-runner": "bun run apps/prompt-runner/src/cli.ts",
         "validate": "turbo run validate",
         "clean": "rimraf build dist node_modules .turbo tsconfig.tsbuildinfo packages/*/build packages/*/dist packages/*/node_modules packages/*/.turbo packages/*/tsconfig.tsbuildinfo"
     },
