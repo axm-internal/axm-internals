@@ -1,0 +1,11 @@
+Run the package at <%= it.packagePath %> through monorepo-docs/package-checklist.md.
+Before reporting, run these scripts inside the package directory:
+- bun run test
+- bun run docs
+- bun run lint
+- bun run check-types
+Return a concise report with:
+- completed items
+- missing items
+- unknown/unverified items
+Write the report to <%= it.outputPath %>.

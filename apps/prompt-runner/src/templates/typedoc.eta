@@ -1,0 +1,5 @@
+Add or improve Typedoc/TSDoc docblocks for public API in <%= it.packagePath %>.
+Use monorepo-docs/prompts/typedoc-docblocks.md as guidance.
+Scope: classes, methods, functions, properties, and exports in src/.
+Always include an @example for each public symbol.
+Include @param/@returns/@remarks as required.
