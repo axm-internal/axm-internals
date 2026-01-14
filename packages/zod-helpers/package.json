@@ -9,6 +9,7 @@
     },
     "scripts": {
         "test": "bun test",
+        "test:coverage": "bun test --coverage --coverage-reporter=lcov",
         "lint": "biome check .",
         "lint:fix": "biome check --write .",
         "check-types": "tsc --noEmit",
