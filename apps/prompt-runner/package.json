@@ -1,0 +1,27 @@
+{
+    "name": "@axm/prompt-runner",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "main": "src/cli.ts",
+    "description": "Codex prompt runner CLI for axm-internals",
+    "scripts": {
+        "lint": "biome check .",
+        "lint:fix": "biome check --write .",
+        "check-types": "tsc --noEmit",
+        "docs": "typedoc",
+        "test": "echo \"No tests to run\"",
+        "validate": "echo \"Validated\""
+    },
+    "dependencies": {
+        "commander": "^14.0.2",
+        "eta": "^3.5.0"
+    },
+    "devDependencies": {
+        "@axm/typescript-config": "*",
+        "typedoc": "^0.28.2",
+        "typedoc-plugin-markdown": "^4.8.1",
+        "typescript": "^5",
+        "@types/bun": "^1.3"
+    }
+}
