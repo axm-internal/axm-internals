@@ -29,7 +29,7 @@
         "changeset:version": "changeset version",
         "changeset:publish": "changeset publish",
         "validate": "turbo run validate",
-        "clean": "rimraf build dist node_modules .turbo tsconfig.tsbuildinfo packages/*/build packages/*/dist packages/*/node_modules packages/*/.turbo packages/*/tsconfig.tsbuildinfo"
+        "clean": "rimraf build dist node_modules .turbo tsconfig.tsbuildinfo apps/*/build apps/*/dist apps/*/node_modules apps/*/.turbo apps/*/tsconfig.tsbuildinfo apps/*/coverage apps/*/junit.xml packages/*/build packages/*/dist packages/*/node_modules packages/*/.turbo packages/*/tsconfig.tsbuildinfo packages/*/coverage packages/*/junit.xml"
     },
     "dependencies": {},
     "peerDependencies": {},
