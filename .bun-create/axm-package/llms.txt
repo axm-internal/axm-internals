@@ -1,5 +1,7 @@
 # __PACKAGE_NAME__
 
+Version: __PACKAGE_VERSION__
+
 Purpose:
 - __PACKAGE_DESC__
 
