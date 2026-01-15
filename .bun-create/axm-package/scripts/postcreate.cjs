@@ -8,7 +8,7 @@ const path = require('node:path');
 (async () => {
     const cwd = process.cwd();
     const dirName = path.basename(cwd);
-    const defaultName = `@axm/${dirName}`;
+    const defaultName = `@axm-internal/${dirName}`;
 
     let packageName = (process.env.AXM_PACKAGE_NAME || '').trim();
     let description = (process.env.AXM_PACKAGE_DESC || '').trim();

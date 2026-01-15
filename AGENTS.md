@@ -27,13 +27,13 @@ packages/<name>/
 
 ## Package Rules (Do Not Deviate)
 
-- Package name: `@axm/<kebab-name>`
+- Package name: `@axm-internal/<kebab-name>`
 - `package.json` must follow the canonical form:
-  - Exception: `@axm/typescript-config` is config-only and non-published.
+  - Exception: `@axm-internal/typescript-config` is config-only and non-published.
 
 ```
 {
-  "name": "@axm/<name>",
+  "name": "@axm-internal/<name>",
   "version": "0.1.0",
   "type": "module",
   "main": "src/index.ts",
@@ -67,7 +67,7 @@ Dev dependencies are installed so the post-create hook runs and removes its temp
   - `tests/unit/`
   - `tests/integration/`
 - Use Bun’s built-in test runner.
-- A shared `@axm/test-helpers` package may exist for common utilities.
+- A shared `@axm-internal/test-helpers` package may exist for common utilities.
 
 ## Linting & Formatting
 
@@ -146,13 +146,13 @@ When editing a package from a consuming project:
 bun link
 
 # in consuming project
-bun link @axm/<pkg>
+bun link @axm-internal/<pkg>
 ```
 
 Promote changes by bumping version, publishing, then unlinking in the consumer:
 
 ```
-bun unlink @axm/<pkg>
+bun unlink @axm-internal/<pkg>
 bun install
 ```
 

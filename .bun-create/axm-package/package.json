@@ -1,5 +1,5 @@
 {
-    "name": "@axm/__PACKAGE_NAME__",
+    "name": "@axm-internal/__PACKAGE_NAME__",
     "version": "0.1.0",
     "type": "module",
     "main": "src/index.ts",
@@ -20,7 +20,7 @@
         "postinstall": "node scripts/postcreate.cjs"
     },
     "devDependencies": {
-        "@axm/typescript-config": "*",
+        "@axm-internal/typescript-config": "*",
         "typedoc": "^0.28.2",
         "typedoc-plugin-markdown": "^4.8.1",
         "typescript": "^5",

@@ -1,4 +1,4 @@
-# @axm/typescript-config
+# @axm-internal/typescript-config
 Version: 0.1.0
 
 Purpose:
@@ -12,7 +12,7 @@ Public surface:
 - No runtime exports (config-only package)
 
 Intended usage:
-- Internal @axm consumers
+- Internal @axm-internal consumers
 
 Non-goals:
 - External/public API stability

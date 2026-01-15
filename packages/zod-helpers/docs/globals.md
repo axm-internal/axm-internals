@@ -1,8 +1,8 @@
-[**@axm/zod-helpers**](README.md)
+[**@axm-internal/zod-helpers**](README.md)
 
 ***
 
-# @axm/zod-helpers
+# @axm-internal/zod-helpers
 
 ## Variables
 

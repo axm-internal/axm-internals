@@ -1,5 +1,5 @@
 {
-    "name": "@axm/typescript-config",
+    "name": "@axm-internal/typescript-config",
     "version": "0.1.0",
     "private": true,
     "description": "Config-only TypeScript configurations (non-published)",

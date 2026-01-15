@@ -9,7 +9,7 @@ Public surface:
 - export(s) from `src/index.ts`
 
 Intended usage:
-- Internal @axm consumers
+- Internal @axm-internal consumers
 
 Non-goals:
 - External/public API stability

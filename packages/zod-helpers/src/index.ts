@@ -5,7 +5,7 @@
  * Exported schemas use structural checks for lightweight runtime validation.
  * @example
  * ```ts
- * import { AxiosInstanceSchema, PinoInstanceSchema } from "@axm/zod-helpers";
+ * import { AxiosInstanceSchema, PinoInstanceSchema } from "@axm-internal/zod-helpers";
  *
  * AxiosInstanceSchema.parse(axios.create());
  * PinoInstanceSchema.parse(pino());
