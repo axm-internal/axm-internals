@@ -5,6 +5,11 @@
         "test": {
             "cache": true
         },
+        "test:coverage": {
+            "cache": false,
+            "dependsOn": ["^test:coverage"],
+            "outputs": ["coverage/**"]
+        },
         "check-types": {
             "cache": true,
             "dependsOn": ["^check-types"]

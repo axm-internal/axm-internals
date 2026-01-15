@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ -f .env ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source .env
+  set +a
+fi
+
+bun run test:coverage
+
+roots=("apps" "packages")
+
+commit_sha="$(git rev-parse HEAD 2>/dev/null || true)"
+branch_name="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
+
+if [[ -z "$branch_name" || "$branch_name" == "HEAD" ]]; then
+  branch_name="${GITHUB_REF_NAME:-main}"
+fi
+
+for root in "${roots[@]}"; do
+  if [[ ! -d "$root" ]]; then
+    continue
+  fi
+
+  for dir in "$root"/*; do
+    if [[ ! -d "$dir" ]]; then
+      continue
+    fi
+
+    name="$(basename "$dir")"
+    lcov="$dir/coverage/lcov.info"
+    junit="$dir/junit.xml"
+
+    if [[ -f "$lcov" ]]; then
+      echo "Uploading coverage for $name ($lcov)"
+      args=(upload-coverage --disable-search -f "$lcov" -F "$name")
+
+      if [[ -n "$commit_sha" ]]; then
+        args+=(-C "$commit_sha")
+      fi
+
+      if [[ -n "$branch_name" ]]; then
+        args+=(-B "$branch_name")
+      fi
+
+      bunx codecov "${args[@]}"
+    else
+      echo "Skipping missing coverage file: $lcov"
+    fi
+
+    if [[ -f "$junit" ]]; then
+      echo "Uploading test results for $name ($junit)"
+      bunx codecov process-test-results -f "$junit"
+    else
+      echo "Skipping missing test results file: $junit"
+    fi
+  done
+done

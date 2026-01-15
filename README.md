@@ -53,3 +53,25 @@ Flow:
 5. The Release workflow runs and publishes updated packages.
 
 See `monorepo-docs/intro-to-changesets.md` for details.
+
+## Coverage
+
+To generate coverage for all packages/apps and upload to Codecov:
+
+```bash
+bun coverage:upload
+```
+
+## Maintenance
+
+To clean build artifacts, caches, and test outputs:
+
+```bash
+./scripts/clean
+```
+
+Or use the root script:
+
+```bash
+bun clean
+```

@@ -1,0 +1,56 @@
+name: Coverage
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    name: Upload coverage (${{ matrix.target }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: zod-helpers
+            path: packages/zod-helpers/coverage/lcov.info
+            junit: packages/zod-helpers/junit.xml
+            dir: packages/zod-helpers
+          - target: prompt-runner
+            path: apps/prompt-runner/coverage/lcov.info
+            junit: apps/prompt-runner/junit.xml
+            dir: apps/prompt-runner
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun install
+
+      - name: Run coverage
+        run: bun run test:coverage
+        working-directory: ${{ matrix.dir }}
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: ${{ matrix.path }}
+          flags: ${{ matrix.target }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload test results
+        run: |
+          if [[ -f "${{ matrix.junit }}" ]]; then
+            bunx codecov process-test-results \
+              -f "${{ matrix.junit }}"
+          else
+            echo "Skipping missing test results file: ${{ matrix.junit }}"
+          fi
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

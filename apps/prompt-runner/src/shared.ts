@@ -6,28 +6,40 @@ export type PackageGuardResult = {
     resolvedPath: string;
 };
 
+const findRepoRoot = (startDir: string): string => {
+    let current = path.resolve(startDir);
+    while (true) {
+        const gitDir = path.join(current, '.git');
+        if (fs.existsSync(gitDir)) {
+            return current;
+        }
+        const parent = path.dirname(current);
+        if (parent === current) {
+            return startDir;
+        }
+        current = parent;
+    }
+};
+
 export function requirePackagePath(args: string[]): PackageGuardResult {
     const packagePath = args[0];
     if (!packagePath) {
-        console.error('Usage: <script> <package-path>');
-        process.exit(1);
+        throw new Error('Usage: <script> <package-path>');
     }
 
-    if (!packagePath.startsWith('packages/')) {
-        console.error('Package path must start with "packages/".');
-        process.exit(1);
+    if (!packagePath.startsWith('packages/') && !packagePath.startsWith('apps/')) {
+        throw new Error('Package path must start with "packages/" or "apps/".');
     }
 
-    const resolvedPath = path.resolve(process.cwd(), packagePath);
+    const repoRoot = findRepoRoot(process.cwd());
+    const resolvedPath = path.resolve(repoRoot, packagePath);
     if (!fs.existsSync(resolvedPath)) {
-        console.error(`Package directory not found: ${packagePath}`);
-        process.exit(1);
+        throw new Error(`Package directory not found: ${packagePath}`);
     }
 
     const stat = fs.statSync(resolvedPath);
     if (!stat.isDirectory()) {
-        console.error(`Package path is not a directory: ${packagePath}`);
-        process.exit(1);
+        throw new Error(`Package path is not a directory: ${packagePath}`);
     }
 
     return { packagePath, resolvedPath };

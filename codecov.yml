@@ -1,0 +1,19 @@
+flag_management:
+  default_rules:
+    carryforward: true
+    statuses:
+      - type: project
+        target: auto
+        threshold: 1%
+      - type: patch
+        target: 90%
+  individual_flags:
+    - name: zod-helpers
+      paths:
+        - packages/zod-helpers/**
+    - name: typescript-config
+      paths:
+        - packages/typescript-config/**
+    - name: prompt-runner
+      paths:
+        - apps/prompt-runner/**

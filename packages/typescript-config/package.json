@@ -9,9 +9,5 @@
         "tsconfig.packages.json",
         "tsconfig.decorators.json"
     ],
-    "scripts": {
-        "check-types": "echo \"No types to check\"",
-        "test": "echo \"No tests to run\"",
-        "validate": "echo \"Validated\""
-    }
+    "scripts": {}
 }
