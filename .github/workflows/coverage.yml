@@ -49,11 +49,14 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload test results
-        if: ${{ hashFiles(matrix.junit) != '' }}
         run: |
-          bunx codecov do-upload \
-            --report-type test_results \
-            -f "${{ matrix.junit }}" \
-            -F "${{ matrix.target }}"
+          if [[ -f "${{ matrix.junit }}" ]]; then
+            bunx codecov do-upload \
+              --report-type test_results \
+              -f "${{ matrix.junit }}" \
+              -F "${{ matrix.target }}"
+          else
+            echo "Skipping missing test results file: ${{ matrix.junit }}"
+          fi
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
