@@ -1,4 +1,4 @@
-# @axm/prompt-runner
+# @axm-internal/prompt-runner
 
 Codex prompt runner CLI for this monorepo.
 

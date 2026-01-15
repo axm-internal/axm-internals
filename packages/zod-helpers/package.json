@@ -1,5 +1,5 @@
 {
-    "name": "@axm/zod-helpers",
+    "name": "@axm-internal/zod-helpers",
     "version": "0.1.0",
     "type": "module",
     "main": "src/index.ts",
@@ -17,7 +17,7 @@
         "validate": "echo \"Validated\""
     },
     "devDependencies": {
-        "@axm/typescript-config": "*",
+        "@axm-internal/typescript-config": "*",
         "axios": "^1.13.2",
         "pino": "^10.1.1",
         "typedoc": "^0.28.2",

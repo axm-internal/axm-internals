@@ -24,11 +24,11 @@ The `axm-package` template creates:
 - `README.md`
 - `docs/README.md`
 - `llms.txt`
-- A monorepo-scoped setup that depends on `@axm/typescript-config` (this template is not intended for use outside `axm-internals`)
+- A monorepo-scoped setup that depends on `@axm-internal/typescript-config` (this template is not intended for use outside `axm-internals`)
 
 It also installs dev dependencies and runs a `postinstall` script (Node) that:
 
-- Prompts for package name (defaults to `@axm/<folder-name>`)
+- Prompts for package name (defaults to `@axm-internal/<folder-name>`)
 - Prompts for a short description
 - Rewrites tokens in `README.md`, `llms.txt`, and `docs/README.md`
 - Removes the `bun-create` block from `package.json`
@@ -43,7 +43,7 @@ If prompts do not appear (non-interactive shell), you can set:
 Example (non-interactive):
 
 ```bash
-AXM_PACKAGE_NAME=@axm/http-helper \
+AXM_PACKAGE_NAME=@axm-internal/http-helper \
 AXM_PACKAGE_DESC="HTTP helpers for internal services." \
 bun create axm-package packages/http-helper
 ```

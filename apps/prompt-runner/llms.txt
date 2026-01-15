@@ -1,4 +1,4 @@
-# @axm/prompt-runner
+# @axm-internal/prompt-runner
 Version: 0.1.0
 
 Purpose:

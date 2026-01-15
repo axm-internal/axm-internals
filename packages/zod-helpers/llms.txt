@@ -1,4 +1,4 @@
-# @axm/zod-helpers
+# @axm-internal/zod-helpers
 
 Version: 0.1.0
 

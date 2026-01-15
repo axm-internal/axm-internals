@@ -1,17 +1,17 @@
-# @axm/zod-helpers
+# @axm-internal/zod-helpers
 
 A collection of Zod v4 helpers.
 
 ## Install
 
 ```bash
-bun add @axm/zod-helpers
+bun add @axm-internal/zod-helpers
 ```
 
 ## Usage
 
 ```ts
-import { AxiosInstanceSchema, PinoInstanceSchema } from "@axm/zod-helpers";
+import { AxiosInstanceSchema, PinoInstanceSchema } from "@axm-internal/zod-helpers";
 
 AxiosInstanceSchema.parse(axiosInstance);
 PinoInstanceSchema.parse(logger);

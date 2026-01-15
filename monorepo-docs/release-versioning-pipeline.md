@@ -50,7 +50,7 @@ Example:
 
 ```md
 ---
-"@axm/cli-helper": minor
+"@axm-internal/cli-helper": minor
 ---
 
 Add structured logging and improve error output.
@@ -84,7 +84,7 @@ Changesets become the source of truth for:
 7. Packages are pushed to **GitHub Packages**
 8. A release commit and tags are created
 
-Projects consuming `@axm/*` now have new versions available and can upgrade intentionally.
+Projects consuming `@axm-internal/*` now have new versions available and can upgrade intentionally.
 
 ---
 
@@ -94,7 +94,7 @@ Each package declares its registry:
 
 ```json
 {
-  "name": "@axm/cli-helper",
+  "name": "@axm-internal/cli-helper",
   "version": "0.1.0",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -105,7 +105,7 @@ Each package declares its registry:
 The repository includes an `.npmrc`:
 
 ```txt
-@axm:registry=https://npm.pkg.github.com
+@axm-internal:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
 

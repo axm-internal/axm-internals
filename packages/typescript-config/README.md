@@ -1,4 +1,4 @@
-# @axm/typescript-config
+# @axm-internal/typescript-config
 
 Centralized TypeScript configurations for the monorepo.
 
@@ -44,7 +44,7 @@ Extends packages configuration for decorator-using packages:
 ### For Apps (CLI, Web)
 ```json
 {
-  "extends": "@axm/typescript-config/tsconfig.apps.json",
+  "extends": "@axm-internal/typescript-config/tsconfig.apps.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src"
@@ -55,14 +55,14 @@ Extends packages configuration for decorator-using packages:
 ### For Regular Packages (shared-core, shared-services)
 ```json
 {
-  "extends": "@axm/typescript-config/tsconfig.packages.json"
+  "extends": "@axm-internal/typescript-config/tsconfig.packages.json"
 }
 ```
 
 ### For Decorator Packages (database, queues)
 ```json
 {
-  "extends": "@axm/typescript-config/tsconfig.decorators.json"
+  "extends": "@axm-internal/typescript-config/tsconfig.decorators.json"
 }
 ```
 

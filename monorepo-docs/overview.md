@@ -45,7 +45,7 @@ Each package is a *real* npm package, but **source-first** and **buildless**:
 ```json
 // packages/cli-helper/package.json
 {
-  "name": "@axm/cli-helper",
+  "name": "@axm-internal/cli-helper",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -60,7 +60,7 @@ Because everything runs on Bun:
 - No `tsc` or bundling step
 - Publishing ships *source*, not artifacts
 
-`@axm/*` becomes your internal, living standard library.
+`@axm-internal/*` becomes your internal, living standard library.
 
 ---
 
@@ -71,8 +71,8 @@ In any project (Alpha, Beta, Delta):
 ```json
 {
   "dependencies": {
-    "@axm/cli-helper": "^0.1.0",
-    "@axm/logger": "^0.2.0"
+    "@axm-internal/cli-helper": "^0.1.0",
+    "@axm-internal/logger": "^0.2.0"
   }
 }
 ```
@@ -96,12 +96,12 @@ When you’re in Project Beta and realize `cli-helper` needs improvement, you do
 bun link
 
 # in Project Beta
-bun link @axm/cli-helper
+bun link @axm-internal/cli-helper
 ```
 
 Now:
 
-- `@axm/cli-helper` resolves to your local source
+- `@axm-internal/cli-helper` resolves to your local source
 - You can edit `src/index.ts` in real time
 - Beta reflects changes immediately
 
@@ -119,7 +119,7 @@ When the fix or feature is ready:
 4. In the consuming project:
 
 ```bash
-bun unlink @axm/cli-helper
+bun unlink @axm-internal/cli-helper
 bun install
 ```
 

@@ -33,18 +33,18 @@ packages/<name>/
 
 Rules:
 
-* All packages are named `@axm/<kebab-name>`
+* All packages are named `@axm-internal/<kebab-name>`
 * All packages are Bun‑first and ESM‑only
 * Entry point is always `src/index.ts`
 * No build step (TypeScript is consumed directly by Bun)
 * Turborepo orchestrates repo-wide tasks (lint, test, check-types, validate)
 * All packages are versioned and published via Changesets
 * `package.json` always follows the canonical form:
-  * Exception: config-only, non-published support packages (e.g., `@axm/typescript-config`)
+  * Exception: config-only, non-published support packages (e.g., `@axm-internal/typescript-config`)
 
 ```json
 {
-  "name": "@axm/<name>",
+  "name": "@axm-internal/<name>",
   "version": "0.1.0",
   "type": "module",
   "main": "src/index.ts",
@@ -82,7 +82,7 @@ This template:
 Non-interactive usage:
 
 ```bash
-AXM_PACKAGE_NAME=@axm/http-helper \
+AXM_PACKAGE_NAME=@axm-internal/http-helper \
 AXM_PACKAGE_DESC="HTTP helpers for internal services." \
 bun create axm-package packages/http-helper
 ```
@@ -113,7 +113,7 @@ Guidelines:
     * `tests/integration/` – filesystem, process, IO, etc.
 * Packages may add more layers if needed (e.g. `e2e/`)
 
-A shared `@axm/test-helpers` package may provide:
+A shared `@axm-internal/test-helpers` package may provide:
 
 * Temp directories
 * Fixture helpers

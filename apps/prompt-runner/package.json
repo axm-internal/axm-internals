@@ -1,5 +1,5 @@
 {
-    "name": "@axm/prompt-runner",
+    "name": "@axm-internal/prompt-runner",
     "version": "0.1.0",
     "private": true,
     "type": "module",
@@ -19,7 +19,7 @@
         "eta": "^3.5.0"
     },
     "devDependencies": {
-        "@axm/typescript-config": "*",
+        "@axm-internal/typescript-config": "*",
         "typedoc": "^0.28.2",
         "typedoc-plugin-markdown": "^4.8.1",
         "typescript": "^5",
