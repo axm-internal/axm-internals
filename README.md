@@ -21,6 +21,10 @@ It also removes the nested `.git` folder created by `bun create`.
 - `packages/typescript-config/README.md`
 - `apps/prompt-runner/README.md`
 
+## Examples Repo
+
+`axm-internals/axm-examples` is the companion repo for testing published `@axm-internal/*` packages.
+
 ## Docs
 
 - `monorepo-docs/package-checklist.md`
@@ -42,7 +46,7 @@ This project was created using `bun init` in bun v1.3.4. [Bun](https://bun.com) 
 
 ## Releases
 
-We use Changesets for versioning and publishing to GitHub Packages.
+We use Changesets for versioning and publishing public `@axm-internal/*` packages.
 
 Flow:
 
@@ -75,3 +79,24 @@ Or use the root script:
 ```bash
 bun clean
 ```
+
+## Package Installation
+
+`@axm-internal/*` packages are public and published to GitHub Packages. GitHub Packages
+still requires authentication for installs, so consumers must configure an auth token.
+
+Local setup (one-time):
+
+```bash
+echo "@axm-internal:registry=https://npm.pkg.github.com" >> ~/.npmrc
+echo "//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN" >> ~/.npmrc
+```
+
+Then install as usual:
+
+```bash
+bun add @axm-internal/zod-helpers
+```
+
+CI setup should write the token to the repo `.npmrc` and include `packages: read`
+permissions for the workflow.
