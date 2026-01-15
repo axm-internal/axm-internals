@@ -1,0 +1,17 @@
+# @axm-internal/cli-kit
+Version: 0.1.0
+
+Purpose:
+- Shared helper utilities for building CLI applications with Commander
+
+Public surface:
+- export(s) from `src/index.ts`
+
+Intended usage:
+- Internal @axm-internal consumers
+
+Non-goals:
+- External/public API stability
+
+Stability expectations:
+- Semver within axm-internals
