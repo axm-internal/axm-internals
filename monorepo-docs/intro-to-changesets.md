@@ -34,7 +34,7 @@ bun changeset
 
 ## Publishing
 
-Publishing is triggered by pushes to `main` **when changesets exist**. The workflow uses `changeset publish` to publish affected packages to GitHub Packages.
+Publishing is triggered by pushes to `main` **when changesets exist**. The workflow uses `changeset publish` to publish affected public packages.
 
 ## Changelogs
 

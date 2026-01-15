@@ -8,7 +8,7 @@ The goals are:
 * Zero surprise breakage for consuming projects
 * Clear, intentional upgrades
 * Automated changelogs
-* Seamless publishing to GitHub Packages
+* Seamless publishing of public packages
 
 The chosen tool for this is **Changesets**.
 
@@ -81,14 +81,14 @@ Changesets become the source of truth for:
     * Bumps package versions
     * Generates changelogs
     * Publishes only affected packages
-7. Packages are pushed to **GitHub Packages**
+7. Packages are pushed to the registry
 8. A release commit and tags are created
 
 Projects consuming `@axm-internal/*` now have new versions available and can upgrade intentionally.
 
 ---
 
-## GitHub Packages Integration
+## Registry Integration
 
 Each package declares its registry:
 
@@ -102,7 +102,7 @@ Each package declares its registry:
 }
 ```
 
-The repository includes an `.npmrc`:
+The repository includes an `.npmrc` for publishing:
 
 ```txt
 @axm-internal:registry=https://npm.pkg.github.com
