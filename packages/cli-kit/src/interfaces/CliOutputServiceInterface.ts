@@ -1,3 +1,14 @@
+/**
+ * Abstraction for emitting CLI output.
+ *
+ * @remarks
+ * Implementations can route output to stdout/stderr with optional styling.
+ * @example
+ * ```ts
+ * const output: CliOutputServiceInterface = new CliOutputService();
+ * output.log('Ready');
+ * ```
+ */
 export interface CliOutputServiceInterface {
     /**
      * Log a plain message to stdout.
@@ -6,6 +17,10 @@ export interface CliOutputServiceInterface {
      * @returns Nothing.
      * @remarks
      * Use for standard, non-styled output.
+     * @example
+     * ```ts
+     * output.log('Starting...');
+     * ```
      */
     log(message: string): void;
 
@@ -16,6 +31,10 @@ export interface CliOutputServiceInterface {
      * @returns Nothing.
      * @remarks
      * Uses `chalk.green` to format the message.
+     * @example
+     * ```ts
+     * output.logSuccess('Done');
+     * ```
      */
     logSuccess(message: string): void;
 
@@ -26,6 +45,10 @@ export interface CliOutputServiceInterface {
      * @returns Nothing.
      * @remarks
      * Prefer this for error output to keep stderr separated.
+     * @example
+     * ```ts
+     * output.logError('Failed');
+     * ```
      */
     logError(message: string): void;
 }

@@ -8,6 +8,17 @@ import { registerCommandDefinition } from './registerCommandDefinition';
 import { type CliAppParams, CliAppParamsSchema, type CliConfig } from './schemas/CliAppSchemas';
 import type { CommandDefinition } from './schemas/CommandDefinitionSchemaFactory';
 
+/**
+ * Orchestrates CLI configuration, commands, and lifecycle hooks.
+ *
+ * @remarks
+ * Manages command registration and delegates execution to Commander.js.
+ * @example
+ * ```ts
+ * const app = new CliApp({ config: { name: 'my-cli' }, options: {} });
+ * await app.start();
+ * ```
+ */
 export class CliApp {
     protected program: Command;
     protected config: CliConfig;
@@ -19,6 +30,18 @@ export class CliApp {
     protected onError?: (error: Error) => void;
     protected onExit?: (code: number, error?: Error) => void;
 
+    /**
+     * Create a new CLI app instance.
+     *
+     * @param params - App configuration and options.
+     * @returns Nothing.
+     * @remarks
+     * Validates input with Zod and registers a logger in the container.
+     * @example
+     * ```ts
+     * const app = new CliApp({ config: { name: 'my-cli' }, options: {} });
+     * ```
+     */
     constructor(params: CliAppParams) {
         const { config, options } = CliAppParamsSchema.parse(params);
         const { commandDefinitions = [], container, logger, loggerAliases, pretty, onError, onExit } = options;
@@ -41,22 +64,80 @@ export class CliApp {
         return logger.child({ module: appName });
     }
 
+    /**
+     * Access the underlying Commander program instance.
+     *
+     * @returns The Commander program.
+     * @remarks
+     * Use this to add custom Commander configuration.
+     * @example
+     * ```ts
+     * const program = app.getProgram();
+     * program.showHelpAfterError();
+     * ```
+     */
     getProgram(): Command {
         return this.program;
     }
 
+    /**
+     * Get the last error captured during execution.
+     *
+     * @returns The last error, or undefined if none.
+     * @remarks
+     * This value is set after `start` returns.
+     * @example
+     * ```ts
+     * const lastError = app.getLastError();
+     * ```
+     */
     getLastError(): Error | undefined {
         return this.lastError;
     }
 
+    /**
+     * Clear the stored last error.
+     *
+     * @returns Nothing.
+     * @remarks
+     * Use before a new run if you track errors between runs.
+     * @example
+     * ```ts
+     * app.clearLastError();
+     * ```
+     */
     clearLastError(): void {
         this.lastError = undefined;
     }
 
+    /**
+     * Replace the command definitions for the app.
+     *
+     * @param commandDefinitions - The new command list.
+     * @returns Nothing.
+     * @remarks
+     * Existing definitions are overwritten.
+     * @example
+     * ```ts
+     * app.setCommands([definition]);
+     * ```
+     */
     setCommands(commandDefinitions: CommandDefinition[]) {
         this.commandDefinitions = commandDefinitions;
     }
 
+    /**
+     * Add a command definition to the app.
+     *
+     * @param commandDefinition - The command to add.
+     * @returns Nothing.
+     * @remarks
+     * Appends to the existing command list.
+     * @example
+     * ```ts
+     * app.addCommand(definition);
+     * ```
+     */
     addCommand(commandDefinition: CommandDefinition) {
         this.commandDefinitions.push(commandDefinition);
     }
@@ -95,6 +176,18 @@ export class CliApp {
         this.initialized = true;
     }
 
+    /**
+     * Initialize and run the CLI.
+     *
+     * @returns The process exit code.
+     * @remarks
+     * Returns 0 on success and 1 on command errors.
+     * @example
+     * ```ts
+     * const code = await app.start();
+     * process.exit(code);
+     * ```
+     */
     async start(): Promise<number> {
         if (!this.initialized) {
             this.init();

@@ -74,6 +74,18 @@ const getArgPositions = (schema: z.ZodObject<z.ZodRawShape>, argPositions?: stri
     throw new Error('argPositions is required when argsSchema has multiple keys.');
 };
 
+/**
+ * Register a command definition with a Commander program.
+ *
+ * @param options - Registration parameters including program, definition, and container.
+ * @returns Nothing.
+ * @remarks
+ * Builds arguments and options from Zod schemas and wires the action handler.
+ * @example
+ * ```ts
+ * registerCommandDefinition({ program, definition, container });
+ * ```
+ */
 export const registerCommandDefinition = (options: RegisterCommandDefinitionParams) => {
     const { program, definition, container } = RegisterCommandDefinitionParamsSchema.parse(options);
 

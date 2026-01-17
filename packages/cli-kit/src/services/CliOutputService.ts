@@ -6,6 +6,11 @@ import type { CliOutputServiceInterface } from '../interfaces/CliOutputServiceIn
  *
  * @remarks
  * This service wraps stdout/stderr and process exits without external side effects beyond logging.
+ * @example
+ * ```ts
+ * const output = new CliOutputService();
+ * output.log('Ready');
+ * ```
  */
 export class CliOutputService implements CliOutputServiceInterface {
     /**
@@ -15,6 +20,10 @@ export class CliOutputService implements CliOutputServiceInterface {
      * @returns Nothing.
      * @remarks
      * Use for standard, non-styled output.
+     * @example
+     * ```ts
+     * output.log('Starting...');
+     * ```
      */
     log(message: string): void {
         console.log(message);
@@ -27,6 +36,10 @@ export class CliOutputService implements CliOutputServiceInterface {
      * @returns Nothing.
      * @remarks
      * Uses `chalk.green` to format the message.
+     * @example
+     * ```ts
+     * output.logSuccess('Done');
+     * ```
      */
     logSuccess(message: string): void {
         console.log(chalk.green(message));
@@ -39,6 +52,10 @@ export class CliOutputService implements CliOutputServiceInterface {
      * @returns Nothing.
      * @remarks
      * Prefer this for error output to keep stderr separated.
+     * @example
+     * ```ts
+     * output.logError('Failed');
+     * ```
      */
     logError(message: string): void {
         console.error(message);
