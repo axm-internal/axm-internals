@@ -20,7 +20,7 @@ describe('buildInstructions', () => {
 
         expect(outputPath).toBe('packages/zod-helpers/llms.txt');
         expect(instruction).toContain('packages/zod-helpers/README.md');
-        expect(instruction).toContain('Include a Version line');
+        expect(instruction).toContain('Version: x.y.z');
     });
 
     it('builds typedoc instructions without output path', () => {

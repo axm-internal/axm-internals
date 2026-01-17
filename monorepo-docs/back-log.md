@@ -6,6 +6,7 @@
 
 ## Apps
 1. convert apps/prompt to cli-kit commands and move to apps/repo-cli
+2. cli for pulling PR CR from bots as a report. Perhaps migrate cgp cli
 
 ## Packages
 1. api-kit: like cli-kit but for hono

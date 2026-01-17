@@ -37,11 +37,10 @@ export class InMemoryContainer implements ContainerInterface {
      * ```
      */
     resolve<T = unknown>(token: InjectionToken<T>): T {
-        const instance = this.store.get(token);
-        if (!instance) {
+        if (!this.store.has(token)) {
             throw new Error(`No instance registered for token "${String(token)}"`);
         }
-        return instance as T;
+        return this.store.get(token) as T;
     }
 
     /**

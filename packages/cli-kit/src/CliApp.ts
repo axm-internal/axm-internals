@@ -202,24 +202,28 @@ export class CliApp {
             // Resolve logger here, after parseAsync/preAction has run
             const logger = this.container.resolve(CliLogger);
             const normalizedError = error instanceof Error ? error : new Error(String(error));
-            this.lastError = normalizedError;
-            this.onError?.(normalizedError);
 
             if (error instanceof Error && 'code' in error) {
                 if (error.code === 'commander.help' || error.code === 'commander.helpDisplayed') {
+                    this.lastError = undefined;
                     this.onExit?.(0, normalizedError);
                     return 0;
                 }
                 if (error.code === 'commander.version') {
+                    this.lastError = undefined;
                     this.onExit?.(0, normalizedError);
                     return 0;
                 }
                 if (String(error.code).startsWith('commander.')) {
+                    this.lastError = normalizedError;
+                    this.onError?.(normalizedError);
                     this.onExit?.(1, normalizedError);
                     return 1;
                 }
             }
 
+            this.lastError = normalizedError;
+            this.onError?.(normalizedError);
             logger.error(error, '❌ CLI Error:');
             this.onExit?.(1, normalizedError);
             return 1;

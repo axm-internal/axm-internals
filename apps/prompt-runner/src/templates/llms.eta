@@ -1,11 +1,21 @@
 Generate or update <%= it.packagePath %>/llms.txt using the repository conventions.
-Read these inputs:
+
+Inputs to read:
 - <%= it.packagePath %>/README.md
-- <%= it.packagePath %>/package.json (version)
 - <%= it.packagePath %>/docs/ (Typedoc output)
 - <%= it.packagePath %>/src/index.ts (public exports)
+- <%= it.packagePath %>/package.json (name, version)
+
 Requirements:
-- Include a Version line from package.json.
-- Keep bullets short and factual.
-- Reflect actual exports and README scope.
-Write the full content to <%= it.outputPath %>.
+- Start with a top-level heading using the package name from package.json.
+- Include a "Version: x.y.z" line from package.json.
+- Provide these sections with short, factual bullets:
+  - Purpose
+  - Public surface
+  - Intended usage
+  - Non-goals
+  - Stability expectations
+- Ensure content matches actual exports and README scope.
+
+Output:
+- Output only the full llms.txt content (no preface, no explanation).

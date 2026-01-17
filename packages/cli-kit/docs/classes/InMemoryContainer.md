@@ -61,7 +61,7 @@ const hasLogger = container.store.has('Logger');
 
 > **registerInstance**\<`T`\>(`token`, `instance`): [`ContainerInterface`](../interfaces/ContainerInterface.md)
 
-Defined in: [containers/InMemoryContainer.ts:60](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/containers/InMemoryContainer.ts#L60)
+Defined in: [containers/InMemoryContainer.ts:59](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/containers/InMemoryContainer.ts#L59)
 
 Register an instance for a token.
 

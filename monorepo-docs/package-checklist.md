@@ -28,6 +28,7 @@ Use this checklist before considering a package “dev complete.”
 - `bun run lint` passes.
 - `bun run check-types` passes.
 - `bun run validate` passes.
+- If the package or app has tests, it is added to the coverage matrix in `.github/workflows/coverage.yml`.
 
 ## Promotion Readiness (if publishing)
 

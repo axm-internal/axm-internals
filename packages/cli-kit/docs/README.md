@@ -85,6 +85,8 @@ process.exit(exitCode);
 
 - Source-first, buildless package (Bun).
 - Entry point: `src/index.ts`.
+- Positional arguments are strings by default; use `z.coerce.*` when you need numeric or boolean args.
+- Avoid Zod function defaults for CLI arguments/options; Commander treats functions as parsers.
 
 ## Docs
 

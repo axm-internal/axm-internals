@@ -1,17 +1,29 @@
 # @axm-internal/cli-kit
+
 Version: 0.1.0
 
 Purpose:
-- Shared helper utilities for building CLI applications with Commander
+- Provide typed, validated CLI command definitions on top of Commander
+- Offer lightweight logging and optional dependency container utilities for CLI apps
 
 Public surface:
-- export(s) from `src/index.ts`
+- `CliApp` class for configuring and running a CLI app
+- `createCommandDefinition` for typed command definitions with Zod schemas
+- `CliLogger` constant for logger resolution/use
+- `InMemoryContainer` and `ContainerInterface`/`InjectionToken` for lightweight DI
+- `CliOutputService` and `CliOutputServiceInterface` for output handling
+- Types: `CliAppParams`, `CliConfig`, `CliOptions`, `CommandContext`, `CommandContextForSchemas`, `CommandAction`, `CommandDefinition`
 
 Intended usage:
-- Internal @axm-internal consumers
+- Define Commander-based CLIs with Zod-validated args and options
+- Compose commands and run them through `CliApp`
+- Use optional container and logger in command actions
 
 Non-goals:
-- External/public API stability
+- Replacing Commander or providing a full CLI framework
+- Providing a full-featured dependency injection system
+- Generating build artifacts or bundling
 
 Stability expectations:
-- Semver within axm-internals
+- Pre-1.0 API; expect breaking changes as the package evolves
+- Semver applies; changesets track published versions
