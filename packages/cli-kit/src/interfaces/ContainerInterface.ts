@@ -1,9 +1,5 @@
 import { z } from 'zod';
 
-type constructor<T> = {
-    new (...args: unknown[]): T;
-};
-
 /**
  * Token used to register and resolve values from a container.
  *
@@ -14,7 +10,7 @@ type constructor<T> = {
  * const token: InjectionToken = 'MyService';
  * ```
  */
-export type InjectionToken<T = unknown> = constructor<T> | string | symbol;
+export type InjectionToken<T = unknown> = (new (...args: unknown[]) => T) | string | symbol;
 
 /**
  * Zod schema that validates container injection tokens.

@@ -16,6 +16,7 @@ const ZodObjectSchema = z.custom<z.ZodObject<z.ZodRawShape>>((value) => value in
  * const defSchema = CommandDefinitionSchemaFactory(argsSchema, optionsSchema);
  * ```
  */
+/** @internal */
 export const CommandDefinitionSchemaFactory = (
     argsSchema: z.ZodObject<z.ZodRawShape> = z.object({}),
     optionsSchema: z.ZodObject<z.ZodRawShape> = z.object({})
@@ -43,4 +44,5 @@ export const CommandDefinitionSchemaFactory = (
  * };
  * ```
  */
+/** @internal */
 export type CommandDefinition = z.infer<ReturnType<typeof CommandDefinitionSchemaFactory>>;

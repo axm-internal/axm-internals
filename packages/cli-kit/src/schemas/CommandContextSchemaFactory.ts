@@ -14,6 +14,7 @@ import { ContainerSchema } from '../interfaces/ContainerInterface';
  * const contextSchema = CommandContextSchemaFactory(argsSchema, optionsSchema);
  * ```
  */
+/** @internal */
 export const CommandContextSchemaFactory = (
     argsSchema: z.ZodObject<z.ZodRawShape> = z.object({}),
     optionsSchema: z.ZodObject<z.ZodRawShape> = z.object({})
@@ -34,4 +35,5 @@ export const CommandContextSchemaFactory = (
  * const ctx: CommandContext = { args: {}, options: {}, container };
  * ```
  */
+/** @internal */
 export type CommandContext = z.infer<ReturnType<typeof CommandContextSchemaFactory>>;

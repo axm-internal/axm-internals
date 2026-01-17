@@ -44,7 +44,7 @@ export class CliApp {
      */
     constructor(params: CliAppParams) {
         const { config, options } = CliAppParamsSchema.parse(params);
-        const { commandDefinitions = [], container, logger, loggerAliases, pretty, onError, onExit } = options;
+        const { commandDefinitions = [], container, logger, loggerAliases, pretty = true, onError, onExit } = options;
 
         this.config = config;
         this.commandDefinitions = commandDefinitions;

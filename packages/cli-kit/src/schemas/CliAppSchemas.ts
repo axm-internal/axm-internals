@@ -13,6 +13,7 @@ import type { CommandDefinition } from './CommandDefinitionSchemaFactory';
  * CliConfigSchema.parse({ name: 'my-cli' });
  * ```
  */
+/** @internal */
 export const CliConfigSchema = z.object({
     name: z.string(),
     description: z.string().optional(),
@@ -29,6 +30,7 @@ export const CliConfigSchema = z.object({
  * CliOptionsSchema.parse({ pretty: true });
  * ```
  */
+/** @internal */
 export const CliOptionsSchema = z.object({
     pretty: z.boolean().default(true),
     container: ContainerSchema.optional(),
@@ -59,41 +61,12 @@ export const CliOptionsSchema = z.object({
  * CliAppParamsSchema.parse({ config: { name: 'my-cli' }, options: {} });
  * ```
  */
+/** @internal */
 export const CliAppParamsSchema = z.object({
     config: CliConfigSchema,
     options: CliOptionsSchema,
 });
 
-/**
- * Type for validated CLI configuration.
- *
- * @remarks
- * Derived from `CliConfigSchema`.
- * @example
- * ```ts
- * const config: CliConfig = { name: 'my-cli' };
- * ```
- */
 export type CliConfig = z.infer<typeof CliConfigSchema>;
-/**
- * Type for validated CLI options.
- *
- * @remarks
- * Derived from `CliOptionsSchema`.
- * @example
- * ```ts
- * const options: CliOptions = { pretty: true };
- * ```
- */
 export type CliOptions = z.infer<typeof CliOptionsSchema>;
-/**
- * Type for `CliApp` constructor parameters.
- *
- * @remarks
- * Derived from `CliAppParamsSchema`.
- * @example
- * ```ts
- * const params: CliAppParams = { config: { name: 'my-cli' }, options: {} };
- * ```
- */
 export type CliAppParams = z.infer<typeof CliAppParamsSchema>;

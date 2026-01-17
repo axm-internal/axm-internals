@@ -14,6 +14,7 @@ import { CommandContextSchemaFactory } from './CommandContextSchemaFactory';
  * const actionSchema = CommandActionSchemaFactory(argsSchema, optionsSchema);
  * ```
  */
+/** @internal */
 export const CommandActionSchemaFactory = (
     argsSchema: z.ZodObject<z.ZodRawShape> = z.object({}),
     optionsSchema: z.ZodObject<z.ZodRawShape> = z.object({})
@@ -35,4 +36,5 @@ export const CommandActionSchemaFactory = (
  * };
  * ```
  */
+/** @internal */
 export type CommandAction = z.infer<ReturnType<typeof CommandActionSchemaFactory>>;
