@@ -14,9 +14,9 @@ flag_management:
     - name: tooling-config
       paths:
         - packages/tooling-config/**
-    - name: prompt-runner
-      paths:
-        - apps/prompt-runner/**
     - name: cli-kit
       paths:
         - packages/cli-kit/**
+    - name: repo-cli
+      paths:
+        - apps/repo-cli/**

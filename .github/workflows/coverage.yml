@@ -24,10 +24,10 @@ jobs:
             path: packages/cli-kit/coverage/lcov.info
             junit: packages/cli-kit/junit.xml
             dir: packages/cli-kit
-          - target: prompt-runner
-            path: apps/prompt-runner/coverage/lcov.info
-            junit: apps/prompt-runner/junit.xml
-            dir: apps/prompt-runner
+          - target: repo-cli
+            path: apps/repo-cli/coverage/lcov.info
+            junit: apps/repo-cli/junit.xml
+            dir: apps/repo-cli
 
     steps:
       - uses: actions/checkout@v6
