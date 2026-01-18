@@ -17,6 +17,10 @@ describe('requirePackagePath', () => {
         );
     });
 
+    it('throws when the path escapes the repo root', () => {
+        expect(() => requirePackagePath('packages/../.git')).toThrow('Package path must stay within the repo root.');
+    });
+
     it('returns the resolved package path for a valid package', () => {
         const result = requirePackagePath('packages/cli-kit');
         expect(result.packageName).toBe('packages/cli-kit');

@@ -10,6 +10,13 @@ export const requirePackagePath = (packagePath?: string): PackageGuardResult => 
 
     const repoRoot = findRepoRoot(process.cwd());
     const resolvedPath = path.resolve(repoRoot, packagePath);
+    const relativePath = path.relative(repoRoot, resolvedPath);
+    const normalizedInput = packagePath.replace(/\\/g, '/');
+    const segments = normalizedInput.split('/');
+
+    if (segments.includes('..')) {
+        throw new Error('Package path must stay within the repo root.');
+    }
 
     if (!fs.existsSync(resolvedPath)) {
         throw new Error(`Package directory not found: ${resolvedPath}`);
@@ -20,7 +27,12 @@ export const requirePackagePath = (packagePath?: string): PackageGuardResult => 
         throw new Error(`Package path is not a directory: ${packagePath}`);
     }
 
-    if (!packagePath.startsWith('packages/') && !packagePath.startsWith('apps/')) {
+    const topLevelDir = relativePath.split(path.sep)[0] ?? '';
+    const hasTraversal = relativePath === '..' || relativePath.startsWith(`..${path.sep}`);
+    if (hasTraversal || path.isAbsolute(relativePath)) {
+        throw new Error('Package path must stay within the repo root.');
+    }
+    if (topLevelDir !== 'packages' && topLevelDir !== 'apps') {
         throw new Error('Package path must start with "packages/" or "apps/".');
     }
 
