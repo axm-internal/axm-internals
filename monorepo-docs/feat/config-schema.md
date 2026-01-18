@@ -1,8 +1,8 @@
-# bootcfg
+# config-schema
 
-> A schema-first configuration runtime for large HTTP services.
+> A schema-first configuration runtime for applications.
 
-This library provides a **typed, self-validating configuration system** for modern HTTP applications. It treats configuration as *runtime infrastructure*, not just environment parsing.
+This library provides a **typed, self-validating configuration system** for applications. It treats configuration as *runtime infrastructure*, not just environment parsing.
 
 It does **not** replace environment variable standards like `.env`. Instead, it builds on top of Bun’s guarantees by:
 
@@ -12,7 +12,7 @@ It does **not** replace environment variable standards like `.env`. Instead, it 
 * Failing fast with human-readable boot errors
 * Making secrets and origins first-class
 
-The result is a predictable, debuggable config runtime suitable for large HTTP services, workers, CLIs, and agent-driven tools.
+The result is a predictable, debuggable config runtime suitable for services, workers, CLIs, and agent-driven tools.
 
 ---
 

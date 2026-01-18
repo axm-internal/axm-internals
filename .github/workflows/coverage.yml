@@ -24,6 +24,10 @@ jobs:
             path: packages/cli-kit/coverage/lcov.info
             junit: packages/cli-kit/junit.xml
             dir: packages/cli-kit
+          - target: config-schema
+            path: packages/config-schema/coverage/lcov.info
+            junit: packages/config-schema/junit.xml
+            dir: packages/config-schema
           - target: repo-cli
             path: apps/repo-cli/coverage/lcov.info
             junit: apps/repo-cli/junit.xml

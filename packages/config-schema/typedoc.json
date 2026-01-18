@@ -1,0 +1,4 @@
+{
+    "extends": "../tooling-config/typedoc.json",
+    "entryPoints": ["src/index.ts"]
+}
