@@ -23,7 +23,7 @@
         "lint": "turbo run lint",
         "lint:root": "biome check --write --config-path=biome.root.json",
         "lint:fix": "bun lint:root && turbo run lint:fix",
-        "prompt-runner": "bun run apps/prompt-runner/src/cli.ts",
+        "repo-cli": "bun run apps/repo-cli/src/cli.ts",
         "changeset": "changeset",
         "changeset:from-commits": "conventional-changeset -p main -i $(git branch --show-current)",
         "changeset:version": "changeset version",

@@ -1,4 +1,4 @@
-# @axm-internal/prompt-runner
+# @axm-internal/repo-cli
 Version: 0.1.0
 
 Purpose:

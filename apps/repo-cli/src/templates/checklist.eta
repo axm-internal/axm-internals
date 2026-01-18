@@ -1,4 +1,4 @@
-Run the package at <%= it.packagePath %> through monorepo-docs/package-checklist.md.
+Run the package at <%= it.packageName %> through monorepo-docs/package-checklist.md.
 
 Before reporting, run these scripts inside the package directory:
 - bun run test
@@ -14,4 +14,4 @@ Output requirements:
   - Unknown/unverified items
 - Use bullet lists under each section.
 
-Write the report to <%= it.outputPath %>.
+Write the report to <%= it.packageName %>/checklist.md

@@ -1,10 +1,10 @@
-Generate or update <%= it.packagePath %>/llms.txt using the repository conventions.
+Generate or update <%= it.packageName %>/llms.txt using the repository conventions.
 
 Inputs to read:
-- <%= it.packagePath %>/README.md
-- <%= it.packagePath %>/docs/ (Typedoc output)
-- <%= it.packagePath %>/src/index.ts (public exports)
-- <%= it.packagePath %>/package.json (name, version)
+- <%= it.packageName %>/README.md
+- <%= it.packageName %>/docs/ (Typedoc output)
+- <%= it.packageName %>/src/index.ts (public exports)
+- <%= it.packageName %>/package.json (name, version)
 
 Requirements:
 - Start with a top-level heading using the package name from package.json.
