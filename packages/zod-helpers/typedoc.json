@@ -1,4 +1,5 @@
 {
-    "extends": "../tooling-config/typedoc.json",
-    "entryPoints": ["src/index.ts"]
+    "extends": "@axm-internal/tooling-config/typedoc.json",
+    "out": "docs",
+    "readme": "README.md"
 }
