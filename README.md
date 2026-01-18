@@ -8,6 +8,8 @@ Use the Bun template:
 bun create axm-package packages/<name>
 ```
 
+This uses the local `.bun-create/axm-package` template at the repo root.
+
 You will be prompted for the package name and a short description. The template also creates
 `docs/` and `llms.txt` to satisfy the documentation requirements.
 Because the template installs dev dependencies, the post-create hook runs automatically and
