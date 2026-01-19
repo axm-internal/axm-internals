@@ -89,7 +89,7 @@ At runtime, the loader:
 
 This runtime **owns env loading**. It does not rely on Bun or Node behavior.
 
-When `boot({ envDir })` is used, the following cascade is applied (matching Bun’s model, minus `.env.local`):
+When `defineConfig(schema, { envDir })` is used, the following cascade is applied (matching Bun’s model, minus `.env.local`):
 
 ```
 .env
@@ -127,10 +127,10 @@ There is exactly **one** environment model:
 * `process.env` is the source of truth
 * `.env` files are loaded by this runtime when `envDir` is provided
 
-`ConfigDefinition.boot()` accepts an optional directory:
+`defineConfig()` accepts an optional directory:
 
 ```ts
-const cfg = appConfig.boot({ envDir: "/path/to/project" });
+const cfg = defineConfig(schema, { envDir: "/path/to/project" });
 ```
 
 When `envDir` is set, the runtime uses `dotenv` (and optionally `dotenv-expand`) to load:
@@ -145,7 +145,7 @@ In that order. Values cascade. Only the keys defined in later files override ear
 If `envDir` is omitted:
 
 ```ts
-const cfg = appConfig.boot();
+const cfg = defineConfig(schema);
 ```
 
 Then:
@@ -173,23 +173,6 @@ Layering (files, CLI, remote sources, etc.) will be introduced once the core run
 
 ---
 
-## Typed Projections
-
-Modules never consume the full config tree.
-
-```ts
-const httpCfg = cfg.pick("http");
-const dbCfg = cfg.pick("db");
-```
-
-Each slice is:
-
-* Typed
-* Isolated
-* Safe to inject
-
-This replaces the need for a DI container in many services.
-
 ---
 
 ## Secret Awareness (Future)
@@ -206,92 +189,19 @@ The initial release treats all values uniformly and focuses on correctness and v
 
 ---
 
-## Boot Behavior (MVP)
-
-The MVP exposes a single, strict boot path:
-
-```ts
-cfg.boot();
-```
-
-* Configuration is resolved
-* Environment bindings are applied
-* Zod validation runs
-* The process throws on failure
-
-This keeps semantics simple and enforces a "fail fast" philosophy for HTTP services.
-
-Alternate boot modes (`safeBoot`, `testMode`, `reload`) are intentionally deferred.
-
----
-
 ## Architecture & Public API
 
-The system is intentionally split into three conceptual layers:
-
-1. **User Schema** – what the developer writes
-2. **Config Definition** – an inert blueprint returned by `defineConfig()`
-3. **Runtime Config** – the validated, concrete config produced at boot
-
-`defineConfig()` performs *no IO* and reads no environment variables. It returns a **ConfigDefinition** object that is safe to construct at import time.
+The system is intentionally kept minimal:
 
 ```ts
-const appConfig = defineConfig({
+const config = defineConfig({
   logger: {
     path: env("LOGGER_PATH", z.string()).optional(),
   },
 });
 ```
 
-The returned object is a blueprint:
-
-```ts
-class ConfigDefinition<T> {
-  constructor(
-    public readonly schema: ZodType<T>,
-    public readonly tree: InternalNode
-  ) {}
-
-  boot(): RuntimeConfig<T> {
-    // walk schema
-    // read env
-    // build raw object
-    // parse via Zod
-    // throw formatted error if invalid
-    // return new RuntimeConfig(parsed)
-  }
-}
-```
-
-Boot is explicit:
-
-```ts
-const cfg = appConfig.boot();
-```
-
-The result is a **RuntimeConfig** instance:
-
-```ts
-class RuntimeConfig<T> {
-  constructor(private readonly value: T) {}
-
-  get(): T {
-    return this.value;
-  }
-
-  pick<K extends keyof T>(key: K): T[K] {
-    return this.value[key];
-  }
-}
-```
-
-This mirrors a clean *define → compile → run → consume* lifecycle:
-
-* Definition is pure
-* Boot is effectful
-* Runtime is concrete and typed
-
-There are no global singletons and no hidden side effects.
+`defineConfig()` is the only entry point. It can optionally load env files (via `envDir`) and returns the validated config object directly.
 
 ---
 
@@ -302,8 +212,6 @@ The public surface area stays intentionally small:
 ```txt
 src/
 ├─ defineConfig.ts        // exports defineConfig()
-├─ ConfigDefinition.ts    // class ConfigDefinition<T>
-├─ RuntimeConfig.ts       // class RuntimeConfig<T>
 ├─ env.ts                 // env(name, schema) helper
 └─ internal/
    ├─ walkSchema.ts       // traverses Zod tree + metadata
@@ -322,9 +230,8 @@ Version 1 focuses on:
 
 * Zod-first schema definition
 * Explicit env binding via metadata
-* Cross-runtime env loading via `boot({ envDir })`
+* Cross-runtime env loading via `defineConfig(schema, { envDir })`
 * Deterministic `.env` cascade (`.env` → `.env.{NODE_ENV}`)
-* Typed projections (`pick`)
 * Clear, human-readable boot errors
 
 Not in MVP:
@@ -341,6 +248,8 @@ Phase 2 may include:
 * Hot reload
 * Remote and distributed config
 * Vault integrations
+* A `ConfigDefinition`/`boot()` split for deferred loading
+* Runtime helpers like `pick()` or `get()`
 
 ---
 

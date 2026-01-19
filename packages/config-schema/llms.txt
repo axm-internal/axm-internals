@@ -6,13 +6,14 @@ Purpose:
 - A schema-first configuration runtime for applications
 
 Public surface:
-- export(s) from `src/index.ts`
+- `defineConfig` for validating and materializing config from a Zod object
+- `env` and `autoEnv` for explicit/env-inferred bindings
 
 Intended usage:
-- Internal @axm-internal consumers
+- Define configuration schemas in apps and return validated config
 
 Non-goals:
-- External/public API stability
+- Config layering beyond env and defaults
 
 Stability expectations:
 - Semver within axm-internals

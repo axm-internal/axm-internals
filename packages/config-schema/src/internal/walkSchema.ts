@@ -2,6 +2,15 @@ import { getSchemaMeta } from '@axm-internal/zod-helpers';
 import { ZodDefault, ZodObject, ZodOptional, type ZodType, z } from 'zod';
 import type { InternalNode, InternalObjectNode, SchemaMeta } from './types';
 
+/**
+ * Walk a root Zod schema to build the internal tree.
+ *
+ * @param schema - Root Zod schema.
+ * @returns Internal node tree representing the schema.
+ * @remarks
+ * The root schema must be a Zod object.
+ * @internal
+ */
 export function walkSchema(schema: ZodType): InternalNode {
     if (!(schema instanceof ZodObject)) {
         throw new Error('defineConfig() expects a Zod object at the root');
@@ -10,6 +19,16 @@ export function walkSchema(schema: ZodType): InternalNode {
     return walkObject(schema, []);
 }
 
+/**
+ * Walk an object schema and its children.
+ *
+ * @param schema - Object schema to traverse.
+ * @param path - Path segments leading to this object.
+ * @returns Internal object node with populated children.
+ * @remarks
+ * Child paths are appended as keys are visited.
+ * @internal
+ */
 function walkObject(schema: ZodObject, path: string[]): InternalObjectNode {
     const { shape } = schema;
     const children: Record<string, InternalNode> = {};
@@ -26,6 +45,16 @@ function walkObject(schema: ZodObject, path: string[]): InternalObjectNode {
     };
 }
 
+/**
+ * Walk a node schema into a leaf or object.
+ *
+ * @param schema - Schema to inspect.
+ * @param path - Path segments for the schema.
+ * @returns Internal node representing the schema.
+ * @remarks
+ * Unwraps optional/default/pipe wrappers before inspection.
+ * @internal
+ */
 function walkNode(schema: ZodType, path: string[]): InternalNode {
     const { base, optional } = unwrap(schema);
 
@@ -44,6 +73,15 @@ function walkNode(schema: ZodType, path: string[]): InternalNode {
     };
 }
 
+/**
+ * Unwrap wrapper schemas to reach the base type.
+ *
+ * @param schema - Schema to unwrap.
+ * @returns Base schema plus optional flag.
+ * @remarks
+ * Default and pipe wrappers are not considered optional.
+ * @internal
+ */
 function unwrap(schema: ZodType): {
     base: ZodType;
     optional: boolean;

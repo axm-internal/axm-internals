@@ -1,7 +1,16 @@
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 
-export const loadEnv = (dir: string) => {
+/**
+ * Load .env files into process.env.
+ *
+ * @param dir - Directory containing .env files.
+ * @returns Nothing.
+ * @remarks
+ * Loads .env first, then .env.NODE_ENV with override when NODE_ENV is set.
+ * @internal
+ */
+export const loadEnv = (dir: string): void => {
     // Always load .env first
     const base = dotenv.config({ path: `${dir}/.env` });
     dotenvExpand.expand(base);
