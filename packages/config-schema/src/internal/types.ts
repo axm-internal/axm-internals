@@ -26,3 +26,7 @@ export interface InternalLeafNode extends InternalBaseNode {
 }
 
 export type SchemaMeta = { env?: string | 'auto' };
+
+export interface BootOptions {
+    envDir?: string;
+}
