@@ -10,7 +10,7 @@
 
 ## Packages
 1. api-kit: like cli-kit but for hono
-2. [bootcfg](./feat/bootcfg.md)
+2. [config-schema](./feat/config-schema.md)
 3. typeorm-helpers
 4. queue-kit
 5. util-kit: for shared types, schemas and interfaces

@@ -8,7 +8,7 @@
 
 > `const` **PinoInstanceSchema**: `ZodCustom`\<`Logger`, `Logger`\>
 
-Defined in: [isPinoLogger.ts:45](https://github.com/angelxmoreno/axm-internals/blob/main/packages/zod-helpers/src/isPinoLogger.ts#L45)
+Defined in: [isPinoLogger.ts:45](https://github.com/axm-internal/axm-internals/blob/main/packages/zod-helpers/src/isPinoLogger.ts#L45)
 
 Zod schema that validates Pino logger instances.
 

@@ -78,6 +78,16 @@ Dev dependencies are installed so the post-create hook runs and removes its temp
   - `.changeset/*.md`
   - `monorepo-docs/**/*.md`
 
+## Zod v4 Notes
+
+- The repo uses Zod v4.
+- Avoid accessing `._def` (deprecated); use `.def` and `schema.meta()` instead.
+- `schema.parse(...)` returns `core.output<this>`; avoid unnecessary casts.
+- `ZodEffects` does not exist in v4. Refinements live inside schemas; transforms use `ZodPipe`.
+- Wrapper-specific internals (like `innerType`) require narrowing to the wrapper type.
+- Prefer `z.ZodType` over `z.ZodTypeAny`; `ZodTypeAny` is no longer needed in this repo.
+- Prefer `z.core.$ZodIssue` from `@zod/core` when building libraries on top of Zod.
+
 ## Documentation Requirements (Promotion Gate)
 
 Every package must provide:

@@ -13,3 +13,4 @@
  */
 export { AxiosInstanceSchema } from './isAxiosInstance';
 export { PinoInstanceSchema } from './isPinoLogger';
+export { getMetaValue, getSchemaMeta } from './utils';

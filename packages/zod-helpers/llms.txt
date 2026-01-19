@@ -10,7 +10,9 @@ Public surface:
 - `PinoInstanceSchema`
 
 Intended usage:
-- Validate Axios instances and Pino loggers at runtime with Zod.
+- Validate runtime instances with `safeParse` before using them.
+- Use `AxiosInstanceSchema` to guard Axios-like clients.
+- Use `PinoInstanceSchema` to guard Pino loggers passed into helpers.
 
 Non-goals:
 - Wrapping Axios or Pino APIs.

@@ -18,6 +18,7 @@ Requirements:
   - Stability expectations
 - Keep bullets short and factual.
 - Ensure content matches the actual exports and README scope.
+- Intended usage should include at least one concrete usage line (e.g., "Use X to validate Y with safeParse").
 
 Output:
 - Provide the full `llms.txt` content.

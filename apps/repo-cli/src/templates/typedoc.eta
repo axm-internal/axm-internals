@@ -1,5 +1,6 @@
-Add or improve Typedoc/TSDoc docblocks for public API in <%= it.packageName %>.
+Add or improve Typedoc/TSDoc docblocks for all symbols in <%= it.packageName %> under src/.
 Use monorepo-docs/prompts/typedoc-docblocks.md as guidance.
 Scope: classes, methods, functions, properties, and exports in src/.
+Mark non-exported or internal-only symbols with @internal.
 Always include an @example for each public symbol.
 Include @param/@returns/@remarks as required.

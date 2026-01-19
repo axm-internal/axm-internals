@@ -8,3 +8,8 @@
 
 - [AxiosInstanceSchema](variables/AxiosInstanceSchema.md)
 - [PinoInstanceSchema](variables/PinoInstanceSchema.md)
+
+## Functions
+
+- [getMetaValue](functions/getMetaValue.md)
+- [getSchemaMeta](functions/getSchemaMeta.md)

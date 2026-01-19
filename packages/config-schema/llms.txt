@@ -1,0 +1,19 @@
+# @axm-internal/config-schema
+
+Version: 0.1.0
+
+Purpose:
+- A schema-first configuration runtime for applications
+
+Public surface:
+- `defineConfig` for validating and materializing config from a Zod object
+- `env` and `autoEnv` for explicit/env-inferred bindings
+
+Intended usage:
+- Define configuration schemas in apps and return validated config
+
+Non-goals:
+- Config layering beyond env and defaults
+
+Stability expectations:
+- Semver within axm-internals

@@ -8,7 +8,7 @@
 
 > `const` **AxiosInstanceSchema**: `ZodCustom`\<`AxiosInstance`, `AxiosInstance`\>
 
-Defined in: [isAxiosInstance.ts:42](https://github.com/angelxmoreno/axm-internals/blob/main/packages/zod-helpers/src/isAxiosInstance.ts#L42)
+Defined in: [isAxiosInstance.ts:42](https://github.com/axm-internal/axm-internals/blob/main/packages/zod-helpers/src/isAxiosInstance.ts#L42)
 
 Zod schema that validates Axios instances.
 
