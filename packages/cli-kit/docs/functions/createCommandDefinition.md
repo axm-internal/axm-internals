@@ -68,7 +68,7 @@ A command definition compatible with CLI registration.
 
 ### argsSchema?
 
-> `optional` **argsSchema**: `ZodObject`\<`Readonly`\<\{\[`k`: `string`\]: `$ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>; \}\>, `$strip`\>
+> `optional` **argsSchema**: `ZodObject`\<`$ZodLooseShape`, `$strip`\>
 
 ### description
 
@@ -80,7 +80,7 @@ A command definition compatible with CLI registration.
 
 ### optionsSchema?
 
-> `optional` **optionsSchema**: `ZodObject`\<`Readonly`\<\{\[`k`: `string`\]: `$ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>; \}\>, `$strip`\>
+> `optional` **optionsSchema**: `ZodObject`\<`$ZodLooseShape`, `$strip`\>
 
 ## Remarks
 
