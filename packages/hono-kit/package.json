@@ -1,0 +1,26 @@
+{
+    "name": "@axm-internal/hono-kit",
+    "version": "0.1.0",
+    "type": "module",
+    "main": "src/index.ts",
+    "description": "Opinionated Hono server wrapper with Zod-first validation",
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com"
+    },
+    "scripts": {
+        "test": "bun test",
+        "test:coverage": "bun test --coverage --coverage-reporter=lcov",
+        "lint": "biome check .",
+        "lint:fix": "biome check --write .",
+        "check-types": "tsc --noEmit",
+        "docs": "typedoc",
+        "validate": "echo \"Validated\""
+    },
+    "devDependencies": {
+        "@axm-internal/tooling-config": "*",
+        "typedoc": "^0.28.2",
+        "typedoc-plugin-markdown": "^4.8.1",
+        "typescript": "^5",
+        "@types/bun": "^1.3"
+    }
+}
