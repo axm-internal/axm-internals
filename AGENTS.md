@@ -129,6 +129,10 @@ Typical flow:
 4. Merge to `main`.
 5. CI runs tests and `changesets/action` to version and publish.
 
+## Commit Messages
+
+- Use past tense for commit messages (e.g., "Added tests", "Refactored CLI metadata").
+
 ## Quality & Review Pipeline
 
 Four-layer model:
