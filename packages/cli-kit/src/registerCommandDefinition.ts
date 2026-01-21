@@ -11,6 +11,8 @@ type SchemaDetails = {
     defaultValue?: unknown;
     isOptional: boolean;
     baseSchema: ZodType;
+    position?: number;
+    aliases?: string[];
 };
 
 const getObjectShape = (schema: z.ZodObject<z.ZodRawShape>) => {
@@ -20,12 +22,21 @@ const getObjectShape = (schema: z.ZodObject<z.ZodRawShape>) => {
 type SchemaMeta = {
     description?: string;
     defaultValue?: unknown;
+    position?: number;
+    aliases?: string[];
 };
 
 const getSchemaDetails = (schema: ZodType): SchemaDetails => {
     let current = schema;
     let isOptional = false;
     let meta = getSchemaMeta<SchemaMeta>(current);
+
+    const mergeMeta = (base: SchemaMeta, next: SchemaMeta): SchemaMeta => ({
+        description: base.description ?? next.description,
+        defaultValue: base.defaultValue ?? next.defaultValue,
+        position: base.position ?? next.position,
+        aliases: base.aliases ?? next.aliases,
+    });
 
     const unwrapSchema = (value: ZodType) => {
         if (value instanceof z.ZodOptional || value instanceof z.ZodNullable || value instanceof z.ZodDefault) {
@@ -50,9 +61,7 @@ const getSchemaDetails = (schema: ZodType): SchemaDetails => {
             break;
         }
         current = next;
-        if (!meta.description && meta.defaultValue === undefined) {
-            meta = getSchemaMeta<SchemaMeta>(current);
-        }
+        meta = mergeMeta(meta, getSchemaMeta<SchemaMeta>(current));
     }
 
     return {
@@ -60,6 +69,8 @@ const getSchemaDetails = (schema: ZodType): SchemaDetails => {
         defaultValue: meta.defaultValue,
         isOptional,
         baseSchema: current,
+        position: meta.position,
+        aliases: meta.aliases,
     };
 };
 
@@ -79,13 +90,50 @@ const buildArgsObject = (positions: string[], values: unknown[]) => {
 
 const getArgPositions = (schema: z.ZodObject<z.ZodRawShape>, argPositions?: string[]) => {
     const keys = Object.keys(getObjectShape(schema));
+    const metaPositions = keys
+        .map((key) => {
+            const field = getObjectShape(schema)[key] as ZodType;
+            const details = getSchemaDetails(field);
+            return details.position === undefined ? undefined : { key, position: details.position };
+        })
+        .filter((value): value is { key: string; position: number } => value !== undefined);
+
     if (argPositions?.length) {
         return argPositions;
+    }
+    if (metaPositions.length > 0) {
+        if (metaPositions.length !== keys.length) {
+            throw new Error('All args must define meta.position when using metadata ordering.');
+        }
+        const uniquePositions = new Set(metaPositions.map((entry) => entry.position));
+        if (uniquePositions.size !== metaPositions.length) {
+            throw new Error('Arg meta.position values must be unique.');
+        }
+        return metaPositions.sort((a, b) => a.position - b.position).map((entry) => entry.key);
     }
     if (keys.length <= 1) {
         return keys;
     }
     throw new Error('argPositions is required when argsSchema has multiple keys.');
+};
+
+const normalizeAlias = (alias: string) => {
+    if (alias.startsWith('-')) {
+        return alias;
+    }
+    if (alias.length === 1) {
+        return `-${alias}`;
+    }
+    return `--${alias}`;
+};
+
+const buildOptionFlag = (key: string, aliases?: string[]) => {
+    const baseFlag = `--${toKebabCase(key)}`;
+    if (!aliases || aliases.length === 0) {
+        return baseFlag;
+    }
+    const flags = new Set([baseFlag, ...aliases.map(normalizeAlias)]);
+    return Array.from(flags).join(', ');
 };
 
 /**
@@ -122,7 +170,7 @@ export const registerCommandDefinition = (options: RegisterCommandDefinitionPara
     if (definition.optionsSchema) {
         for (const [key, field] of Object.entries(getObjectShape(definition.optionsSchema))) {
             const meta = getSchemaDetails(field as ZodType);
-            const flag = `--${toKebabCase(key)}`;
+            const flag = buildOptionFlag(key, meta.aliases);
             const isBoolean = meta.baseSchema instanceof z.ZodBoolean;
             const isNumber = meta.baseSchema instanceof z.ZodNumber;
             const isString = meta.baseSchema instanceof z.ZodString || meta.baseSchema instanceof z.ZodEnum;

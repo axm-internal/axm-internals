@@ -88,6 +88,45 @@ describe('registerCommandDefinition', () => {
         ).toThrow('argPositions is required when argsSchema has multiple keys.');
     });
 
+    it('orders args by meta.position and supports option aliases', async () => {
+        const program = new Command();
+        const container = new InMemoryContainer();
+        let received: unknown;
+
+        const argsSchema = z.object({
+            last: z.string().meta({ position: 2 }),
+            first: z.string().meta({ position: 1 }),
+        });
+        const optionsSchema = z.object({
+            verbose: z
+                .boolean()
+                .optional()
+                .meta({ aliases: ['v'] }),
+        });
+
+        registerCommandDefinition({
+            program,
+            container,
+            definition: {
+                name: 'order',
+                description: 'orders by metadata',
+                argsSchema,
+                optionsSchema,
+                action: async (ctx: unknown) => {
+                    received = ctx;
+                },
+            },
+        });
+
+        await program.parseAsync(['order', 'Ada', 'Lovelace', '-v'], { from: 'user' });
+
+        expect(received).toEqual({
+            args: { first: 'Ada', last: 'Lovelace' },
+            options: { verbose: true },
+            container,
+        });
+    });
+
     it('uses metadata descriptions and defaults for args and options', async () => {
         const program = new Command();
         const container = new InMemoryContainer();
