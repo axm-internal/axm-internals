@@ -46,3 +46,21 @@ export const CommandDefinitionSchemaFactory = (
  */
 /** @internal */
 export type CommandDefinition = z.infer<ReturnType<typeof CommandDefinitionSchemaFactory>>;
+
+/**
+ * Base schema for validating command definition shape.
+ *
+ * @remarks
+ * Validates structure without wrapping the action function.
+ * @internal
+ */
+export const CommandDefinitionSchema = z
+    .object({
+        name: z.string(),
+        description: z.string(),
+        argsSchema: ZodObjectSchema.optional(),
+        optionsSchema: ZodObjectSchema.optional(),
+        argPositions: z.array(z.string()).optional(),
+        action: z.instanceof(Function),
+    })
+    .transform((value) => value as CommandDefinition);

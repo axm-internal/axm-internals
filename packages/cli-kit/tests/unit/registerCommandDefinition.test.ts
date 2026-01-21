@@ -23,7 +23,7 @@ describe('registerCommandDefinition', () => {
                 }),
                 argPositions: ['first', 'last'],
                 optionsSchema: z.object({ debug: z.boolean().optional() }),
-                action: async (ctx) => {
+                action: async (ctx: unknown) => {
                     received = ctx;
                 },
             },
@@ -52,7 +52,7 @@ describe('registerCommandDefinition', () => {
                 argsSchema: z.object({
                     message: z.string(),
                 }),
-                action: async (ctx) => {
+                action: async (ctx: unknown) => {
                     received = ctx;
                 },
             },
@@ -113,7 +113,7 @@ describe('registerCommandDefinition', () => {
                 description: 'says hello',
                 argsSchema,
                 optionsSchema,
-                action: async (ctx) => {
+                action: async (ctx: unknown) => {
                     received = ctx;
                 },
             },
@@ -152,7 +152,7 @@ describe('registerCommandDefinition', () => {
                 description: 'repeats a greeting',
                 argsSchema,
                 optionsSchema,
-                action: async (ctx) => {
+                action: async (ctx: unknown) => {
                     received = ctx;
                 },
             },
