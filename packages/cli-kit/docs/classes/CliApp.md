@@ -119,7 +119,7 @@ Defined in: [CliApp.ts:26](https://github.com/axm-internal/axm-internals/blob/ma
 
 #### argsSchema?
 
-> `optional` **argsSchema**: `ZodObject`\<`Readonly`\<\{\[`k`: `string`\]: `$ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>; \}\>, `$strip`\>
+> `optional` **argsSchema**: `ZodObject`\<`$ZodLooseShape`, `$strip`\>
 
 #### description
 
@@ -131,7 +131,7 @@ Defined in: [CliApp.ts:26](https://github.com/axm-internal/axm-internals/blob/ma
 
 #### optionsSchema?
 
-> `optional` **optionsSchema**: `ZodObject`\<`Readonly`\<\{\[`k`: `string`\]: `$ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>; \}\>, `$strip`\>
+> `optional` **optionsSchema**: `ZodObject`\<`$ZodLooseShape`, `$strip`\>
 
 ***
 
@@ -259,7 +259,7 @@ The command to add.
 
 ###### argsSchema?
 
-`ZodObject`\<`Readonly`\<\{\[`k`: `string`\]: `$ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>; \}\>, `$strip`\> = `...`
+`ZodObject`\<`$ZodLooseShape`, `$strip`\> = `...`
 
 ###### description
 
@@ -271,7 +271,7 @@ The command to add.
 
 ###### optionsSchema?
 
-`ZodObject`\<`Readonly`\<\{\[`k`: `string`\]: `$ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>; \}\>, `$strip`\> = `...`
+`ZodObject`\<`$ZodLooseShape`, `$strip`\> = `...`
 
 #### Returns
 
@@ -428,7 +428,7 @@ Defined in: [CliApp.ts:145](https://github.com/axm-internal/axm-internals/blob/m
 
 ###### argsSchema?
 
-`ZodObject`\<`Readonly`\<\{\[`k`: `string`\]: `$ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>; \}\>, `$strip`\> = `...`
+`ZodObject`\<`$ZodLooseShape`, `$strip`\> = `...`
 
 ###### description
 
@@ -440,7 +440,7 @@ Defined in: [CliApp.ts:145](https://github.com/axm-internal/axm-internals/blob/m
 
 ###### optionsSchema?
 
-`ZodObject`\<`Readonly`\<\{\[`k`: `string`\]: `$ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>; \}\>, `$strip`\> = `...`
+`ZodObject`\<`$ZodLooseShape`, `$strip`\> = `...`
 
 #### Returns
 

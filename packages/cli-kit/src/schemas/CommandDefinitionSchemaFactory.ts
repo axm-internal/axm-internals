@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { CommandActionSchemaFactory } from './CommandActionSchemaFactory';
 
-const ZodObjectSchema = z.custom<z.ZodObject<z.ZodRawShape>>((value) => value instanceof z.ZodObject);
+const ZodObjectSchema = z.instanceof(z.ZodObject, { error: 'Expected a Zod object schema.' });
 
 /**
  * Build a Zod schema for a command definition.
@@ -46,3 +46,21 @@ export const CommandDefinitionSchemaFactory = (
  */
 /** @internal */
 export type CommandDefinition = z.infer<ReturnType<typeof CommandDefinitionSchemaFactory>>;
+
+/**
+ * Base schema for validating command definition shape.
+ *
+ * @remarks
+ * Validates structure without wrapping the action function.
+ * @internal
+ */
+export const CommandDefinitionSchema = z
+    .object({
+        name: z.string(),
+        description: z.string(),
+        argsSchema: ZodObjectSchema.optional(),
+        optionsSchema: ZodObjectSchema.optional(),
+        argPositions: z.array(z.string()).optional(),
+        action: z.instanceof(Function),
+    })
+    .transform((value) => value as CommandDefinition);

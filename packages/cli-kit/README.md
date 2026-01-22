@@ -42,11 +42,13 @@ const helloCommand = createCommandDefinition({
   name: 'hello',
   description: 'says hello',
   argsSchema: z.object({
-    name: z.string().describe('person to greet').default('World'),
+    name: z
+      .string()
+      .meta({ description: 'person to greet', position: 1 })
+      .default('World'),
   }),
-  argPositions: ['name'], // optional when there is only one argument
   optionsSchema: z.object({
-    debug: z.boolean().describe('enable debug').optional(),
+    debug: z.boolean().meta({ description: 'enable debug', aliases: ['d'] }).optional(),
   }),
   action: async ({ args, options, container }) => {
     const { name } = args;
@@ -73,7 +75,8 @@ process.exit(exitCode);
 
 - Thin wrapper around Commander with typed command definitions.
 - Zod schemas validate arguments and options before action runs.
-- Argument order is defined via `argPositions` alongside `argsSchema`.
+- Argument order can be defined via `meta.position` (or `argPositions`) alongside `argsSchema`.
+- Option aliases can be defined via `meta.aliases`.
 - Optional lightweight container for dependency resolution.
 - Hooks (`onError`, `onExit`) and `getLastError()` for test-friendly flows.
 
@@ -83,6 +86,10 @@ process.exit(exitCode);
 - Entry point: `src/index.ts`.
 - Positional arguments are strings by default; use `z.coerce.*` when you need numeric or boolean args.
 - Avoid Zod function defaults for CLI arguments/options; Commander treats functions as parsers.
+
+## Breaking Changes
+
+- Defaults are no longer inferred from `schema.default(...)` unless you also provide `meta({ defaultValue })`. Use `schema.meta({ defaultValue })` to keep Commander defaults and help text in sync.
 
 ## Docs
 

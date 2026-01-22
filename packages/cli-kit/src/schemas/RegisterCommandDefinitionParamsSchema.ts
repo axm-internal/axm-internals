@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { z } from 'zod';
 import { ContainerSchema } from '../interfaces/ContainerInterface';
-import type { CommandDefinition } from './CommandDefinitionSchemaFactory';
+import { CommandDefinitionSchema } from './CommandDefinitionSchemaFactory';
 
 /**
  * Zod schema for command registration parameters.
@@ -19,7 +19,7 @@ import type { CommandDefinition } from './CommandDefinitionSchemaFactory';
  */
 export const RegisterCommandDefinitionParamsSchema = z.object({
     program: z.instanceof(Command),
-    definition: z.custom<CommandDefinition>(),
+    definition: CommandDefinitionSchema,
     container: ContainerSchema,
 });
 

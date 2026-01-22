@@ -23,7 +23,8 @@ export type InjectionToken<T = unknown> = (new (...args: unknown[]) => T) | stri
  * ```
  */
 export const InjectionTokenSchema: z.ZodType<InjectionToken> = z.custom<InjectionToken>(
-    (value) => typeof value === 'string' || typeof value === 'symbol' || typeof value === 'function'
+    (value) => typeof value === 'string' || typeof value === 'symbol' || typeof value === 'function',
+    { error: 'Injection token must be a string, symbol, or constructor.' }
 );
 
 /**
@@ -82,5 +83,6 @@ export const ContainerSchema: z.ZodType<ContainerInterface> = z.custom<Container
         typeof value === 'object' &&
         value !== null &&
         typeof (value as ContainerInterface).resolve === 'function' &&
-        typeof (value as ContainerInterface).registerInstance === 'function'
+        typeof (value as ContainerInterface).registerInstance === 'function',
+    { error: 'Container must implement resolve() and registerInstance().' }
 );

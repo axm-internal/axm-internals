@@ -1,7 +1,7 @@
 import { PinoInstanceSchema } from '@axm-internal/zod-helpers';
 import { z } from 'zod';
 import { ContainerSchema, InjectionTokenSchema } from '../interfaces/ContainerInterface';
-import type { CommandDefinition } from './CommandDefinitionSchemaFactory';
+import { CommandDefinitionSchema } from './CommandDefinitionSchemaFactory';
 
 /**
  * Zod schema for base CLI configuration.
@@ -34,7 +34,7 @@ export const CliConfigSchema = z.object({
 export const CliOptionsSchema = z.object({
     pretty: z.boolean().default(true),
     container: ContainerSchema.optional(),
-    commandDefinitions: z.array(z.custom<CommandDefinition>()).optional(),
+    commandDefinitions: z.array(CommandDefinitionSchema).optional(),
     logger: PinoInstanceSchema.optional(),
     loggerAliases: z.array(InjectionTokenSchema).optional(),
     onError: z
