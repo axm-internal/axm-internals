@@ -31,6 +31,7 @@ export const findCommitsByPath = async (db: DbClient, pathPrefix: string): Promi
             'commits.scope',
             'commits.is_breaking_change',
         ])
+        .distinct()
         .where('commit_files.path', 'like', `${pathPrefix}%`)
         .orderBy('commits.date', 'desc')
         .execute();

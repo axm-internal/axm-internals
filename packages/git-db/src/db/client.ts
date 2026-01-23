@@ -2,7 +2,7 @@ import type { Kysely } from 'kysely';
 import { createBunDb } from './database-bun';
 import { createBunWorkerDb } from './database-bun-worker';
 import { createNodeDb } from './database-node';
-import { getMeta, setMeta } from './meta';
+import { deleteMeta, getMeta, setMeta } from './meta';
 import { migrate } from './migrations';
 import type { Database } from './types';
 
@@ -57,9 +57,17 @@ export const getIndexState = async (db: DbClient): Promise<RepoIndexState> => {
 };
 
 export const setIndexState = async (db: DbClient, next: RepoIndexState): Promise<void> => {
+    const writeMeta = async (key: string, value: string | null): Promise<void> => {
+        if (value === null) {
+            await deleteMeta(db, key);
+            return;
+        }
+        await setMeta(db, key, value);
+    };
+
     await Promise.all([
-        setMeta(db, META_LAST_HASH, next.lastIndexedHash ?? ''),
-        setMeta(db, META_LAST_DATE, next.lastIndexedDate ?? ''),
+        writeMeta(META_LAST_HASH, next.lastIndexedHash),
+        writeMeta(META_LAST_DATE, next.lastIndexedDate),
         setMeta(db, META_SCHEMA_VERSION, String(next.schemaVersion)),
     ]);
 };

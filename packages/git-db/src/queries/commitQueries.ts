@@ -1,5 +1,9 @@
+import { sql } from 'kysely';
 import type { DbClient } from '../db/client';
 import type { Commit } from '../db/types';
+
+const escapeLikePattern = (value: string): string =>
+    value.replaceAll('\\', '\\\\').replaceAll('%', '\\%').replaceAll('_', '\\_');
 
 export const listCommits = async (db: DbClient, opts: { limit?: number; offset?: number } = {}): Promise<Commit[]> => {
     const { limit, offset } = opts;
@@ -14,10 +18,11 @@ export const listCommits = async (db: DbClient, opts: { limit?: number; offset?:
 };
 
 export const findCommitsByMessage = async (db: DbClient, query: string): Promise<Commit[]> => {
+    const pattern = `%${escapeLikePattern(query)}%`;
     return db
         .selectFrom('commits')
         .selectAll()
-        .where('message', 'like', `%${query}%`)
+        .where(sql<boolean>`message like ${pattern} escape '\\'`)
         .orderBy('date', 'desc')
         .execute();
 };

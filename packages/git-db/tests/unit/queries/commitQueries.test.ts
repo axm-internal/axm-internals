@@ -57,11 +57,23 @@ describe('commit queries', () => {
                         scope: null,
                         is_breaking_change: false,
                     },
+                    {
+                        hash: 'd4',
+                        author_id: 'alice@example.com',
+                        date: '2026-01-04T00:00:00.000Z',
+                        message: 'feat: 100% coverage',
+                        body: '',
+                        refs: null,
+                        type: 'feat',
+                        scope: null,
+                        is_breaking_change: false,
+                    },
                 ],
                 files: [
                     { hash: 'a1', path: 'packages/git-db/src/index.ts', status: 'A' },
                     { hash: 'b2', path: 'packages/git-db/src/db/client.ts', status: 'M' },
                     { hash: 'c3', path: 'packages/git-db/src/db/schema.ts', status: 'M' },
+                    { hash: 'd4', path: 'packages/git-db/src/db/schema.ts', status: 'M' },
                 ],
             });
 
@@ -70,7 +82,7 @@ describe('commit queries', () => {
             expect(byMessage[0]?.hash).toBe('b2');
 
             const byAuthor = await findCommitsByAuthorEmail(db, 'alice@example.com');
-            expect(byAuthor.length).toBe(2);
+            expect(byAuthor.length).toBe(3);
 
             const byType = await findCommitsByType(db, 'fix');
             expect(byType.length).toBe(1);
@@ -79,6 +91,10 @@ describe('commit queries', () => {
             const byScope = await findCommitsByScope(db, 'core');
             expect(byScope.length).toBe(1);
             expect(byScope[0]?.hash).toBe('b2');
+
+            const byLiteralPercent = await findCommitsByMessage(db, '100%');
+            expect(byLiteralPercent.length).toBe(1);
+            expect(byLiteralPercent[0]?.hash).toBe('d4');
 
             const between = await findCommitsBetween(db, 'a1', 'b2');
             expect(between.length).toBe(2);

@@ -74,3 +74,5 @@ When `--json` is omitted, results are rendered as tables using `cli-table3`.
 - Entry point: `src/index.ts`.
 - Parent directories for the DB path are created automatically.
 - Indexing APIs are currently internal; the public surface focuses on opening the DB and querying indexed data.
+- Message searches escape `%` and `_` by default, so literal matches are returned (wildcards are not supported in search input).
+- `commit_files` uses a composite primary key on `(hash, path)` to prevent duplicate entries.

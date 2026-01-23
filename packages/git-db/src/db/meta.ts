@@ -13,3 +13,7 @@ export const setMeta = async (db: Kysely<Database>, key: string, value: string):
         .onConflict((conflict) => conflict.column('key').doUpdateSet({ value }))
         .execute();
 };
+
+export const deleteMeta = async (db: Kysely<Database>, key: string): Promise<void> => {
+    await db.deleteFrom('meta').where('key', '=', key).execute();
+};

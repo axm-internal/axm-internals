@@ -30,6 +30,7 @@ export const createSchema = async (db: Kysely<Database>): Promise<void> => {
         .addColumn('hash', 'text', (col) => col.notNull().references('commits.hash').onDelete('cascade'))
         .addColumn('path', 'text', (col) => col.notNull())
         .addColumn('status', 'text', (col) => col.notNull())
+        .addPrimaryKeyConstraint('commit_files_pk', ['hash', 'path'])
         .execute();
 
     await db.schema.createIndex('authors_email_idx').ifNotExists().on('authors').column('email').execute();

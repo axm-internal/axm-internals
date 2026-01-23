@@ -78,6 +78,7 @@ Tables:
   - `hash` (foreign key to commits.hash)
   - `path`
   - `status` (A/M/D/R)
+  - composite primary key `(hash, path)`
 - `meta`
   - `key`
   - `value`
@@ -275,3 +276,4 @@ export const findAuthors: (db: DbClient, query: string) => Author[];
 
 Default DB location: `.git-db/database.sqlite` with optional override path.
 - Parent directories for the DB path are created automatically.
+- Message search escapes `%` and `_` so user input is treated as literal text (wildcards not supported).
