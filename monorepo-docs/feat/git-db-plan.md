@@ -194,7 +194,7 @@ export const findAuthors: (db: DbClient, query: string) => Author[];
    - Goal: Read commit metadata and file changes from git using `execa`.
    - Files:
      - `packages/git-db/src/git/log.ts`
-     - `packages/git-db/src/git/diff.ts`
+     - `packages/git-db/src/git/files.ts`
      - `packages/git-db/src/types/commit.ts`
      - `packages/git-db/src/index.ts` (export readers)
    - Notes:
@@ -203,7 +203,7 @@ export const findAuthors: (db: DbClient, query: string) => Author[];
      - Use `git log` and `git show --name-status` via `execa`.
    - Tests:
      - `packages/git-db/tests/unit/git/log.test.ts`
-     - `packages/git-db/tests/unit/git/diff.test.ts`
+     - `packages/git-db/tests/unit/git/files.test.ts`
    - Commit message: `feat(git-db): added git readers for commits and files`
 
 4) **Indexer**

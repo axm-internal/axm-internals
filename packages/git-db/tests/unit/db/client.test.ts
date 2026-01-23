@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { openBunDb } from '../../../src/db/client';
+import { openBunDb } from '../../../src';
 
 describe('db client', () => {
     it('opens a db and ensures schema', async () => {

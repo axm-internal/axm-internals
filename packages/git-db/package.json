@@ -17,6 +17,7 @@
         "validate": "echo \"Validated\""
     },
     "dependencies": {
+        "execa": "^9.6.1",
         "kysely": "^0.28.10"
     },
     "devDependencies": {
