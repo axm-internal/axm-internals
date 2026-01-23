@@ -32,6 +32,10 @@ jobs:
             path: apps/repo-cli/coverage/lcov.info
             junit: apps/repo-cli/junit.xml
             dir: apps/repo-cli
+          - target: git-db
+            path: packages/git-db/coverage/lcov.info
+            junit: packages/git-db/junit.xml
+            dir: packages/git-db
 
     steps:
       - uses: actions/checkout@v6

@@ -1,0 +1,25 @@
+# @axm-internal/git-db
+
+Version: 0.1.0
+
+Purpose:
+- SQLite-backed index of git commits and file changes for fast queries, optimized for conventional commit messaging.
+
+Public surface:
+- Database openers: `openNodeDb`, `openBunDb`, `openBunWorkerDb`.
+- Commit queries: `findCommitsBetween`, `findCommitsByAuthorEmail`, `findCommitsByMessage`, `findCommitsByScope`, `findCommitsByType`, `findCommitsByPackage`.
+- File and metadata queries: `findCommitsByPath`, `findAuthors`, `listCommits`, `listFiles`, `listAuthors`, `listMeta`.
+- Types: `DbClient`, `RepoIndexState`, `Author`, `Commit`, `CommitFile`, `MetaEntry`.
+
+Intended usage:
+- Open an existing `.sqlite` git-db file in Node or Bun, then query commits, files, authors, or meta.
+- Use scope/type queries when commit messages follow conventional commits.
+- Use the `git-db` CLI for init/update/query workflows.
+
+Non-goals:
+- Programmatic indexing APIs for building the database (kept internal).
+- Non-SQLite storage backends.
+- Writing or modifying git history.
+
+Stability expectations:
+- Pre-1.0 (`0.x`) package; expect API changes across releases.
