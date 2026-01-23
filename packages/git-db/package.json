@@ -8,6 +8,7 @@
         "registry": "https://npm.pkg.github.com"
     },
     "scripts": {
+        "cli": "bun run src/cli/index.ts",
         "test": "bun test",
         "test:coverage": "bun test --coverage --coverage-reporter=lcov",
         "lint": "biome check .",
@@ -20,6 +21,7 @@
         "@axm-internal/cli-kit": "*",
         "execa": "^9.6.1",
         "kysely": "^0.28.10",
+        "pino": "^10.2.1",
         "zod": "^4.3.5"
     },
     "devDependencies": {
