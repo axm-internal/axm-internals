@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "type": "module",
     "main": "src/index.ts",
-    "description": "Git commit history cached in SQLite for fast queries",
+    "description": "SQLite-backed git commit cache optimized for conventional commit messaging",
     "publishConfig": {
         "registry": "https://npm.pkg.github.com"
     },

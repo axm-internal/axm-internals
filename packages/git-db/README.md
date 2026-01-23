@@ -1,6 +1,6 @@
 # @axm-internal/git-db
 
-SQLite-backed index of git commits and file changes for fast queries.
+SQLite-backed index of git commits and file changes for fast queries, optimized for conventional commit messaging.
 
 ## Install
 
