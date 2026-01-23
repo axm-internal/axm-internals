@@ -9,7 +9,9 @@ import {
     listCommits,
 } from '../../queries/commitQueries';
 import { findCommitsByPath, listFiles } from '../../queries/fileQueries';
+import { listMeta } from '../../queries/metaQueries';
 import { findCommitsByPackage } from '../../queries/packageQueries';
+import { renderAuthors, renderCommits, renderFiles, renderJson, renderMeta } from '../../utils/dataRenderer';
 import { DBPathSchema } from '../schemas';
 
 export const queryCommand = createCommandDefinition({
@@ -27,8 +29,10 @@ export const queryCommand = createCommandDefinition({
             listCommits: z.boolean().meta({ description: 'List commits.' }).default(false),
             listFiles: z.boolean().meta({ description: 'List files.' }).default(false),
             listAuthors: z.boolean().meta({ description: 'List authors.' }).default(false),
+            listMeta: z.boolean().meta({ description: 'List meta entries.' }).default(false),
             limit: z.number().int().meta({ description: 'Limit results.' }).optional(),
             offset: z.number().int().meta({ description: 'Offset results.' }).optional(),
+            json: z.boolean().meta({ description: 'Output raw JSON.' }).default(false),
         })
         .refine(() => true),
     action: async ({ options }) => {
@@ -43,42 +47,49 @@ export const queryCommand = createCommandDefinition({
                     options.between ||
                     options.listCommits ||
                     options.listFiles ||
-                    options.listAuthors
+                    options.listAuthors ||
+                    options.listMeta
             );
 
             if (!hasFilters) {
                 const commits = await listCommits(db, { limit: options.limit, offset: options.offset });
-                console.log(JSON.stringify(commits, null, 2));
+                const data = options.json ? renderJson(commits) : renderCommits(commits);
+                console.log(data);
                 return;
             }
 
             if (options.message) {
                 const commits = await findCommitsByMessage(db, options.message);
-                console.log(JSON.stringify(commits, null, 2));
+                const data = options.json ? renderJson(commits) : renderCommits(commits);
+                console.log(data);
                 return;
             }
 
             if (options.authorSearch) {
                 const authors = await findAuthors(db, options.authorSearch);
-                console.log(JSON.stringify(authors, null, 2));
+                const data = options.json ? renderJson(authors) : renderAuthors(authors);
+                console.log(data);
                 return;
             }
 
             if (options.path) {
                 const commits = await findCommitsByPath(db, options.path);
-                console.log(JSON.stringify(commits, null, 2));
+                const data = options.json ? renderJson(commits) : renderCommits(commits);
+                console.log(data);
                 return;
             }
 
             if (options.package) {
                 const commits = await findCommitsByPackage(db, options.package);
-                console.log(JSON.stringify(commits, null, 2));
+                const data = options.json ? renderJson(commits) : renderCommits(commits);
+                console.log(data);
                 return;
             }
 
             if (options.author) {
                 const commits = await findCommitsByAuthorEmail(db, options.author);
-                console.log(JSON.stringify(commits, null, 2));
+                const data = options.json ? renderJson(commits) : renderCommits(commits);
+                console.log(data);
                 return;
             }
 
@@ -88,25 +99,36 @@ export const queryCommand = createCommandDefinition({
                     throw new Error('between must be in the form <hash>..<hash>');
                 }
                 const commits = await findCommitsBetween(db, fromHash, toHash);
-                console.log(JSON.stringify(commits, null, 2));
+                const data = options.json ? renderJson(commits) : renderCommits(commits);
+                console.log(data);
                 return;
             }
 
             if (options.listCommits) {
                 const commits = await listCommits(db, { limit: options.limit, offset: options.offset });
-                console.log(JSON.stringify(commits, null, 2));
+                const data = options.json ? renderJson(commits) : renderCommits(commits);
+                console.log(data);
                 return;
             }
 
             if (options.listFiles) {
                 const files = await listFiles(db, { limit: options.limit, offset: options.offset });
-                console.log(JSON.stringify(files, null, 2));
+                const data = options.json ? renderJson(files) : renderFiles(files);
+                console.log(data);
                 return;
             }
 
             if (options.listAuthors) {
                 const authors = await listAuthors(db, { limit: options.limit, offset: options.offset });
-                console.log(JSON.stringify(authors, null, 2));
+                const data = options.json ? renderJson(authors) : renderAuthors(authors);
+                console.log(data);
+                return;
+            }
+
+            if (options.listMeta) {
+                const entries = await listMeta(db);
+                const data = options.json ? renderJson(entries) : renderMeta(entries);
+                console.log(data);
                 return;
             }
         } finally {

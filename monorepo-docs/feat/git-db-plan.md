@@ -222,13 +222,21 @@ export const findAuthors: (db: DbClient, query: string) => Author[];
    - Goal: Provide stable query helpers for messages, paths, ranges, and authors.
    - Files:
      - `packages/git-db/src/queries/commitQueries.ts`
+     - `packages/git-db/src/queries/authorQueries.ts`
      - `packages/git-db/src/queries/fileQueries.ts`
      - `packages/git-db/src/queries/packageQueries.ts`
+     - `packages/git-db/src/queries/metaQueries.ts`
+     - `packages/git-db/src/utils/dataRenderer.ts`
+     - `packages/git-db/src/utils/truncateString.ts`
      - `packages/git-db/src/index.ts` (export queries)
    - Tests:
      - `packages/git-db/tests/unit/queries/commitQueries.test.ts`
+     - `packages/git-db/tests/unit/queries/authorQueries.test.ts`
      - `packages/git-db/tests/unit/queries/fileQueries.test.ts`
      - `packages/git-db/tests/unit/queries/packageQueries.test.ts`
+     - `packages/git-db/tests/unit/queries/metaQueries.test.ts`
+     - `packages/git-db/tests/unit/utils/dataRenderer.test.ts`
+     - `packages/git-db/tests/unit/utils/truncateString.test.ts`
    - Commit message: `feat(git-db): added query helpers for commits and files`
 
 6) **Integration test**

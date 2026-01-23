@@ -57,7 +57,11 @@ git-db query --db .git-db/database.sqlite --author-search alice
 git-db query --db .git-db/database.sqlite --list-commits --limit 25
 git-db query --db .git-db/database.sqlite --list-files --limit 50
 git-db query --db .git-db/database.sqlite --list-authors
+git-db query --db .git-db/database.sqlite --list-meta
+git-db query --db .git-db/database.sqlite --list-commits --json
 ```
+
+When `--json` is omitted, results are rendered as tables using `cli-table3`.
 
 ## Notes
 

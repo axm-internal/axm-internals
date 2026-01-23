@@ -9,4 +9,5 @@ export {
     listCommits,
 } from './queries/commitQueries';
 export { findCommitsByPath, listFiles } from './queries/fileQueries';
+export { listMeta } from './queries/metaQueries';
 export { findCommitsByPackage } from './queries/packageQueries';
