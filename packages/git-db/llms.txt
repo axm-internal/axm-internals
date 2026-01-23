@@ -3,16 +3,20 @@
 Version: 0.1.0
 
 Purpose:
-- Git commit history cached in SQLite for fast queries
+- SQLite-backed index of git commits and file changes for fast queries.
 
 Public surface:
-- export(s) from `src/index.ts`
+- `openNodeDb`, `openBunDb`, `openBunWorkerDb`
+- `findCommitsByMessage`, `findCommitsBetween`, `findCommitsByAuthorEmail`
+- `findCommitsByPath`, `findCommitsByPackage`, `findAuthors`
+- Types: `DbClient`, `RepoIndexState`, `Author`, `Commit`, `CommitFile`, `MetaEntry`
 
 Intended usage:
-- Internal @axm-internal consumers
+- Internal tooling that needs fast commit/path queries over a cached git index.
 
 Non-goals:
-- External/public API stability
+- Running git commands on every query.
+- Replacing git history or release tooling.
 
 Stability expectations:
-- Semver within axm-internals
+- Early-stage API; expect changes before 1.0.

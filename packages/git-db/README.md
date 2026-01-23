@@ -1,8 +1,14 @@
 # @axm-internal/git-db
 
-SQLite-backed index of git commits and file changes.
+SQLite-backed index of git commits and file changes for fast queries.
 
-## Usage
+## Install
+
+```bash
+bun add @axm-internal/git-db
+```
+
+## Runtime setup
 
 ### Node
 
@@ -28,23 +34,17 @@ import { openBunWorkerDb } from '@axm-internal/git-db';
 const db = await openBunWorkerDb('.git/git-db.sqlite');
 ```
 
-Git commit history cached in SQLite for fast queries
-
-## Install
-
-```bash
-bun add @axm-internal/git-db
-```
-
-## Usage
+## Query usage
 
 ```ts
-import { example } from "@axm-internal/git-db";
+import { findCommitsByMessage, openNodeDb } from '@axm-internal/git-db';
 
-example();
+const db = await openNodeDb('.git/git-db.sqlite');
+const commits = await findCommitsByMessage(db, 'feat');
 ```
 
 ## Notes
 
 - Source-first, buildless package (Bun).
 - Entry point: `src/index.ts`.
+- Indexing APIs are currently internal; the public surface focuses on opening the DB and querying indexed data.
