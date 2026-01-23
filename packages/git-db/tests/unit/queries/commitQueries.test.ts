@@ -2,11 +2,12 @@ import { describe, expect, it } from 'bun:test';
 import { createBunDb } from '../../../src/db/database-bun';
 import { migrate } from '../../../src/db/migrations';
 import { indexCommitBatch } from '../../../src/indexer/commitIndexer';
+import { findAuthors, listAuthors } from '../../../src/queries/authorQueries';
 import {
-    findAuthors,
     findCommitsBetween,
     findCommitsByAuthorEmail,
     findCommitsByMessage,
+    listCommits,
 } from '../../../src/queries/commitQueries';
 
 describe('commit queries', () => {
@@ -66,6 +67,12 @@ describe('commit queries', () => {
             const authors = await findAuthors(db, 'alice');
             expect(authors.length).toBe(1);
             expect(authors[0]?.email).toBe('alice@example.com');
+
+            const listedCommits = await listCommits(db, { limit: 2 });
+            expect(listedCommits.length).toBe(2);
+
+            const listedAuthors = await listAuthors(db, { limit: 1 });
+            expect(listedAuthors.length).toBe(1);
         } finally {
             await db.destroy();
         }

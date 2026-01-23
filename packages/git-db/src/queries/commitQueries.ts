@@ -1,5 +1,17 @@
 import type { DbClient } from '../db/client';
-import type { Author, Commit } from '../db/types';
+import type { Commit } from '../db/types';
+
+export const listCommits = async (db: DbClient, opts: { limit?: number; offset?: number } = {}): Promise<Commit[]> => {
+    const { limit, offset } = opts;
+    let query = db.selectFrom('commits').selectAll().orderBy('date', 'desc');
+    if (typeof limit === 'number') {
+        query = query.limit(limit);
+    }
+    if (typeof offset === 'number') {
+        query = query.offset(offset);
+    }
+    return query.execute();
+};
 
 export const findCommitsByMessage = async (db: DbClient, query: string): Promise<Commit[]> => {
     return db
@@ -45,14 +57,5 @@ export const findCommitsByAuthorEmail = async (db: DbClient, email: string): Pro
         ])
         .where('authors.email', '=', email)
         .orderBy('commits.date', 'desc')
-        .execute();
-};
-
-export const findAuthors = async (db: DbClient, query: string): Promise<Author[]> => {
-    return db
-        .selectFrom('authors')
-        .selectAll()
-        .where((eb) => eb.or([eb('authors.name', 'like', `%${query}%`), eb('authors.email', 'like', `%${query}%`)]))
-        .orderBy('authors.email', 'asc')
         .execute();
 };

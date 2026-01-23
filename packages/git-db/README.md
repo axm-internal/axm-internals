@@ -53,6 +53,10 @@ Conventional commits note:
 git-db init --db .git-db/database.sqlite
 git-db update --db .git-db/database.sqlite
 git-db query --db .git-db/database.sqlite --message feat
+git-db query --db .git-db/database.sqlite --author-search alice
+git-db query --db .git-db/database.sqlite --list-commits --limit 25
+git-db query --db .git-db/database.sqlite --list-files --limit 50
+git-db query --db .git-db/database.sqlite --list-authors
 ```
 
 ## Notes

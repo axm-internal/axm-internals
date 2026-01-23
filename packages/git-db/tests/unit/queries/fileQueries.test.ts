@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import { createBunDb } from '../../../src/db/database-bun';
 import { migrate } from '../../../src/db/migrations';
 import { indexCommitBatch } from '../../../src/indexer/commitIndexer';
-import { findCommitsByPath } from '../../../src/queries/fileQueries';
+import { findCommitsByPath, listFiles } from '../../../src/queries/fileQueries';
 
 describe('file queries', () => {
     it('finds commits by file path prefix', async () => {
@@ -39,6 +39,9 @@ describe('file queries', () => {
             const commits = await findCommitsByPath(db, 'packages/git-db/');
             expect(commits.length).toBe(1);
             expect(commits[0]?.hash).toBe('a1');
+
+            const files = await listFiles(db, { limit: 5 });
+            expect(files.length).toBe(2);
         } finally {
             await db.destroy();
         }
