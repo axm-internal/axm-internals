@@ -1,6 +1,8 @@
 export type { DbClient, RepoIndexState } from './db/client';
 export { openBunDb, openBunWorkerDb, openNodeDb } from './db/client';
 export type { Author, Commit, CommitFile, MetaEntry } from './db/types';
+export { scanCommits } from './indexer/commitScanner';
+export type { CommitScanResult } from './indexer/types';
 export { findAuthors, listAuthors } from './queries/authorQueries';
 export {
     findCommitsBetween,
