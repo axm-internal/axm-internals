@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@axm-internal/cli-kit": "*",
+        "@axm-internal/git-db": "*",
         "eta": "^3.5.0",
         "execa": "^9.6.1",
         "zod": "^4.3.5"

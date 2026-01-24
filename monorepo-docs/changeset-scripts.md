@@ -23,108 +23,84 @@ This document defines the work needed to make Changesets support manual, per-pac
 - Changelogs for all packages, including non-publishable packages.
 - Ability to switch to automated releases later without re-architecting.
 - Tag format stays as-is (e.g., `@axm-internal/cli-kit@0.1.0`).
-- One release PR per package (when we later automate).
+- One release PR for all changelog/changeset updates (multi-package release in one PR).
 
 ## Proposed Script Set (apps/repo-cli)
 
-These scripts are intended to be implemented in `apps/repo-cli`. Names are suggestions and can be adjusted.
+These scripts are intended to be implemented in `apps/repo-cli`. Names are suggestions and can be adjusted. The core change from the previous plan is that we will use `@axm-internal/git-db` as the source of truth for commit history, file ownership, and conventional-commit parsing.
 
-### 1) `changeset:status`
+## Changeset Script Goals
+
+- Generate initial per-package and root changelogs for packages that were auto-released without changesets.
+- Generate changesets based on commits between the last tag and the most recent commit for a given scope.
+- Provide deterministic, package-scoped release inputs (hashes, tags, commit lists) to keep manual release control.
+- Keep the door open for future automation without changing the data model.
+- Ensure changeset generation is package-scoped and never requires remembering old branches or manual diffing.
+- Make missing changesets detectable and explainable by identifying commits since last tag with no changeset.
+- Support manual release batching (multiple commits -> one changeset) without forcing one-PR/one-release.
+- Keep changelog accuracy even if changesets were skipped historically (backfill from git history).
+- Provide transparent release input data (explicit commit lists and boundaries for auditing).
+- Preserve tag naming format (`@axm-internal/<name>@x.y.z`).
+- Support a single release PR that aggregates changelog/changeset updates across packages.
+
+### 1) `gitdb:index`
 
 Purpose:
-- Summarize pending changesets and which packages will be released.
+- Initialize or update the git-db SQLite index for the repo (init if missing).
 
 Inputs:
-- Optional package filter (single package).
+- Optional `--full` to force a full re-index.
+- Optional `--include-merges` flag.
 
 Output:
-- List of packages with pending changesets and highest bump.
-- Whether any unpublished packages would be published by the current workflow.
+- Indexed commits, files, authors, and metadata stored in git-db.
 
 Notes:
-- This is informational only.
+- This is the foundational step for all commit-driven scripts.
 
-### 2) `changeset:scaffold`
+### 2) `gitdb:package:refs`
 
 Purpose:
-- Create a new changeset for a specific package with a guided prompt.
+- Given a package, return:
+  - The hash of the first commit touching that package.
+  - The hashes for each release tag for that package.
 
 Inputs:
 - Package name (required).
-- Bump type (patch/minor/major).
-- Summary text.
 
 Output:
-- A single `.changeset/*.md` file.
+- First commit hash.
+- List of release tags and their commit hashes.
 
 Notes:
-- This replaces manual `bunx changeset` when focused on a single package.
+- Package release tags follow `@axm-internal/<name>@x.y.z`.
 
-### 3) `changeset:from-commits:package`
+### 3) `gitdb:package:commits`
 
 Purpose:
-- Generate a single changeset for a specific package by scanning commits from the last package tag to `HEAD`.
+- Given a package and two hashes, list all commits for that package between those hashes.
 
 Inputs:
 - Package name (required).
-- Optional production branch (default `main`).
-- Optional commit range override.
-- Optional conventional commit scope mapping.
+- `--from` hash (required).
+- `--to` hash (required).
 
 Output:
-- One `.changeset/*.md` for that package.
-
-Rules:
-- Commit selection is based on:
-  - Files under `packages/<name>/`, and/or
-  - Conventional commit scope matching the package name.
-- Bump is determined by:
-  - `feat` -> minor
-  - `fix` -> patch
-  - `!` or `BREAKING CHANGE` -> major
-- Summary concatenates or groups commit messages.
+- Ordered list of commits (hash, date, subject, author).
 
 Notes:
-- Only for a single package; not intended for global changeset generation.
+- The commits are filtered by files under `packages/<name>/` and/or conventional-commit scope.
 
-### 4) `changeset:validate`
+### 4) `gitdb:releases`
 
 Purpose:
-- Ensure changesets match repository expectations before release.
+- List all released packages with their tags.
 
-Checks:
-- Every changeset references valid package names.
-- Each package has at most one pending changeset (if we want to enforce one-per-package).
-- Changesets exist for changes in `packages/<name>` if policy requires.
-- No changeset uses `none` unless explicitly allowed.
+Inputs:
+- None.
 
 Output:
-- Exit non-zero on validation failure.
-
-### 5) `changeset:version:manual`
-
-Purpose:
-- Run `changeset version` plus changelog generation steps in a controlled/manual fashion.
-
-Behavior:
-- Runs `bunx changeset version`.
-- Ensures per-package `CHANGELOG.md` files are created/updated.
-- Appends to root `CHANGELOG.md` using the new changeset entries.
-
-Notes:
-- This is the manual release preparation step.
-
-### 6) `changeset:publish:manual`
-
-Purpose:
-- Publish only the packages affected by pending changesets.
-
-Behavior:
-- Runs `bunx changeset publish`.
-- Optionally supports a package filter to publish only a single package.
-
-Notes:
-- Keeps manual control in place.
+- List of packages and tags (e.g., `@axm-internal/cli-kit@0.1.0`).
 
 ## Workflow Implications
 
