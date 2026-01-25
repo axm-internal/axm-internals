@@ -2,7 +2,7 @@ import type { Author, Commit, CommitFile, MetaEntry } from '../db/types';
 import { buildCliTable } from './buildCliTable';
 import { truncateString } from './truncateString';
 
-export const renderJson = <T>(objs: T[]): string => JSON.stringify(objs, null, 2);
+export const renderJson = (objs: unknown): string => JSON.stringify(objs, null, 2);
 
 export const renderAuthors = (objs: Author[]): string =>
     buildCliTable({
