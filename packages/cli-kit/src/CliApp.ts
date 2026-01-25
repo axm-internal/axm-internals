@@ -27,8 +27,8 @@ export class CliApp {
     protected logger: Logger;
     protected initialized = false;
     protected lastError?: Error;
-    protected onError?: (error: Error) => void;
-    protected onExit?: (code: number, error?: Error) => void;
+    protected onError?: (error: Error, container: ContainerInterface) => void;
+    protected onExit?: (code: number, error: Error | undefined, container: ContainerInterface) => void;
 
     /**
      * Create a new CLI app instance.
@@ -60,7 +60,7 @@ export class CliApp {
     }
 
     protected createLogger(appName: string, pretty: boolean, baseLogger?: Logger): Logger {
-        const logger = baseLogger ?? pino(pretty ? pinoPretty() : undefined);
+        const logger = baseLogger ?? pino({ level: 'fatal' }, pretty ? pinoPretty() : undefined);
         return logger.child({ module: appName });
     }
 
@@ -196,7 +196,7 @@ export class CliApp {
         try {
             await this.program.parseAsync(process.argv);
             this.lastError = undefined;
-            this.onExit?.(0);
+            this.onExit?.(0, undefined, this.container);
             return 0;
         } catch (error: unknown) {
             // Resolve logger here, after parseAsync/preAction has run
@@ -206,26 +206,26 @@ export class CliApp {
             if (error instanceof Error && 'code' in error) {
                 if (error.code === 'commander.help' || error.code === 'commander.helpDisplayed') {
                     this.lastError = undefined;
-                    this.onExit?.(0, normalizedError);
+                    this.onExit?.(0, normalizedError, this.container);
                     return 0;
                 }
                 if (error.code === 'commander.version') {
                     this.lastError = undefined;
-                    this.onExit?.(0, normalizedError);
+                    this.onExit?.(0, normalizedError, this.container);
                     return 0;
                 }
                 if (String(error.code).startsWith('commander.')) {
                     this.lastError = normalizedError;
-                    this.onError?.(normalizedError);
-                    this.onExit?.(1, normalizedError);
+                    this.onError?.(normalizedError, this.container);
+                    this.onExit?.(1, normalizedError, this.container);
                     return 1;
                 }
             }
 
             this.lastError = normalizedError;
-            this.onError?.(normalizedError);
+            this.onError?.(normalizedError, this.container);
             logger.error(error, '❌ CLI Error:');
-            this.onExit?.(1, normalizedError);
+            this.onExit?.(1, normalizedError, this.container);
             return 1;
         }
     }

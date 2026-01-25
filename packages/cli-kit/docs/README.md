@@ -68,7 +68,13 @@ const helloCommand = createCommandDefinition({
 
 const app = new CliApp({
   config: { name: 'my-cli', description: 'Example CLI' },
-  options: { commandDefinitions: [helloCommand] },
+  options: {
+    commandDefinitions: [helloCommand],
+    onError: (error, container) => {
+      const logger = container.resolve(CliLogger);
+      logger.fatal(error, 'CLI failed');
+    },
+  },
 });
 
 const exitCode = await app.start();
@@ -82,12 +88,13 @@ process.exit(exitCode);
 - Argument order can be defined via `meta.position` (or `argPositions`) alongside `argsSchema`.
 - Option aliases can be defined via `meta.aliases`.
 - Optional lightweight container for dependency resolution.
-- Hooks (`onError`, `onExit`) and `getLastError()` for test-friendly flows.
+- Hooks (`onError`, `onExit`) receive the container for test-friendly flows.
 
 ## Notes
 
 - Source-first, buildless package (Bun).
 - Entry point: `src/index.ts`.
+- Default logger level is `fatal` (use `--debug` to switch to `debug`).
 - Positional arguments are strings by default; use `z.coerce.*` when you need numeric or boolean args.
 - Avoid Zod function defaults for CLI arguments/options; Commander treats functions as parsers.
 

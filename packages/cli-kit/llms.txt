@@ -18,6 +18,8 @@ Intended usage:
 - Define Commander-based CLIs with Zod-validated args and options
 - Compose commands and run them through `CliApp`
 - Use optional container and logger in command actions
+- Provide `onError`/`onExit` hooks that receive the container
+- Rely on the default logger level (`fatal`) unless overridden
 
 Non-goals:
 - Replacing Commander or providing a full CLI framework

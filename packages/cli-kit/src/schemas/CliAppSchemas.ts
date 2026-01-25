@@ -39,13 +39,13 @@ export const CliOptionsSchema = z.object({
     loggerAliases: z.array(InjectionTokenSchema).optional(),
     onError: z
         .function({
-            input: z.tuple([z.instanceof(Error)]),
+            input: z.tuple([z.instanceof(Error), ContainerSchema]),
             output: z.void(),
         })
         .optional(),
     onExit: z
         .function({
-            input: z.tuple([z.number(), z.instanceof(Error).optional()]),
+            input: z.tuple([z.number(), z.instanceof(Error).optional(), ContainerSchema]),
             output: z.void(),
         })
         .optional(),
