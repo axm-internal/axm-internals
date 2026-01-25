@@ -22,9 +22,16 @@ const createMockDb = (commits: Commit[]) => {
             let scopeFilter: string | null = null;
             let hashFilter: string | null = null;
             let hashList: string[] | null = null;
+            let orderByColumn: string | null = null;
+            let orderByDirection: 'asc' | 'desc' | null = null;
 
             const builder = {
                 selectAll: () => builder,
+                orderBy: (column: string, direction?: 'asc' | 'desc') => {
+                    orderByColumn = column;
+                    orderByDirection = direction ?? null;
+                    return builder;
+                },
                 where: (column: string, op: string, value: string | string[]) => {
                     if (column === 'scope' && op === '=') {
                         scopeFilter = value as string;
@@ -38,12 +45,17 @@ const createMockDb = (commits: Commit[]) => {
                     return builder;
                 },
                 execute: async () => {
-                    return commits.filter((commit) => {
+                    const filtered = commits.filter((commit) => {
                         if (scopeFilter && commit.scope !== scopeFilter) return false;
                         if (hashFilter && commit.hash !== hashFilter) return false;
                         if (hashList && !hashList.includes(commit.hash)) return false;
                         return true;
                     });
+                    if (orderByColumn === 'date') {
+                        const sorted = [...filtered].sort((a, b) => a.date.localeCompare(b.date));
+                        return orderByDirection === 'desc' ? sorted.reverse() : sorted;
+                    }
+                    return filtered;
                 },
                 executeTakeFirst: async () => {
                     const rows = await builder.execute();
@@ -110,6 +122,16 @@ describe('GitQuery', () => {
         const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
         const result = await service.getTags('cli-kit');
         expect(result.map((commit) => commit.hash)).toEqual(['tagged']);
+    });
+
+    it('returns latest commit for a scope', async () => {
+        commitStore = [
+            buildCommit({ hash: 'older', date: '2026-01-01T00:00:00.000Z', scope: 'cli-kit' }),
+            buildCommit({ hash: 'latest', date: '2026-01-02T00:00:00.000Z', scope: 'cli-kit' }),
+        ];
+        const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
+        const result = await service.getLatestCommit('cli-kit');
+        expect(result?.hash).toBe('latest');
     });
 
     it('lists release tags', async () => {

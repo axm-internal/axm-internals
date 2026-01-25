@@ -42,6 +42,7 @@ These scripts are intended to be implemented in `apps/repo-cli`. Names are sugge
 - Provide transparent release input data (explicit commit lists and boundaries for auditing).
 - Preserve tag naming format (`@axm-internal/<name>@x.y.z`).
 - Support a single release PR that aggregates changelog/changeset updates across packages.
+- Generate changeset drafts using PackageInfoService data (latest tag, tag commit, latest commit, scoped commit list).
 
 ### 1) `gitdb:index`
 
@@ -49,8 +50,7 @@ Purpose:
 - Initialize or update the git-db SQLite index for the repo (init if missing).
 
 Inputs:
-- Optional `--full` to force a full re-index.
-- Optional `--include-merges` flag.
+- None.
 
 Output:
 - Indexed commits, files, authors, and metadata stored in git-db.

@@ -197,6 +197,28 @@ export class GitQuery {
     }
 
     /**
+     * Get the latest commit for a scope.
+     *
+     * @param scope - Conventional commit scope (e.g., `cli-kit`).
+     * @returns Latest commit or null if none exist.
+     * @example
+     * ```ts
+     * const latest = await git.getLatestCommit('cli-kit');
+     * ```
+     */
+    async getLatestCommit(scope: string): Promise<Commit | null> {
+        const db = await this.getDb();
+        const commit = await db
+            .selectFrom('commits')
+            .selectAll()
+            .where('scope', '=', scope)
+            .orderBy('date', 'desc')
+            .executeTakeFirst();
+
+        return commit ?? null;
+    }
+
+    /**
      * List all release tags in the repo.
      *
      * @returns Array of tag names.

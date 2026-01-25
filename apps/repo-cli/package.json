@@ -17,9 +17,16 @@
     },
     "dependencies": {
         "@axm-internal/cli-kit": "*",
+        "@axm-internal/config-schema": "*",
         "@axm-internal/git-db": "*",
+        "cli-table3": "^0.6.5",
         "eta": "^3.5.0",
         "execa": "^9.6.1",
+        "ora": "^9.1.0",
+        "reflect-metadata": "^0.2.2",
+        "tsyringe": "^4.10.0",
+        "yocto-spinner": "^1.0.0",
+        "yoctocolors": "^2.1.2",
         "zod": "^4.3.5"
     },
     "devDependencies": {
