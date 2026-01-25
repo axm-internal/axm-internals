@@ -5,7 +5,6 @@ import { ChangeSetBuilder } from '../../services/ChangeSetBuilder';
 import { ChangeSetWriter } from '../../services/ChangeSetWriter';
 import { InteractiveOutputService } from '../../services/InteractiveOutputService';
 import { listPackageApps } from '../../utils/listPackageApps';
-import { splitPackageApp } from '../../utils/splitPackageApp';
 
 export const changesetCreateCommand = createCommandDefinition({
     name: 'changesets:create',
@@ -47,8 +46,7 @@ export const changesetCreateCommand = createCommandDefinition({
             throw new Error('Package path is required unless --all is provided.');
         }
 
-        const [, scope] = splitPackageApp(packagePath);
-        const draft = await creator.createForScope(scope, packagePath);
+        const draft = await creator.createForPackagePath(packagePath);
 
         if (!options.dry) {
             const result = await writer.writeDraft(draft);

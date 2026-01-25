@@ -33,7 +33,7 @@ export class InteractiveOutputService extends CliOutputService {
         const colorFunc = type2ColorFunc(type);
 
         let text = message;
-        if (obj) {
+        if (obj !== undefined) {
             text += ` ${renderJson(obj)}`;
         }
         console.log(colorFunc(text));
