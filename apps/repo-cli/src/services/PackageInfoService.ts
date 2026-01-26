@@ -1,5 +1,5 @@
 import type { Commit } from '@axm-internal/git-db';
-import { isValidPackageApp } from '../schemas/PackageAppSchema';
+import { isValidPackageApp, type PackageApp } from '../schemas/PackageAppSchema';
 import type { GitQuery } from './GitQuery';
 
 export type RefsData = { first: Commit | null; tags: Commit[] | null; latestTagName: string | null };
@@ -89,6 +89,16 @@ export class PackageInfoService {
     }
 
     /**
+     * Resolve a commit by hash.
+     *
+     * @param hash - Commit hash.
+     * @returns Commit or null if missing.
+     */
+    async commitByHash(hash: string): Promise<Commit | null> {
+        return await this.gitQuery.getCommitByHash(hash);
+    }
+
+    /**
      * Fetch commits for a scope between two hashes (inclusive).
      *
      * @param scope - Conventional commit scope (e.g., `cli-kit`).
@@ -99,6 +109,37 @@ export class PackageInfoService {
     async commits(scope: string, fromHash: string, toHash: string): Promise<Commit[]> {
         ensureValidScope(scope);
         return await this.gitQuery.getCommitsBetweenHashes(scope, fromHash, toHash);
+    }
+
+    /**
+     * Fetch commits for a scope or matching file paths between two hashes.
+     *
+     * @param packagePath - Package or app path (e.g., `packages/cli-kit`).
+     * @param scope - Conventional commit scope (e.g., `cli-kit`).
+     * @param fromHash - Start hash (inclusive).
+     * @param toHash - End hash (inclusive).
+     * @returns Ordered commits for the package/app.
+     */
+    async commitsForPackage(
+        packagePath: PackageApp,
+        scope: string,
+        fromHash: string,
+        toHash: string
+    ): Promise<Commit[]> {
+        ensureValidScope(scope);
+        const pathPrefix = packagePath.endsWith('/') ? packagePath : `${packagePath}/`;
+        return await this.gitQuery.getCommitsBetweenHashesForPackage(scope, pathPrefix, fromHash, toHash);
+    }
+
+    /**
+     * Fetch unscoped commits between two hashes (inclusive).
+     *
+     * @param fromHash - Start hash (inclusive).
+     * @param toHash - End hash (inclusive).
+     * @returns Ordered commits without a scope.
+     */
+    async commitsUnscoped(fromHash: string, toHash: string): Promise<Commit[]> {
+        return await this.gitQuery.getCommitsBetweenHashesUnscoped(fromHash, toHash);
     }
 
     /**

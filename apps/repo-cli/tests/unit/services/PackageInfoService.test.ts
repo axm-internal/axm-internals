@@ -79,6 +79,30 @@ describe('PackageInfoService', () => {
         expect(result.map((commit) => commit.hash)).toEqual(['a', 'b']);
     });
 
+    it('returns commits for a package by scope or path', async () => {
+        const commits = [buildCommit({ hash: 'a', scope: 'cli-kit' }), buildCommit({ hash: 'b', scope: 'repo-cli' })];
+        const service = new PackageInfoService(
+            createGitQuery({
+                getCommitsBetweenHashesForPackage: async () => commits,
+            })
+        );
+
+        const result = await service.commitsForPackage('packages/cli-kit', 'cli-kit', 'a', 'b');
+        expect(result.map((commit) => commit.hash)).toEqual(['a', 'b']);
+    });
+
+    it('returns unscoped commits between hashes', async () => {
+        const commits = [buildCommit({ hash: 'a', scope: null })];
+        const service = new PackageInfoService(
+            createGitQuery({
+                getCommitsBetweenHashesUnscoped: async () => commits,
+            })
+        );
+
+        const result = await service.commitsUnscoped('a', 'b');
+        expect(result.map((commit) => commit.hash)).toEqual(['a']);
+    });
+
     it('returns unscoped commits between hashes', async () => {
         const commits = [buildCommit({ hash: 'a' }), buildCommit({ hash: 'b' })];
         const service = new PackageInfoService(
@@ -113,6 +137,18 @@ describe('PackageInfoService', () => {
 
         const result = await service.commitForTag('@axm-internal/cli-kit@0.1.0');
         expect(result?.hash).toBe('taghash');
+    });
+
+    it('returns commit for hash', async () => {
+        const commit = buildCommit({ hash: 'hash123', scope: 'cli-kit' });
+        const service = new PackageInfoService(
+            createGitQuery({
+                getCommitByHash: async () => commit,
+            })
+        );
+
+        const result = await service.commitByHash('hash123');
+        expect(result?.hash).toBe('hash123');
     });
 
     it('groups releases by scope', async () => {

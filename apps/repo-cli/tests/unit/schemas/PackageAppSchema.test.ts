@@ -9,6 +9,7 @@ describe('PackageAppSchema', () => {
     it('accepts known packages', () => {
         expect(PackageAppSchema.parse('packages/cli-kit')).toBe('packages/cli-kit');
         expect(PackageAppSchema.parse('packages/config-schema')).toBe('packages/config-schema');
+        expect(PackageAppSchema.parse('packages/git-db')).toBe('packages/git-db');
     });
 
     it('rejects unknown names', () => {

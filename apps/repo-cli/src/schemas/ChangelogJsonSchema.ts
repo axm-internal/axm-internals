@@ -5,6 +5,8 @@ export const ChangelogEntrySchema = z.object({
     tag: z.string().nullable(),
     fromHash: z.string().nullable(),
     toHash: z.string().nullable(),
+    rangeStartDate: z.string(),
+    rangeEndDate: z.string(),
     summaryLines: z.array(z.string()),
     createdAt: z.string(),
 });

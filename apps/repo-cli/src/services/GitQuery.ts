@@ -398,6 +398,99 @@ export class GitQuery {
     }
 
     /**
+     * List commits between two hashes for a scope or path prefix (inclusive).
+     *
+     * @param scope - Conventional commit scope (e.g., `cli-kit`).
+     * @param pathPrefix - Path prefix (e.g., `packages/cli-kit/`).
+     * @param fromHash - Start hash (inclusive).
+     * @param toHash - End hash (inclusive).
+     * @returns Ordered commits between the two hashes.
+     * @example
+     * ```ts
+     * const commits = await git.getCommitsBetweenHashesForPackage('cli-kit', 'packages/cli-kit/', fromHash, toHash);
+     * ```
+     */
+    async getCommitsBetweenHashesForPackage(
+        scope: string,
+        pathPrefix: string,
+        fromHash: string,
+        toHash: string
+    ): Promise<Commit[]> {
+        const hashes = await this.listHashesBetween(fromHash, toHash);
+
+        if (hashes.length === 0) {
+            return [];
+        }
+
+        const db = await this.getDb();
+        const scoped = await db
+            .selectFrom('commits')
+            .selectAll()
+            .where('scope', '=', scope)
+            .where('hash', 'in', hashes)
+            .execute();
+        const byPath = await db
+            .selectFrom('commits')
+            .innerJoin('commit_files', 'commit_files.hash', 'commits.hash')
+            .select([
+                'commits.hash',
+                'commits.author_id',
+                'commits.date',
+                'commits.message',
+                'commits.body',
+                'commits.refs',
+                'commits.type',
+                'commits.scope',
+                'commits.is_breaking_change',
+            ])
+            .distinct()
+            .where('commit_files.path', 'like', `${pathPrefix}%`)
+            .where('commits.hash', 'in', hashes)
+            .execute();
+
+        const commitByHash = new Map<string, Commit>();
+        for (const commit of scoped) {
+            commitByHash.set(commit.hash, commit);
+        }
+        for (const commit of byPath) {
+            commitByHash.set(commit.hash, commit);
+        }
+
+        return hashes.map((hash) => commitByHash.get(hash)).filter(Boolean) as Commit[];
+    }
+
+    /**
+     * List unscoped commits between two hashes (inclusive).
+     *
+     * @param fromHash - Start hash (inclusive).
+     * @param toHash - End hash (inclusive).
+     * @returns Ordered commits between the two hashes.
+     * @example
+     * ```ts
+     * const commits = await git.getCommitsBetweenHashesUnscoped(fromHash, toHash);
+     * ```
+     */
+    async getCommitsBetweenHashesUnscoped(fromHash: string, toHash: string): Promise<Commit[]> {
+        const hashes = await this.listHashesBetween(fromHash, toHash);
+
+        if (hashes.length === 0) {
+            return [];
+        }
+
+        const db = await this.getDb();
+        const commits = await db
+            .selectFrom('commits')
+            .selectAll()
+            .where('scope', 'is', null)
+            .where('hash', 'in', hashes)
+            .execute();
+
+        const commitByHash = new Map(commits.map((commit) => [commit.hash, commit]));
+
+        return hashes.map((hash) => commitByHash.get(hash)).filter(Boolean) as Commit[];
+    }
+
+    /**
      * List commits between two hashes (inclusive) without filtering by scope.
      *
      * @param fromHash - Start hash (inclusive).

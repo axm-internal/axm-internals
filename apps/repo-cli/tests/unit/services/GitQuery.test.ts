@@ -22,19 +22,27 @@ const createMockDb = (commits: Commit[]) => {
             let scopeFilter: string | null = null;
             let hashFilter: string | null = null;
             let hashList: string[] | null = null;
+            let scopeIsNull = false;
+            let pathPrefix: string | null = null;
             let orderByColumn: string | null = null;
             let orderByDirection: 'asc' | 'desc' | null = null;
 
             const builder = {
                 selectAll: () => builder,
+                select: (_columns: string[]) => builder,
+                innerJoin: () => builder,
+                distinct: () => builder,
                 orderBy: (column: string, direction?: 'asc' | 'desc') => {
                     orderByColumn = column;
                     orderByDirection = direction ?? null;
                     return builder;
                 },
-                where: (column: string, op: string, value: string | string[]) => {
+                where: (column: string, op: string, value: string | string[] | null) => {
                     if (column === 'scope' && op === '=') {
                         scopeFilter = value as string;
+                    }
+                    if (column === 'scope' && op === 'is' && value === null) {
+                        scopeIsNull = true;
                     }
                     if (column === 'hash' && op === '=') {
                         hashFilter = value as string;
@@ -42,13 +50,21 @@ const createMockDb = (commits: Commit[]) => {
                     if (column === 'hash' && op === 'in') {
                         hashList = value as string[];
                     }
+                    if (column === 'commit_files.path' && op === 'like') {
+                        pathPrefix = (value as string).replace(/%$/, '');
+                    }
                     return builder;
                 },
                 execute: async () => {
                     const filtered = commits.filter((commit) => {
                         if (scopeFilter && commit.scope !== scopeFilter) return false;
+                        if (scopeIsNull && commit.scope !== null) return false;
                         if (hashFilter && commit.hash !== hashFilter) return false;
                         if (hashList && !hashList.includes(commit.hash)) return false;
+                        if (pathPrefix) {
+                            const path = commit.message;
+                            if (!path.startsWith(pathPrefix)) return false;
+                        }
                         return true;
                     });
                     if (orderByColumn === 'date') {
@@ -183,16 +199,28 @@ describe('GitQuery', () => {
         expect(commits.map((commit) => commit.hash)).toEqual(['c1', 'c2']);
     });
 
+    it('returns commits for a package by scope or path', async () => {
+        commitStore = [
+            buildCommit({ hash: 'c1', scope: 'repo-cli', message: 'packages/cli-kit/src/index.ts' }),
+            buildCommit({ hash: 'c2', scope: 'cli-kit' }),
+            buildCommit({ hash: 'c3', scope: null }),
+        ];
+        execaResponses.set('rev-list --reverse c1^..c2', 'c1\nc2\nc3');
+        const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
+        const commits = await service.getCommitsBetweenHashesForPackage('cli-kit', 'packages/cli-kit/', 'c1', 'c2');
+        expect(commits.map((commit) => commit.hash)).toEqual(['c1', 'c2']);
+    });
+
     it('returns unscoped commits between two hashes', async () => {
         commitStore = [
             buildCommit({ hash: 'c1', scope: 'cli-kit' }),
-            buildCommit({ hash: 'c2', scope: 'cli-kit' }),
+            buildCommit({ hash: 'c2', scope: null }),
             buildCommit({ hash: 'other', scope: 'other' }),
         ];
         execaResponses.set('rev-list --reverse c1^..c2', 'c1\nc2\nother');
         const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
-        const commits = await service.getCommitsBetweenHashesAll('c1', 'c2');
-        expect(commits.map((commit) => commit.hash)).toEqual(['c1', 'c2', 'other']);
+        const commits = await service.getCommitsBetweenHashesUnscoped('c1', 'c2');
+        expect(commits.map((commit) => commit.hash)).toEqual(['c2']);
     });
 
     it('returns commits between two commits using commit objects', async () => {

@@ -47,6 +47,10 @@ These scripts are intended to be implemented in `apps/repo-cli`. Names are sugge
 - Detect missing initial changelog data by checking for existing `CHANGELOG.md` files and first-tag coverage.
 - Maintain JSON-backed changelog data so markdown can be rebuilt deterministically and de-duplicated.
 - Keep changesets as markdown only; JSON is for changelog generation, not changeset storage.
+- Publishable packages use git tags to determine changelog boundaries.
+- Non-publishable apps/packages use `.changelogs/<scope>.json` metadata (last entry `toHash`) to know where backfill left off.
+- Root changelog contains unscoped commits only (no conventional-commit scope).
+- Package/app changelogs include commits that match scope or touch files under the package/app path.
 
 ## JSON Changelog Strategy (Draft)
 
@@ -57,6 +61,40 @@ These scripts are intended to be implemented in `apps/repo-cli`. Names are sugge
 - Use multiple JSON files:
   - `.changelogs/root.json` for the monorepo-wide changelog.
   - `.changelogs/<scope>.json` for per-package/app changelogs.
+  - Root JSON is derived from unscoped commits only.
+
+## Changelog Generation Flow
+
+1) Index git history (required for any changelog work):
+
+```bash
+./repo-cli gitdb:index
+```
+
+2) Backfill JSON entries:
+
+```bash
+./repo-cli changelog:backfill --all
+```
+
+- Publishable packages use tags to determine the backfill range.
+- Non-publishable apps/packages continue from the last JSON entry’s `toHash`.
+- Scope entries include commits that match scope or touch files under the package/app path.
+- Root entries include unscoped commits only.
+
+3) Render markdown changelogs from JSON:
+
+```bash
+./repo-cli changelog:write --all
+```
+
+## Notes on DRY / Simplification
+
+- The JSON files are the single source of truth; markdown is derived output.
+- If you only need JSON, skip `changelog:write`.
+- If you need both JSON + markdown, you only need two commands after indexing:
+  - `changelog:backfill --all`
+  - `changelog:write --all`
 
 ### 1) `gitdb:index`
 
@@ -135,6 +173,7 @@ Notes:
 
 Purpose:
 - Backfill JSON changelog entries from the first commit to the first tag.
+- For non-publishable apps/packages, use `.changelogs/<scope>.json` to find the last recorded commit and backfill from there.
 
 Inputs:
 - Package path (e.g., `packages/cli-kit`) or `--all`.
@@ -142,6 +181,10 @@ Inputs:
 
 Output:
 - JSON entries written to `.changelogs/<scope>.json` (and root).
+
+Notes:
+- Non-publishable entries use the ending commit timestamp as the version label.
+- Scope backfill includes file-touched commits for the package/app path.
 
 ### 7) `changelog:report`
 

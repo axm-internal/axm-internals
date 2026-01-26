@@ -15,8 +15,11 @@ Goal: Ensure git-db is current before generating reports/backfills.
 Goal: Populate `.changelogs/*.json` so initial releases are documented.
 
 Notes:
-- Root changelog entries are not scope-filtered (includes unscoped commits between tag bounds).
+- Root changelog entries are unscoped commits only.
 - Per-package changelogs remain scope-filtered.
+- Publishable packages use tags to determine backfill boundaries.
+- Non-publishable apps/packages use `.changelogs/<scope>.json` metadata (last `toHash`) to track backfill position.
+- Per-package changelogs include commits that match scope or touch files under the package/app path.
 
 1) Create a branch
 ```bash
@@ -92,3 +95,4 @@ chore(changesets): created release changesets
 - Changelog JSON lives in `.changelogs/` and is the source of truth.
 - Markdown changelogs are generated from JSON via `changelog:write`.
 - If you want to target a single package, replace `--all` with `packages/<name>`.
+- If you only need JSON, skip `changelog:write`.

@@ -4,7 +4,7 @@ const validPackageApps = [
     'apps/repo-cli',
     'packages/cli-kit',
     'packages/config-schema',
-    'packages/hono-kit',
+    'packages/git-db',
     'packages/tooling-config',
     'packages/zod-helpers',
 ] as const;
