@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { CliApp } from '@axm-internal/cli-kit';
 import { ZodError } from 'zod';
 import { appContainer } from './appContainer';
+import { changelogCommands } from './commands/changelog';
 import { changesetCommands } from './commands/changesets';
 import { gitDbCommands } from './commands/gitdb';
 import { promptRunnerCommands } from './commands/prompt-runners';
@@ -18,7 +19,7 @@ const cliApp = new CliApp({
     options: {
         container: appContainer,
         pretty: true,
-        commandDefinitions: [...promptRunnerCommands, ...gitDbCommands, ...changesetCommands],
+        commandDefinitions: [...promptRunnerCommands, ...gitDbCommands, ...changesetCommands, ...changelogCommands],
         onError: (error) => {
             if (error instanceof ZodError) {
                 error.issues.forEach((issue) => {
