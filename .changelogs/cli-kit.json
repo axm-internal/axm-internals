@@ -1,0 +1,26 @@
+{
+    "scope": "cli-kit",
+    "entries": [
+        {
+            "version": "0.1.0",
+            "tag": "@axm-internal/cli-kit@0.1.0",
+            "fromHash": "24c36cbb6f4e680810e4894e8ac4d63794e68ed6",
+            "toHash": "237ec741ac557d703875384cef3c3f89bfb99254",
+            "rangeStartDate": "2026-01-15T17:54:49-05:00",
+            "rangeEndDate": "2026-01-17T02:07:43-05:00",
+            "summaryLines": [
+                "chore(cli-kit): initialized new package",
+                "feat(cli-kit): created CliOutputServiceInterface and concrete class",
+                "feat(cli-kit): created Container interface to get rid of Tsyringe from project",
+                "feat(cli-kit): created package schemas",
+                "feat(cli-kit): created command definition to Command program helper",
+                "feat(cli-kit): refactored expectation on how to use the app and created example in readme",
+                "feat(cli-kit): completed CliApp class",
+                "docs(cli-kit): added typedoc docblocks for the package",
+                "feat: changed typedoc configs to exclude @internal symbols",
+                "docs(cli-kit): add @internal where needed and created package docs"
+            ],
+            "createdAt": "2026-01-26T20:53:42.364Z"
+        }
+    ]
+}
