@@ -51,7 +51,7 @@ These scripts are intended to be implemented in `apps/repo-cli`. Names are sugge
 ## JSON Changelog Strategy (Draft)
 
 - Store changelog entries as JSON (metadata-rich, de-dupable).
-- Generate human-readable markdown changelogs from JSON.
+- Generate human-readable markdown changelogs from JSON (via `changelog:write`).
 - Keep JSON separate from changesets; changesets remain `.md` in `.changeset/`.
 - JSON storage location: `.changelogs/`.
 - Use multiple JSON files:

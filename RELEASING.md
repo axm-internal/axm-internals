@@ -10,6 +10,14 @@ This repo uses Changesets for versioning and publishing. Manual releases are dri
 ./repo-cli gitdb:index
 ```
 
+1b) (Optional) Backfill or render changelogs from `.changelogs/`:
+
+```bash
+./repo-cli changelog:backfill --all --dry
+./repo-cli changelog:backfill --all
+./repo-cli changelog:write --all
+```
+
 2) Preview draft release data for the package(s) you plan to release:
 
 ```bash

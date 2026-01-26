@@ -7,7 +7,7 @@ The goals are:
 * Per‑package versioning in a monorepo
 * Zero surprise breakage for consuming projects
 * Clear, intentional upgrades
-* Automated changelogs
+* JSON-backed changelogs rendered by repo-cli
 * Seamless publishing of public packages
 
 The chosen tool for this is **Changesets**.
@@ -20,7 +20,7 @@ Changesets is designed specifically for multi‑package monorepos. It provides:
 
 * Package‑level versioning
 * Human‑authored change intent
-* Automatic changelog generation
+* Changelog generation is handled by repo-cli (not Changesets)
 * CI‑driven publishing
 * Compatibility with any registry
 
@@ -79,7 +79,7 @@ Changesets become the source of truth for:
 6. Changesets:
 
     * Bumps package versions
-    * Generates changelogs
+    * Generates versions and publishes packages
     * Publishes only affected packages
 7. Packages are pushed to the registry
 8. A release commit and tags are created
@@ -145,7 +145,7 @@ This job:
 * Detects pending changesets
 * Versions affected packages
 * Publishes only what changed
-* Commits updated versions and changelogs
+* Commits updated versions (changelogs are handled separately)
 
 ---
 

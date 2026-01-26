@@ -102,6 +102,17 @@ export class PackageInfoService {
     }
 
     /**
+     * Fetch commits between two hashes (inclusive) without scope filtering.
+     *
+     * @param fromHash - Start hash (inclusive).
+     * @param toHash - End hash (inclusive).
+     * @returns Ordered commits between the two hashes.
+     */
+    async commitsAll(fromHash: string, toHash: string): Promise<Commit[]> {
+        return await this.gitQuery.getCommitsBetweenHashesAll(fromHash, toHash);
+    }
+
+    /**
      * List release tags grouped by scope.
      *
      * @param scope - Optional scope filter (e.g., `cli-kit`).

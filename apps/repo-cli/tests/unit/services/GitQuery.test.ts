@@ -183,6 +183,18 @@ describe('GitQuery', () => {
         expect(commits.map((commit) => commit.hash)).toEqual(['c1', 'c2']);
     });
 
+    it('returns unscoped commits between two hashes', async () => {
+        commitStore = [
+            buildCommit({ hash: 'c1', scope: 'cli-kit' }),
+            buildCommit({ hash: 'c2', scope: 'cli-kit' }),
+            buildCommit({ hash: 'other', scope: 'other' }),
+        ];
+        execaResponses.set('rev-list --reverse c1^..c2', 'c1\nc2\nother');
+        const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
+        const commits = await service.getCommitsBetweenHashesAll('c1', 'c2');
+        expect(commits.map((commit) => commit.hash)).toEqual(['c1', 'c2', 'other']);
+    });
+
     it('returns commits between two commits using commit objects', async () => {
         commitStore = [buildCommit({ hash: 'c1', scope: 'cli-kit' }), buildCommit({ hash: 'c2', scope: 'cli-kit' })];
         execaResponses.set('rev-list --reverse c1^..c2', 'c1\nc2');

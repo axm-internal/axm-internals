@@ -79,6 +79,18 @@ describe('PackageInfoService', () => {
         expect(result.map((commit) => commit.hash)).toEqual(['a', 'b']);
     });
 
+    it('returns unscoped commits between hashes', async () => {
+        const commits = [buildCommit({ hash: 'a' }), buildCommit({ hash: 'b' })];
+        const service = new PackageInfoService(
+            createGitQuery({
+                getCommitsBetweenHashesAll: async () => commits,
+            })
+        );
+
+        const result = await service.commitsAll('a', 'b');
+        expect(result.map((commit) => commit.hash)).toEqual(['a', 'b']);
+    });
+
     it('returns latest commit for scope', async () => {
         const latest = buildCommit({ hash: 'latest', scope: 'cli-kit' });
         const service = new PackageInfoService(

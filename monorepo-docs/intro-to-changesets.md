@@ -38,7 +38,7 @@ Publishing is triggered by pushes to `main` **when changesets exist**. The workf
 
 ## Changelogs
 
-Changesets can generate changelogs automatically. The current config uses the default Changesets changelog generator. The summary you write in each changeset becomes the changelog entry.
+Changesets changelog generation is disabled in this repo. Changelogs are built from JSON stored in `.changelogs/` and rendered via `./repo-cli changelog:write`.
 
 ## Tips
 

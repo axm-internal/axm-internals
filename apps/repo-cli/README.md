@@ -41,7 +41,7 @@ Draft output:
 
 Changelog output:
 - JSON lives in `.changelogs/` (`root.json` and `<scope>.json` files).
-- Markdown rendering writes `CHANGELOG.md` at the repo root and inside each package/app.
+- Markdown rendering writes `CHANGELOG.md` at the repo root and inside each package/app (generated from `.changelogs/`).
 
 ## Docs
 
