@@ -24,6 +24,7 @@ This document defines the work needed to make Changesets support manual, per-pac
 - Ability to switch to automated releases later without re-architecting.
 - Tag format stays as-is (e.g., `@axm-internal/cli-kit@0.1.0`).
 - One release PR for all changelog/changeset updates (multi-package release in one PR).
+- Metadata-rich JSON as the source of truth for changelog entries (used to render markdown).
 
 ## Proposed Script Set (apps/repo-cli)
 
@@ -43,6 +44,19 @@ These scripts are intended to be implemented in `apps/repo-cli`. Names are sugge
 - Preserve tag naming format (`@axm-internal/<name>@x.y.z`).
 - Support a single release PR that aggregates changelog/changeset updates across packages.
 - Generate changeset drafts using PackageInfoService data (latest tag, tag commit, latest commit, scoped commit list).
+- Detect missing initial changelog data by checking for existing `CHANGELOG.md` files and first-tag coverage.
+- Maintain JSON-backed changelog data so markdown can be rebuilt deterministically and de-duplicated.
+- Keep changesets as markdown only; JSON is for changelog generation, not changeset storage.
+
+## JSON Changelog Strategy (Draft)
+
+- Store changelog entries as JSON (metadata-rich, de-dupable).
+- Generate human-readable markdown changelogs from JSON.
+- Keep JSON separate from changesets; changesets remain `.md` in `.changeset/`.
+- JSON storage location: `.changelogs/`.
+- Use multiple JSON files:
+  - `.changelogs/root.json` for the monorepo-wide changelog.
+  - `.changelogs/<scope>.json` for per-package/app changelogs.
 
 ### 1) `gitdb:index`
 
@@ -116,6 +130,40 @@ Output:
 
 Notes:
 - Uses `PackageInfoService` to gather last tag, tag commit, latest commit, and scoped commit lists.
+
+### 6) `changelog:backfill`
+
+Purpose:
+- Backfill JSON changelog entries from the first commit to the first tag.
+
+Inputs:
+- Package path (e.g., `packages/cli-kit`) or `--all`.
+- Optional `--dry` to preview output without writing files.
+
+Output:
+- JSON entries written to `.changelogs/<scope>.json` (and root).
+
+### 7) `changelog:report`
+
+Purpose:
+- Report on JSON changelog coverage and missing entries.
+
+Inputs:
+- Package path (e.g., `packages/cli-kit`) or `--all`.
+
+Output:
+- Report showing scopes that need backfill.
+
+### 8) `changelog:write`
+
+Purpose:
+- Render markdown changelogs from `.changelogs/` JSON files.
+
+Inputs:
+- Package path (e.g., `packages/cli-kit`) or `--all`.
+
+Output:
+- `CHANGELOG.md` at the repo root and per package/app.
 
 ## Workflow Implications
 

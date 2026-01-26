@@ -14,6 +14,8 @@ bun dev gitdb:package:commits packages/cli-kit --from <hash> --to <hash>
 bun dev gitdb:releases
 bun dev changesets:create packages/cli-kit
 bun dev changesets:create --all --dry
+bun dev changelog:backfill packages/cli-kit --dry
+bun dev changelog:write --all
 ```
 
 ## Commands
@@ -27,9 +29,19 @@ bun dev changesets:create --all --dry
 - `gitdb:releases` — List released packages and tags.
 - `changesets:create <package-path>` — Create changeset drafts (writes unless `--dry`).
 - `changesets:create --all --dry` — Preview drafts for all packages without writing.
+- `changelog:backfill <package-path>` — Backfill `.changelogs` entries from first commit to first tag.
+- `changelog:backfill --all --dry` — Preview backfill report for all packages.
+- `changelog:report <package-path>` — Show backfill/report status for a package.
+- `changelog:write <package-path>` — Render markdown changelogs from `.changelogs` JSON.
+- `changesets:backfill <package-path>` — Report (and optionally backfill) missing initial changelogs.
+- `changesets:backfill --all --dry` — Preview backfill report for all packages.
 
 Draft output:
 - Drafts are written to `.changeset-drafts/` at the repo root.
+
+Changelog output:
+- JSON lives in `.changelogs/` (`root.json` and `<scope>.json` files).
+- Markdown rendering writes `CHANGELOG.md` at the repo root and inside each package/app.
 
 ## Docs
 
