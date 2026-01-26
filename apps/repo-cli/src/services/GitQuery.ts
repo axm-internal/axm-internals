@@ -398,6 +398,31 @@ export class GitQuery {
     }
 
     /**
+     * List commits between two hashes (inclusive) without filtering by scope.
+     *
+     * @param fromHash - Start hash (inclusive).
+     * @param toHash - End hash (inclusive).
+     * @returns Ordered commits between the two hashes.
+     * @example
+     * ```ts
+     * const commits = await git.getCommitsBetweenHashesAll(fromHash, toHash);
+     * ```
+     */
+    async getCommitsBetweenHashesAll(fromHash: string, toHash: string): Promise<Commit[]> {
+        const hashes = await this.listHashesBetween(fromHash, toHash);
+
+        if (hashes.length === 0) {
+            return [];
+        }
+
+        const db = await this.getDb();
+        const commits = await db.selectFrom('commits').selectAll().where('hash', 'in', hashes).execute();
+        const commitByHash = new Map(commits.map((commit) => [commit.hash, commit]));
+
+        return hashes.map((hash) => commitByHash.get(hash)).filter(Boolean) as Commit[];
+    }
+
+    /**
      * List commit hashes between two hashes (inclusive).
      *
      * @param fromHash - Start hash (inclusive).

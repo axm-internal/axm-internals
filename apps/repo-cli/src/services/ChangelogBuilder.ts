@@ -66,7 +66,14 @@ export class ChangelogBuilder {
                 continue;
             }
 
-            await this.addEntry(info.scope, info.firstTagName, info.fromCommit, info.toCommit, info.commits);
+            await this.addEntry(
+                info.scope,
+                info.firstTagName,
+                info.fromCommit,
+                info.toCommit,
+                info.scopeCommits,
+                info.rootCommits
+            );
         }
 
         const needsBackfill = reportItems.filter((item) => item.needsBackfill).length;
@@ -112,8 +119,15 @@ export class ChangelogBuilder {
         }
     }
 
-    protected async addEntry(scope: string, tagName: string, fromCommit: Commit, toCommit: Commit, commits: Commit[]) {
-        const entry = this.buildEntry(tagName, fromCommit, toCommit, commits);
+    protected async addEntry(
+        scope: string,
+        tagName: string,
+        fromCommit: Commit,
+        toCommit: Commit,
+        scopeCommits: Commit[],
+        rootCommits: Commit[]
+    ) {
+        const entry = this.buildEntry(tagName, fromCommit, toCommit, scopeCommits);
         const scopeData = await this.store.readScope(scope);
         const hasEntry = this.hasEntry(scopeData, tagName);
         if (!hasEntry) {
@@ -129,17 +143,18 @@ export class ChangelogBuilder {
             (item) => item.scope === scope && (item.tag === tagName || item.version === entry.version)
         );
         if (!rootHasEntry) {
+            const rootEntry = this.buildEntry(tagName, fromCommit, toCommit, rootCommits);
             const nextRoot: RootChangelog = {
                 entries: [
                     ...rootData.entries,
                     {
                         scope,
-                        version: entry.version,
-                        tag: entry.tag,
-                        fromHash: entry.fromHash,
-                        toHash: entry.toHash,
-                        summaryLines: entry.summaryLines,
-                        createdAt: entry.createdAt,
+                        version: rootEntry.version,
+                        tag: rootEntry.tag,
+                        fromHash: rootEntry.fromHash,
+                        toHash: rootEntry.toHash,
+                        summaryLines: rootEntry.summaryLines,
+                        createdAt: rootEntry.createdAt,
                     },
                 ],
             };
@@ -155,8 +170,10 @@ export class ChangelogBuilder {
         const refs = await this.packageInfo.refs(scope);
         const fromCommit = refs.first;
         const toCommit = firstTagName ? await this.packageInfo.commitForTag(firstTagName) : null;
-        const commits =
+        const scopeCommits =
             fromCommit && toCommit ? await this.packageInfo.commits(scope, fromCommit.hash, toCommit.hash) : [];
+        const rootCommits =
+            fromCommit && toCommit ? await this.packageInfo.commitsAll(fromCommit.hash, toCommit.hash) : [];
         const scopeData = await this.store.readScope(scope);
         const hasEntry = this.hasEntry(scopeData, firstTagName);
         const needsBackfill = Boolean(firstTagName && fromCommit && toCommit && !hasEntry);
@@ -166,7 +183,8 @@ export class ChangelogBuilder {
             firstTagName,
             fromCommit,
             toCommit,
-            commits,
+            scopeCommits,
+            rootCommits,
             needsBackfill,
         };
     }

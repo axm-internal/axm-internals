@@ -37,10 +37,12 @@ class MemoryStore {
 class FakePackageInfo {
     protected commitList: Commit[];
     protected tag: string | null;
+    protected scope: string;
 
-    constructor(commits: Commit[], tag: string | null) {
+    constructor(commits: Commit[], tag: string | null, scope = 'cli-kit') {
         this.commitList = commits;
         this.tag = tag;
+        this.scope = scope;
     }
 
     async closeDb() {
@@ -64,6 +66,10 @@ class FakePackageInfo {
     }
 
     async commits() {
+        return this.commitList.filter((commit) => commit.scope === this.scope);
+    }
+
+    async commitsAll() {
         return this.commitList;
     }
 
@@ -76,7 +82,7 @@ class FakePackageInfo {
     }
 }
 
-const buildCommit = (hash: string, message: string): Commit => ({
+const buildCommit = (hash: string, message: string, scope: string | null = 'cli-kit'): Commit => ({
     hash,
     author_id: 'author-1',
     date: '2026-01-01T00:00:00Z',
@@ -84,13 +90,16 @@ const buildCommit = (hash: string, message: string): Commit => ({
     body: '',
     refs: null,
     type: 'feat',
-    scope: 'cli-kit',
+    scope,
     is_breaking_change: false,
 });
 
 describe('ChangelogBuilder', () => {
     it('reports and backfills entries', async () => {
-        const commits = [buildCommit('a1', 'feat(cli-kit): init')];
+        const commits = [
+            buildCommit('a1', 'feat(cli-kit): init', 'cli-kit'),
+            buildCommit('b1', 'chore: root metadata', null),
+        ];
         const info = new FakePackageInfo(commits, '@axm-internal/cli-kit@0.1.0');
         const store = new MemoryStore();
         const builder = new ChangelogBuilder(info as unknown as PackageInfoService, store as unknown as ChangelogStore);
@@ -104,6 +113,11 @@ describe('ChangelogBuilder', () => {
 
         const scopeData = await store.readScope('cli-kit');
         expect(scopeData.entries).toHaveLength(1);
+
+        const rootData = await store.readRoot();
+        const rootEntry = rootData.entries[0];
+        const rootLines = rootEntry?.summaryLines ?? [];
+        expect(rootLines).toContain('chore: root metadata');
     });
 
     it('renders markdown changelogs from stored entries', async () => {
