@@ -30,6 +30,7 @@ describe('ChangeSetBuilder', () => {
                     capturedScope = scope;
                     return commits;
                 },
+                commitsAfter: async () => commits,
             })
         );
 
@@ -51,6 +52,7 @@ describe('ChangeSetBuilder', () => {
                 latest: async () => latest ?? null,
                 commitForTag: async () => tagCommit,
                 commits: async () => [tagCommit, latest],
+                commitsAfter: async () => [latest],
             })
         );
 
@@ -68,6 +70,7 @@ describe('ChangeSetBuilder', () => {
                 latest: async () => commits[0] ?? null,
                 commitForTag: async () => null,
                 commits: async () => commits,
+                commitsAfter: async () => commits,
             })
         );
 
@@ -83,6 +86,7 @@ describe('ChangeSetBuilder', () => {
                 latest: async () => commits[0] ?? null,
                 commitForTag: async () => null,
                 commits: async () => commits,
+                commitsAfter: async () => commits,
             })
         );
 
@@ -98,6 +102,7 @@ describe('ChangeSetBuilder', () => {
                 latest: async () => commit ?? null,
                 commitForTag: async () => null,
                 commits: async () => [commit],
+                commitsAfter: async () => [commit],
             })
         );
 

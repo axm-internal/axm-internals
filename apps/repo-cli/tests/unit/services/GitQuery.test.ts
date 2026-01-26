@@ -199,6 +199,18 @@ describe('GitQuery', () => {
         expect(commits.map((commit) => commit.hash)).toEqual(['c1', 'c2']);
     });
 
+    it('returns commits after a hash for a scope', async () => {
+        commitStore = [
+            buildCommit({ hash: 'c1', scope: 'cli-kit' }),
+            buildCommit({ hash: 'c2', scope: 'cli-kit' }),
+            buildCommit({ hash: 'other', scope: 'other' }),
+        ];
+        execaResponses.set('rev-list --reverse c1..c2', 'c2\nother');
+        const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
+        const commits = await service.getCommitsAfterHash('cli-kit', 'c1', 'c2');
+        expect(commits.map((commit) => commit.hash)).toEqual(['c2']);
+    });
+
     it('returns commits for a package by scope or path', async () => {
         commitStore = [
             buildCommit({ hash: 'c1', scope: 'repo-cli', message: 'packages/cli-kit/src/index.ts' }),
