@@ -1,0 +1,30 @@
+{
+    "scope": "config-schema",
+    "entries": [
+        {
+            "version": "0.1.0",
+            "tag": "@axm-internal/config-schema@0.1.0",
+            "fromHash": "1008c808ca6967e47b9a1a4dc2216e8fb616178b",
+            "toHash": "dc32917fef941833db94d4740ca097ee4ef0fa79",
+            "rangeStartDate": "2026-01-18T03:10:03-05:00",
+            "rangeEndDate": "2026-01-19T18:36:07-05:00",
+            "summaryLines": [
+                "chore(config-schema): package init",
+                "docs(config-schema): updated readme to track dev complete",
+                "feat(config-schema): added config-schema public exports",
+                "chore(tooling-config): updated typedoc.json to reference relative docs dir",
+                "feat(config-schema): added env binding helpers",
+                "feat(config-schema): added schema walker and internal node types",
+                "feat(config-schema): added env name inference helper",
+                "feat(config-schema): built raw config from env bindings",
+                "feat(config-schema): added config error formatting",
+                "feat(config-schema): added config boot pipeline and runtime accessors",
+                "refactor(config-schema): drastically simplified the API",
+                "fix(tooling-config): fixed missing entryPoints dir",
+                "docs(config-schema): update docs to reflect new api",
+                "feat(config-schema): fixed readme schema example and temp cleanup"
+            ],
+            "createdAt": "2026-01-26T20:53:42.463Z"
+        }
+    ]
+}

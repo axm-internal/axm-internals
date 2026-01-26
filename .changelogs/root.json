@@ -1,0 +1,88 @@
+{
+    "entries": [
+        {
+            "version": "2026-01-26T15:43:18-05:00",
+            "tag": null,
+            "fromHash": "4c7922ba3eef27a7e34ee5ef18a1cd82a2f4c439",
+            "toHash": "f1d023f82828735fa064d7cedc7fb2aeb8e08d76",
+            "rangeStartDate": "2026-01-22T00:56:12-05:00",
+            "rangeEndDate": "2026-01-26T15:43:18-05:00",
+            "summaryLines": [
+                "docs: updated docs to reflect API changes",
+                "docs: updated documentation to reflect changelog and changeset orchestration"
+            ],
+            "createdAt": "2026-01-26T20:53:42.260Z",
+            "scope": "repo-cli"
+        },
+        {
+            "version": "0.1.0",
+            "tag": "@axm-internal/cli-kit@0.1.0",
+            "fromHash": "24c36cbb6f4e680810e4894e8ac4d63794e68ed6",
+            "toHash": "237ec741ac557d703875384cef3c3f89bfb99254",
+            "rangeStartDate": "2026-01-15T17:54:49-05:00",
+            "rangeEndDate": "2026-01-17T02:07:43-05:00",
+            "summaryLines": [
+                "docs: added back-log list to track future work",
+                "feat: changed typedoc configs to exclude @internal symbols"
+            ],
+            "createdAt": "2026-01-26T20:53:42.365Z",
+            "scope": "cli-kit"
+        },
+        {
+            "version": "0.1.0",
+            "tag": "@axm-internal/git-db@0.1.0",
+            "fromHash": "556104405e8b1df637e8bb0714712ee108e27819",
+            "toHash": "56f27a85cfeaa5ace6a17987a0fbbf4d8b6cd269",
+            "rangeStartDate": "2026-01-22T13:12:50-05:00",
+            "rangeEndDate": "2026-01-23T18:12:02-05:00",
+            "summaryLines": ["docs: created plan for git-log package"],
+            "createdAt": "2026-01-26T20:53:42.563Z",
+            "scope": "git-db"
+        },
+        {
+            "version": "2026-01-19T03:59:42-05:00",
+            "tag": null,
+            "fromHash": "c9e252b6992aaea98a16ea05fa72da359474c4f8",
+            "toHash": "01bbe80e61c8392c9cbe79050730106ecc887c36",
+            "rangeStartDate": "2026-01-17T10:58:42-05:00",
+            "rangeEndDate": "2026-01-19T03:59:42-05:00",
+            "summaryLines": [
+                "docs: updated docs to reflect new repo-cli script",
+                "ci: migrated legacy cli app",
+                "fix: hardened repo-cli package path validation",
+                "chore: fixed .gitignore typo",
+                "chore: upgraded turbo"
+            ],
+            "createdAt": "2026-01-26T20:53:42.644Z",
+            "scope": "tooling-config"
+        },
+        {
+            "version": "0.1.0",
+            "tag": "@axm-internal/zod-helpers@0.1.0",
+            "fromHash": "50a5d3a787f8cfd1557abb3b20fd948b815f180b",
+            "toHash": "c6a8d4f4118abb7826353281c3e242bcd9f31697",
+            "rangeStartDate": "2026-01-14T08:00:05-05:00",
+            "rangeEndDate": "2026-01-15T09:59:53-05:00",
+            "summaryLines": [
+                "ci: created PR workflow",
+                "chore: set up changesets and release workflow",
+                "fix: fixed bad version for @bob-obringer/conventional-changesets",
+                "fix: applied the following fixes:",
+                "chore: updated devDep versions",
+                "test: added coverage script to turbo pipeline, apps/packages and template",
+                "feat: added codecov integration and CI",
+                "fix: fixed coverage failure due to no tests",
+                "docs: added todos to track future work",
+                "test: improved test reporters and uploads - updated coverage upload ci to include junit files - added .gitignore and bunfig files to apps and packages - created local coverage upload script",
+                "chore: simplified clean script",
+                "ci: fixed bad arg call with codecov",
+                "fix: fixed ignore line typo",
+                "ci: fixed hashFiles() not being able to use matrix variables",
+                "ci: removed typescript-config from coverage uploads",
+                "refactor: changed project scope name"
+            ],
+            "createdAt": "2026-01-26T20:53:42.746Z",
+            "scope": "zod-helpers"
+        }
+    ]
+}

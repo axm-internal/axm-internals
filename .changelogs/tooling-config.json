@@ -1,0 +1,21 @@
+{
+    "scope": "tooling-config",
+    "entries": [
+        {
+            "version": "2026-01-19T03:59:42-05:00",
+            "tag": null,
+            "fromHash": "c9e252b6992aaea98a16ea05fa72da359474c4f8",
+            "toHash": "01bbe80e61c8392c9cbe79050730106ecc887c36",
+            "rangeStartDate": "2026-01-17T10:58:42-05:00",
+            "rangeEndDate": "2026-01-19T03:59:42-05:00",
+            "summaryLines": [
+                "refactor(tooling-config): renamed typescript-config package to also hold typedoc.json",
+                "refactor(tooling-config): updated packages and apps to use new tooling-config",
+                "chore: fixed .gitignore typo",
+                "chore(tooling-config): updated typedoc.json to reference relative docs dir",
+                "fix(tooling-config): fixed missing entryPoints dir"
+            ],
+            "createdAt": "2026-01-26T20:53:42.643Z"
+        }
+    ]
+}

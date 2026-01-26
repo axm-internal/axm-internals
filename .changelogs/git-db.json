@@ -1,0 +1,34 @@
+{
+    "scope": "git-db",
+    "entries": [
+        {
+            "version": "0.1.0",
+            "tag": "@axm-internal/git-db@0.1.0",
+            "fromHash": "556104405e8b1df637e8bb0714712ee108e27819",
+            "toHash": "56f27a85cfeaa5ace6a17987a0fbbf4d8b6cd269",
+            "rangeStartDate": "2026-01-22T13:12:50-05:00",
+            "rangeEndDate": "2026-01-23T18:12:02-05:00",
+            "summaryLines": [
+                "feat(git-db): initialized package",
+                "feat(git-db): added schema, migrations, and db openers",
+                "feat(git-db): added git readers for commits and files",
+                "feat(git-db): indexed commits, authors, and files",
+                "feat(git-db): added query helpers for commits and files",
+                "docs(git-db): documented usage and API surface",
+                "feat(git-db): added cli commands",
+                "feat(git-db): improved error handling",
+                "feat(git-db): improved db path by using DBPathSchema",
+                "feat(git-db): added creation of db parent dir",
+                "feat(git-db): added list commands to list data",
+                "feat(git-db): default query now lists commits",
+                "feat(git-db): added cli-table rendering of lists",
+                "feat(git-db): added breaking-change metadata to commits",
+                "docs(git-db): updated docs",
+                "ci(git-db): added git-db package to CI",
+                "fix(git-db): hardened commit queries and schema constraints",
+                "ci(git-db): eliminated the CI flake while still asserting the default behavior"
+            ],
+            "createdAt": "2026-01-26T20:53:42.562Z"
+        }
+    ]
+}

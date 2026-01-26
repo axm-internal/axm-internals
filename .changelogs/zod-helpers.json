@@ -1,0 +1,22 @@
+{
+    "scope": "zod-helpers",
+    "entries": [
+        {
+            "version": "0.1.0",
+            "tag": "@axm-internal/zod-helpers@0.1.0",
+            "fromHash": "50a5d3a787f8cfd1557abb3b20fd948b815f180b",
+            "toHash": "c6a8d4f4118abb7826353281c3e242bcd9f31697",
+            "rangeStartDate": "2026-01-14T08:00:05-05:00",
+            "rangeEndDate": "2026-01-15T09:59:53-05:00",
+            "summaryLines": [
+                "feat(zod-helpers): initialized new package",
+                "feat(zod-helpers): completed zod-helpers",
+                "test: added coverage script to turbo pipeline, apps/packages and template",
+                "test: improved test reporters and uploads - updated coverage upload ci to include junit files - added .gitignore and bunfig files to apps and packages - created local coverage upload script",
+                "fix: fixed ignore line typo",
+                "refactor: changed project scope name"
+            ],
+            "createdAt": "2026-01-26T20:53:42.745Z"
+        }
+    ]
+}
