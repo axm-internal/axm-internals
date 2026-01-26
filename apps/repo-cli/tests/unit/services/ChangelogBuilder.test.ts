@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'bun:test';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import type { Commit } from '@axm-internal/git-db';
 import type { RootChangelog, ScopeChangelog } from '../../../src/schemas/ChangelogJsonSchema';
 import type { PackageApp } from '../../../src/schemas/PackageAppSchema';
-import { ChangelogBuilder } from '../../../src/services/ChangelogBuilder';
+import { ChangelogBuilder, resolvePackageTargets } from '../../../src/services/ChangelogBuilder';
 import type { ChangelogStore } from '../../../src/services/ChangelogStore';
 import type { PackageInfoService } from '../../../src/services/PackageInfoService';
 
@@ -101,5 +104,63 @@ describe('ChangelogBuilder', () => {
 
         const scopeData = await store.readScope('cli-kit');
         expect(scopeData.entries).toHaveLength(1);
+    });
+
+    it('renders markdown changelogs from stored entries', async () => {
+        const commits = [buildCommit('a1', 'feat(cli-kit): init')];
+        const info = new FakePackageInfo(commits, '@axm-internal/cli-kit@0.1.0');
+        const store = new MemoryStore();
+        const builder = new ChangelogBuilder(info as unknown as PackageInfoService, store as unknown as ChangelogStore);
+        const repoRoot = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'changelog-md-'));
+        const cwd = process.cwd();
+
+        await store.writeScope({
+            scope: 'cli-kit',
+            entries: [
+                {
+                    version: '0.1.0',
+                    tag: '@axm-internal/cli-kit@0.1.0',
+                    fromHash: 'a1',
+                    toHash: 'a1',
+                    summaryLines: ['feat(cli-kit): init'],
+                    createdAt: new Date().toISOString(),
+                },
+            ],
+        });
+        await store.writeRoot({
+            entries: [
+                {
+                    scope: 'cli-kit',
+                    version: '0.1.0',
+                    tag: '@axm-internal/cli-kit@0.1.0',
+                    fromHash: 'a1',
+                    toHash: 'a1',
+                    summaryLines: ['feat(cli-kit): init'],
+                    createdAt: new Date().toISOString(),
+                },
+            ],
+        });
+
+        try {
+            process.chdir(repoRoot);
+            await fs.promises.mkdir(path.join(repoRoot, 'packages/cli-kit'), { recursive: true });
+            await builder.writeMarkdown(['packages/cli-kit']);
+        } finally {
+            process.chdir(cwd);
+        }
+
+        const packageChangelog = await Bun.file(path.join(repoRoot, 'packages/cli-kit/CHANGELOG.md')).text();
+        const rootChangelog = await Bun.file(path.join(repoRoot, 'CHANGELOG.md')).text();
+
+        expect(packageChangelog.includes('## 0.1.0')).toBe(true);
+        expect(rootChangelog.includes('## cli-kit 0.1.0')).toBe(true);
+    });
+
+    it('resolves package targets from flags', () => {
+        const single = resolvePackageTargets('packages/cli-kit');
+        expect(single).toEqual(['packages/cli-kit']);
+
+        const all = resolvePackageTargets(undefined, true);
+        expect(all.length).toBeGreaterThan(0);
     });
 });

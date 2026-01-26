@@ -131,4 +131,15 @@ describe('PackageInfoService', () => {
         const result = await service.releases('cli-kit');
         expect(result).toEqual([{ scope: 'cli-kit', tags: ['@axm-internal/cli-kit@0.2.0'] }]);
     });
+
+    it('returns release tags for a scope', async () => {
+        const service = new PackageInfoService(
+            createGitQuery({
+                listReleaseTagsForScope: async () => ['@axm-internal/cli-kit@0.2.0', '@axm-internal/cli-kit@0.1.0'],
+            })
+        );
+
+        const result = await service.releaseTags('cli-kit');
+        expect(result).toEqual(['@axm-internal/cli-kit@0.2.0', '@axm-internal/cli-kit@0.1.0']);
+    });
 });
