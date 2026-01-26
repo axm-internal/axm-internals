@@ -264,7 +264,9 @@ export class ChangelogBuilder {
         versionOverride?: string
     ): ChangelogEntry {
         const version = versionOverride ?? this.extractVersion(tagName) ?? '0.0.0';
-        const summaryLines = commits.map((commit) => commit.message).filter(Boolean);
+        const summaryLines = commits
+            .map((commit) => commit.message)
+            .filter((message) => Boolean(message) && !message.startsWith('Merge '));
         return {
             version,
             tag: tagName,
@@ -307,7 +309,7 @@ export class ChangelogBuilder {
             .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
             .map((entry) => {
                 const bullets = entry.summaryLines.map((line) => `- ${line}`).join('\n');
-                return `## ${entry.scope} ${entry.version}\n${bullets}`;
+                return `## ${entry.createdAt}\n${bullets}`;
             });
         const content = `${['# Changelog', ...lines].join('\n\n')}\n`;
         await Bun.write(file, content);

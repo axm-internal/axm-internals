@@ -219,7 +219,7 @@ describe('ChangelogBuilder', () => {
                     fromHash: 'a1',
                     toHash: 'a1',
                     summaryLines: ['feat(cli-kit): init'],
-                    createdAt: new Date().toISOString(),
+                    createdAt: '2026-01-01T00:00:00.000Z',
                 },
             ],
         });
@@ -232,7 +232,7 @@ describe('ChangelogBuilder', () => {
                     fromHash: 'a1',
                     toHash: 'a1',
                     summaryLines: ['feat(cli-kit): init'],
-                    createdAt: new Date().toISOString(),
+                    createdAt: '2026-01-01T00:00:00.000Z',
                 },
             ],
         });
@@ -249,7 +249,7 @@ describe('ChangelogBuilder', () => {
         const rootChangelog = await Bun.file(path.join(repoRoot, 'CHANGELOG.md')).text();
 
         expect(packageChangelog.includes('## 0.1.0')).toBe(true);
-        expect(rootChangelog.includes('## cli-kit 0.1.0')).toBe(true);
+        expect(rootChangelog.includes('## 2026-01-01T00:00:00.000Z')).toBe(true);
     });
 
     it('resolves package targets from flags', () => {
