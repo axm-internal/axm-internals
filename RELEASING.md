@@ -4,13 +4,21 @@ This repo uses Changesets for versioning and publishing. Manual releases are dri
 
 ## Manual Release Flow
 
-1) Update the git-db index so release data is current:
+1) Create a release branch from `main`:
+
+```bash
+git checkout main
+git pull
+git checkout -b release/<yyyy-mm-dd>
+```
+
+2) Update the git-db index so release data is current:
 
 ```bash
 ./repo-cli gitdb:index
 ```
 
-1b) (Optional) Backfill or render changelogs from `.changelogs/`:
+3) (Optional) Backfill or render changelogs from `.changelogs/`:
 
 ```bash
 ./repo-cli changelog:backfill --all --dry
@@ -18,39 +26,44 @@ This repo uses Changesets for versioning and publishing. Manual releases are dri
 ./repo-cli changelog:write --all
 ```
 
-2) Preview draft release data for the package(s) you plan to release:
+4) Preview changesets for the package(s) you plan to release:
 
 ```bash
 ./repo-cli changesets:create packages/cli-kit --dry
 ./repo-cli changesets:create --all --dry
 ```
 
-3) Write draft files for the package(s) you plan to release:
+5) Write changeset files for the package(s) you plan to release:
 
 ```bash
 ./repo-cli changesets:create packages/cli-kit
 ./repo-cli changesets:create --all
 ```
 
-Drafts are written to `.changeset-drafts/` at the repo root. Use these drafts to prepare your official Changesets.
+Changesets are written to `.changeset/` at the repo root. Drafts (JSON) are written to
+`.changeset-drafts/` for reference.
 
-4) Create actual Changesets (the files under `.changeset/`) using the draft data:
-
-```bash
-bun changeset
-```
-
-When prompted, select the target package(s), choose the bump type, and paste a summary derived from the draft(s).
-
-5) Commit code + `.changeset` files and open a PR:
+6) Commit code + `.changeset` files and open a PR:
 
 ```bash
 git status
 git add .
-git commit -m "Prepared release changesets"
+git commit -m "chore(release): prepared release changesets"
 ```
 
-6) Merge to `main`. The Release workflow will run and publish the updated packages.
+7) Merge the PR to `main`.
+
+8) From `main`, version and publish:
+
+```bash
+git checkout main
+git pull
+bunx changeset version
+git add .
+git commit -m "chore(release): versioned packages"
+git push
+bunx changeset publish
+```
 
 ## Notes
 

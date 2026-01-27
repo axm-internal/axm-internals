@@ -37,6 +37,21 @@
                 "docs(repo-cli): updated changeset related docs for future refactor"
             ],
             "createdAt": "2026-01-26T20:53:42.258Z"
+        },
+        {
+            "version": "2026-01-26T22:37:54-05:00",
+            "tag": null,
+            "fromHash": "2527ff865af9ddbdfe3100884bced729a73c7dfe",
+            "toHash": "2dc84ef6274398e3bcaf1ce3e041f6b483529b01",
+            "rangeStartDate": "2026-01-26T15:55:37-05:00",
+            "rangeEndDate": "2026-01-26T22:37:54-05:00",
+            "summaryLines": [
+                "docs: created backfilll changelogs",
+                "fix(repo-cli): excluded tag commit when building changeset drafts",
+                "fix(repo-cli): fixed number to boolean conversion",
+                "feat(repo-cli): completed json -> md conversion of changesets"
+            ],
+            "createdAt": "2026-01-27T17:24:47.716Z"
         }
     ]
 }

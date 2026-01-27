@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-01-26T22:37:54-05:00
+- docs: created backfilll changelogs
+- fix(repo-cli): excluded tag commit when building changeset drafts
+- fix(repo-cli): fixed number to boolean conversion
+- feat(repo-cli): completed json -> md conversion of changesets
+
 ## 2026-01-26T15:43:18-05:00
 - refactor(repo-cli): scoped prompt-runner commands
 - feat(repo-cli): created better package/app validation
