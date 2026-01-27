@@ -60,4 +60,30 @@ describe('ChangeSetWriter', () => {
             expect(await file.exists()).toBe(true);
         }
     });
+
+    it('writes changeset markdown files', async () => {
+        const repoRoot = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'changeset-writer-'));
+        const packagePath = path.join(repoRoot, 'packages/cli-kit');
+        await fs.promises.mkdir(packagePath, { recursive: true });
+        await fs.promises.writeFile(
+            path.join(packagePath, 'package.json'),
+            JSON.stringify({ name: '@axm-internal/cli-kit' }, null, 2)
+        );
+
+        const writer = new ChangeSetWriter({ repoRoot });
+        const draft = buildDraft({
+            packagePath: 'packages/cli-kit',
+            summaryLines: ['feat(cli-kit): added thing'],
+            suggestedBump: 'minor',
+        });
+
+        const result = await writer.writeChangeset(draft);
+        const file = Bun.file(result.filePath);
+
+        expect(result.filePath.startsWith(path.join(repoRoot, '.changeset'))).toBe(true);
+        expect(await file.exists()).toBe(true);
+        const content = await file.text();
+        expect(content).toContain('"@axm-internal/cli-kit": minor');
+        expect(content).toContain('- feat(cli-kit): added thing');
+    });
 });

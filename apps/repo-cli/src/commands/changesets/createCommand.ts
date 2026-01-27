@@ -8,15 +8,15 @@ import { listPackageApps } from '../../utils/listPackageApps';
 
 export const changesetCreateCommand = createCommandDefinition({
     name: 'changesets:create',
-    description: 'Create changeset drafts from git history (writes unless --dry).',
+    description: 'Create changesets from git history (writes unless --dry).',
     argsSchema: z.object({
         packagePath: PackageAppSchema.optional().meta({
             description: 'Optional apps/<name> or packages/<name> (required unless --all).',
         }),
     }),
     optionsSchema: z.object({
-        all: z.boolean().meta({ description: 'Generate drafts for all packages.' }).optional(),
-        dry: z.boolean().meta({ description: 'Preview drafts without writing files.' }).optional(),
+        all: z.boolean().meta({ description: 'Generate changesets for all packages.' }).optional(),
+        dry: z.boolean().meta({ description: 'Preview changesets without writing files.' }).optional(),
     }),
     action: async ({ container, args: { packagePath }, options }) => {
         const outputService = container.resolve(InteractiveOutputService);
@@ -25,13 +25,21 @@ export const changesetCreateCommand = createCommandDefinition({
 
         if (options.all) {
             const drafts = await creator.createForPackagePaths(listPackageApps());
+            const withCommits = drafts.filter((draft) => draft.commits.length > 0);
+            const skipped = drafts.length - withCommits.length;
             if (!options.dry) {
-                const results = await writer.writeDrafts(drafts);
+                const results = await writer.writeChangesets(withCommits);
                 outputService.logType({
                     type: 'info',
-                    message: 'Drafts written (all)',
+                    message: 'Changesets written (all)',
                     obj: results,
                 });
+                if (skipped > 0) {
+                    outputService.logType({
+                        type: 'info',
+                        message: `Skipped ${skipped} package(s) with no commits after the latest tag.`,
+                    });
+                }
                 return;
             }
             outputService.logType({
@@ -49,10 +57,17 @@ export const changesetCreateCommand = createCommandDefinition({
         const draft = await creator.createForPackagePath(packagePath);
 
         if (!options.dry) {
-            const result = await writer.writeDraft(draft);
+            if (draft.commits.length === 0) {
+                outputService.logType({
+                    type: 'info',
+                    message: 'No commits found after the latest tag. Skipping changeset.',
+                });
+                return;
+            }
+            const result = await writer.writeChangeset(draft);
             outputService.logType({
                 type: 'info',
-                message: 'Draft written',
+                message: 'Changeset written',
                 obj: result,
             });
             return;
