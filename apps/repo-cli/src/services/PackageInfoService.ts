@@ -112,6 +112,19 @@ export class PackageInfoService {
     }
 
     /**
+     * Fetch commits after a hash for a scope (exclusive).
+     *
+     * @param scope - Conventional commit scope (e.g., `cli-kit`).
+     * @param fromHash - Start hash (exclusive).
+     * @param toHash - End hash (inclusive).
+     * @returns Ordered commits for the scope after the start hash.
+     */
+    async commitsAfter(scope: string, fromHash: string, toHash: string): Promise<Commit[]> {
+        ensureValidScope(scope);
+        return await this.gitQuery.getCommitsAfterHash(scope, fromHash, toHash);
+    }
+
+    /**
      * Fetch commits for a scope or matching file paths between two hashes.
      *
      * @param packagePath - Package or app path (e.g., `packages/cli-kit`).

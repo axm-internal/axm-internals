@@ -398,6 +398,38 @@ export class GitQuery {
     }
 
     /**
+     * List commits after a hash for a scope (exclusive).
+     *
+     * @param scope - Conventional commit scope (e.g., `cli-kit`).
+     * @param fromHash - Start hash (exclusive).
+     * @param toHash - End hash (inclusive).
+     * @returns Ordered commits after the start hash.
+     * @example
+     * ```ts
+     * const commits = await git.getCommitsAfterHash('cli-kit', fromHash, toHash);
+     * ```
+     */
+    async getCommitsAfterHash(scope: string, fromHash: string, toHash: string): Promise<Commit[]> {
+        const hashes = await this.listHashesAfter(fromHash, toHash);
+
+        if (hashes.length === 0) {
+            return [];
+        }
+
+        const db = await this.getDb();
+        const commits = await db
+            .selectFrom('commits')
+            .selectAll()
+            .where('scope', '=', scope)
+            .where('hash', 'in', hashes)
+            .execute();
+
+        const commitByHash = new Map(commits.map((commit) => [commit.hash, commit]));
+
+        return hashes.map((hash) => commitByHash.get(hash)).filter(Boolean) as Commit[];
+    }
+
+    /**
      * List commits between two hashes for a scope or path prefix (inclusive).
      *
      * @param scope - Conventional commit scope (e.g., `cli-kit`).
@@ -526,8 +558,23 @@ export class GitQuery {
      * const hashes = await git['listHashesBetween'](fromHash, toHash);
      * ```
      */
-    private async listHashesBetween(fromHash: string, toHash: string): Promise<string[]> {
+    protected async listHashesBetween(fromHash: string, toHash: string): Promise<string[]> {
         const { stdout } = await execa('git', ['rev-list', '--reverse', `${fromHash}^..${toHash}`]);
+        return stdout
+            .split('\n')
+            .map((line) => line.trim())
+            .filter(Boolean);
+    }
+
+    /**
+     * List commit hashes after a hash (exclusive) up to another hash (inclusive).
+     *
+     * @param fromHash - Start hash (exclusive).
+     * @param toHash - End hash (inclusive).
+     * @returns Ordered list of hashes after the start hash.
+     */
+    protected async listHashesAfter(fromHash: string, toHash: string): Promise<string[]> {
+        const { stdout } = await execa('git', ['rev-list', '--reverse', `${fromHash}..${toHash}`]);
         return stdout
             .split('\n')
             .map((line) => line.trim())

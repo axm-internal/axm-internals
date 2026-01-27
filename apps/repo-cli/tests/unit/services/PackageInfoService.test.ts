@@ -79,6 +79,18 @@ describe('PackageInfoService', () => {
         expect(result.map((commit) => commit.hash)).toEqual(['a', 'b']);
     });
 
+    it('returns commits after a hash', async () => {
+        const commits = [buildCommit({ hash: 'b', scope: 'cli-kit' })];
+        const service = new PackageInfoService(
+            createGitQuery({
+                getCommitsAfterHash: async () => commits,
+            })
+        );
+
+        const result = await service.commitsAfter('cli-kit', 'a', 'b');
+        expect(result.map((commit) => commit.hash)).toEqual(['b']);
+    });
+
     it('returns commits for a package by scope or path', async () => {
         const commits = [buildCommit({ hash: 'a', scope: 'cli-kit' }), buildCommit({ hash: 'b', scope: 'repo-cli' })];
         const service = new PackageInfoService(

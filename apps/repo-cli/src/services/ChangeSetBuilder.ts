@@ -28,8 +28,12 @@ export class ChangeSetBuilder {
         const tagCommit = refs.latestTagName ? await this.packageInfo.commitForTag(refs.latestTagName) : null;
         const fromCommit = tagCommit ?? refs.first;
         const toCommit = latestCommit;
-        const commits =
-            fromCommit && toCommit ? await this.packageInfo.commits(scope, fromCommit.hash, toCommit.hash) : [];
+        let commits: Commit[] = [];
+        if (fromCommit && toCommit) {
+            commits = tagCommit
+                ? await this.packageInfo.commitsAfter(scope, fromCommit.hash, toCommit.hash)
+                : await this.packageInfo.commits(scope, fromCommit.hash, toCommit.hash);
+        }
         const resolveDefaultPackagePath = (): PackageApp | undefined => {
             const packageCandidate = `packages/${scope}`;
             if (isValidPackageApp(packageCandidate)) {
