@@ -21,5 +21,7 @@ jobs:
         with:
           version: bunx changeset version
           publish: bunx changeset publish
+          commit: "chore(release): versioned packages"
+          title: "chore(release): versioned packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
