@@ -1,8 +1,14 @@
 {
     "name": "@axm-internal/hono-kit",
     "version": "0.1.0",
-    "type": "module",
     "main": "src/index.ts",
+    "devDependencies": {
+        "@axm-internal/tooling-config": "*",
+        "typedoc": "^0.28.2",
+        "typedoc-plugin-markdown": "^4.8.1",
+        "typescript": "^5",
+        "@types/bun": "^1.3"
+    },
     "description": "Opinionated Hono server wrapper with Zod-first validation",
     "publishConfig": {
         "registry": "https://npm.pkg.github.com"
@@ -16,15 +22,10 @@
         "docs": "typedoc",
         "validate": "echo \"Validated\""
     },
-    "devDependencies": {
-        "@axm-internal/tooling-config": "*",
-        "typedoc": "^0.28.2",
-        "typedoc-plugin-markdown": "^4.8.1",
-        "typescript": "^5",
-        "@types/bun": "^1.3"
-    },
+    "type": "module",
     "dependencies": {
         "hono": "^4.11.7",
-        "pino": "^10.3.0"
+        "pino": "^10.3.0",
+        "zod": "^4.3.6"
     }
 }

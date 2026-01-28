@@ -5,6 +5,7 @@ export type {
     ValidationErrorItem,
 } from './errors/responseEnvelopes';
 export { errorEnvelope, successEnvelope } from './errors/responseEnvelopes';
+export { ValidationError } from './errors/ValidationError';
 export type { CreatePinoLoggerOptions } from './logging/pinoAdapter';
 export { createPinoLogger } from './logging/pinoAdapter';
 export { getRequestId } from './server/getRequestId';
@@ -19,3 +20,5 @@ export type {
     LifecycleContext,
     MaybePromise,
 } from './server/types';
+export type { ValidationSource } from './validation/inputValidation';
+export { formatValidationPath, validateInput } from './validation/inputValidation';
