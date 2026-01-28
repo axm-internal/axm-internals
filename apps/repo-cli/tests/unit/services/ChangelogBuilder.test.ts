@@ -40,6 +40,7 @@ class FakePackageInfo {
     protected scope: string;
     protected commitsByPackage: Map<string, Commit[]>;
     protected unscopedCommits: Commit[];
+    public indexCalls = 0;
 
     constructor(
         commits: Commit[],
@@ -60,6 +61,7 @@ class FakePackageInfo {
     }
 
     async indexDb(): Promise<void> {
+        this.indexCalls += 1;
         return;
     }
 
@@ -264,5 +266,75 @@ describe('ChangelogBuilder', () => {
 
         const all = resolvePackageTargets(undefined, true);
         expect(all.length).toBeGreaterThan(0);
+    });
+
+    it('reports updates based on latest commit', async () => {
+        const commits = [buildCommit('a1', 'feat(cli-kit): init'), buildCommit('b1', 'feat(cli-kit): next')];
+        const commitsByPackage = new Map<string, Commit[]>();
+        commitsByPackage.set('packages/cli-kit', commits);
+        const info = new FakePackageInfo(commits, '@axm-internal/cli-kit@0.1.0', 'cli-kit', commitsByPackage, []);
+        const store = new MemoryStore();
+        await store.writeScope({
+            scope: 'cli-kit',
+            entries: [
+                {
+                    version: '0.1.0',
+                    tag: '@axm-internal/cli-kit@0.1.0',
+                    fromHash: 'a1',
+                    toHash: 'a1',
+                    rangeStartDate: '2026-01-01T00:00:00.000Z',
+                    rangeEndDate: '2026-01-01T00:00:00.000Z',
+                    summaryLines: ['feat(cli-kit): init'],
+                    createdAt: '2026-01-01T00:00:00.000Z',
+                },
+            ],
+        });
+
+        const builder = new ChangelogBuilder(info as unknown as PackageInfoService, store as unknown as ChangelogStore);
+        const report = await builder.reportUpdate(['packages/cli-kit']);
+
+        expect(info.indexCalls).toBe(1);
+        expect(report.updated).toBe(1);
+        expect(report.items[0]?.fromHash).toBe('b1');
+        expect(report.items[0]?.toHash).toBe('b1');
+    });
+
+    it('appends update entries using latest commit range', async () => {
+        const commits = [buildCommit('a1', 'feat(cli-kit): init'), buildCommit('b1', 'feat(cli-kit): next')];
+        const rootCommit = buildCommit('r1', 'chore: root update', null);
+        const commitsByPackage = new Map<string, Commit[]>();
+        commitsByPackage.set('packages/cli-kit', commits);
+        const info = new FakePackageInfo(commits, '@axm-internal/cli-kit@0.1.0', 'cli-kit', commitsByPackage, [
+            rootCommit,
+        ]);
+        const store = new MemoryStore();
+        await store.writeScope({
+            scope: 'cli-kit',
+            entries: [
+                {
+                    version: '0.1.0',
+                    tag: '@axm-internal/cli-kit@0.1.0',
+                    fromHash: 'a1',
+                    toHash: 'a1',
+                    rangeStartDate: '2026-01-01T00:00:00.000Z',
+                    rangeEndDate: '2026-01-01T00:00:00.000Z',
+                    summaryLines: ['feat(cli-kit): init'],
+                    createdAt: '2026-01-01T00:00:00.000Z',
+                },
+            ],
+        });
+
+        const builder = new ChangelogBuilder(info as unknown as PackageInfoService, store as unknown as ChangelogStore);
+        const applied = await builder.update(['packages/cli-kit']);
+
+        expect(applied.updated).toBe(1);
+
+        const scopeData = await store.readScope('cli-kit');
+        expect(scopeData.entries.length).toBe(2);
+        expect(scopeData.entries[1]?.summaryLines).toContain('feat(cli-kit): next');
+
+        const rootData = await store.readRoot();
+        expect(rootData.entries.length).toBe(1);
+        expect(rootData.entries[0]?.summaryLines).toContain('chore: root update');
     });
 });
