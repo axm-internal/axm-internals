@@ -20,6 +20,21 @@ export interface BackfillReport {
     }>;
 }
 
+export interface UpdateReport {
+    total: number;
+    updated: number;
+    ok: number;
+    items: Array<{
+        scope: string;
+        packagePath: PackageApp;
+        updated: boolean;
+        fromHash: string | null;
+        toHash: string | null;
+        fromDate: string | null;
+        toDate: string | null;
+    }>;
+}
+
 export class ChangelogBuilder {
     protected packageInfo: PackageInfoService;
     protected store: ChangelogStore;
@@ -101,6 +116,78 @@ export class ChangelogBuilder {
             total: reportItems.length,
             needsBackfill,
             ok: reportItems.length - needsBackfill,
+            items: reportItems,
+        };
+    }
+
+    async update(targets: PackageApp[]): Promise<UpdateReport> {
+        await this.packageInfo.indexDb();
+        const reportItems: UpdateReport['items'] = [];
+
+        for (const target of targets) {
+            const info = await this.buildUpdateInfo(target);
+
+            reportItems.push({
+                scope: info.scope,
+                packagePath: target,
+                updated: info.updated,
+                fromHash: info.fromCommit?.hash ?? null,
+                toHash: info.toCommit?.hash ?? null,
+                fromDate: info.fromCommit?.date ?? null,
+                toDate: info.toCommit?.date ?? null,
+            });
+
+            if (!info.updated) {
+                continue;
+            }
+
+            if (!info.fromCommit || !info.toCommit) {
+                continue;
+            }
+
+            await this.addEntry(
+                info.scope,
+                null,
+                info.fromCommit,
+                info.toCommit,
+                info.scopeCommits,
+                info.rootCommits,
+                info.versionOverride
+            );
+        }
+
+        const updated = reportItems.filter((item) => item.updated).length;
+
+        return {
+            total: reportItems.length,
+            updated,
+            ok: reportItems.length - updated,
+            items: reportItems,
+        };
+    }
+
+    async reportUpdate(targets: PackageApp[]): Promise<UpdateReport> {
+        await this.packageInfo.indexDb();
+        const reportItems: UpdateReport['items'] = [];
+
+        for (const target of targets) {
+            const info = await this.buildUpdateInfo(target);
+            reportItems.push({
+                scope: info.scope,
+                packagePath: target,
+                updated: info.updated,
+                fromHash: info.fromCommit?.hash ?? null,
+                toHash: info.toCommit?.hash ?? null,
+                fromDate: info.fromCommit?.date ?? null,
+                toDate: info.toCommit?.date ?? null,
+            });
+        }
+
+        const updated = reportItems.filter((item) => item.updated).length;
+        return {
+            total: reportItems.length,
+            updated,
+            ok: reportItems.length - updated,
             items: reportItems,
         };
     }
@@ -247,6 +334,41 @@ export class ChangelogBuilder {
             scopeCommits,
             rootCommits,
             needsBackfill,
+        };
+    }
+
+    protected async buildUpdateInfo(target: PackageApp) {
+        const [, scope] = splitPackageApp(target);
+        ensureValidScope(scope);
+        const refs = await this.packageInfo.refs(scope);
+        const scopeData = await this.store.readScope(scope);
+        const lastEntry = this.getLatestEntry(scopeData);
+        const lastHash = lastEntry?.toHash ?? null;
+        const lastCommit = lastHash ? await this.packageInfo.commitByHash(lastHash) : null;
+        const latestCommit = await this.packageInfo.latest(scope);
+        const startCommit = lastCommit ?? refs.first;
+        const endCommit = latestCommit;
+
+        const scopeCommits =
+            startCommit && endCommit
+                ? await this.packageInfo.commitsForPackage(target, scope, startCommit.hash, endCommit.hash)
+                : [];
+        const rootCommitsAll =
+            startCommit && endCommit ? await this.packageInfo.commitsUnscoped(startCommit.hash, endCommit.hash) : [];
+
+        const nextScopeCommits = this.removeCommit(scopeCommits, lastHash);
+        const nextRootCommits = this.removeCommit(rootCommitsAll, lastHash);
+        const updated = Boolean(nextScopeCommits.length > 0);
+        const versionOverride = endCommit?.date ?? new Date().toISOString();
+
+        return {
+            scope,
+            fromCommit: nextScopeCommits[0] ?? startCommit,
+            toCommit: endCommit,
+            scopeCommits: nextScopeCommits,
+            rootCommits: nextRootCommits,
+            updated,
+            versionOverride,
         };
     }
 

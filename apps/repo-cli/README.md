@@ -34,6 +34,8 @@ bun dev changelog:write --all
   - non-publishable: continue from the last JSON entry’s `toHash`
 - Backfill includes commits that either match the scope or touch files under the package/app path.
 - `changelog:backfill --all --dry` — Preview backfill report for all packages.
+- `changelog:update <package-path>` — Append new `.changelogs` entries from git-db.
+- `changelog:update --all --dry` — Preview update report for all packages.
 - `changelog:report <package-path>` — Show backfill/report status for a package.
 - `changelog:write <package-path>` — Render markdown changelogs from `.changelogs` JSON.
 - `changesets:backfill <package-path>` — Report (and optionally backfill) missing initial changelogs.
