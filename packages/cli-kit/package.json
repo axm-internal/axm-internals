@@ -1,6 +1,6 @@
 {
     "name": "@axm-internal/cli-kit",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "type": "module",
     "main": "src/index.ts",
     "description": "Composable toolkit for building CLI applications with Commander",
