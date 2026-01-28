@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-01-28T05:50:56-05:00
+- chore(release): prepared release changesets
+- chore(release): versioned packages
+- feat(repo-cli): created update changelogs command
+
 ## 2026-01-26T22:37:54-05:00
 - docs: created backfilll changelogs
 - fix(repo-cli): excluded tag commit when building changeset drafts

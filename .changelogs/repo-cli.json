@@ -52,6 +52,20 @@
                 "feat(repo-cli): completed json -> md conversion of changesets"
             ],
             "createdAt": "2026-01-27T17:24:47.716Z"
+        },
+        {
+            "version": "2026-01-28T05:50:56-05:00",
+            "tag": null,
+            "fromHash": "b89a46f41b9db3403e241ff5d30b611795877d2c",
+            "toHash": "df6bc4ea6ed738d45a11ca805bab32fbc7390c69",
+            "rangeStartDate": "2026-01-27T12:28:18-05:00",
+            "rangeEndDate": "2026-01-28T05:50:56-05:00",
+            "summaryLines": [
+                "chore(release): prepared release changesets",
+                "chore(release): versioned packages",
+                "feat(repo-cli): created update changelogs command"
+            ],
+            "createdAt": "2026-01-28T10:51:45.583Z"
         }
     ]
 }

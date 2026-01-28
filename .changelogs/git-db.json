@@ -29,6 +29,37 @@
                 "ci(git-db): eliminated the CI flake while still asserting the default behavior"
             ],
             "createdAt": "2026-01-26T20:53:42.562Z"
+        },
+        {
+            "version": "2026-01-24T23:03:23-05:00",
+            "tag": null,
+            "fromHash": "556104405e8b1df637e8bb0714712ee108e27819",
+            "toHash": "c2f2ce49ca05070070698ec8a42bb08c2d0f3465",
+            "rangeStartDate": "2026-01-22T13:12:50-05:00",
+            "rangeEndDate": "2026-01-24T23:03:23-05:00",
+            "summaryLines": [
+                "feat(git-db): initialized package",
+                "feat(git-db): added schema, migrations, and db openers",
+                "feat(git-db): added git readers for commits and files",
+                "feat(git-db): indexed commits, authors, and files",
+                "feat(git-db): added query helpers for commits and files",
+                "docs(git-db): documented usage and API surface",
+                "feat(git-db): added cli commands",
+                "feat(git-db): improved error handling",
+                "feat(git-db): improved db path by using DBPathSchema",
+                "feat(git-db): added creation of db parent dir",
+                "feat(git-db): added list commands to list data",
+                "feat(git-db): default query now lists commits",
+                "feat(git-db): added cli-table rendering of lists",
+                "feat(git-db): added breaking-change metadata to commits",
+                "docs(git-db): updated docs",
+                "ci(git-db): added git-db package to CI",
+                "fix(git-db): hardened commit queries and schema constraints",
+                "ci(git-db): eliminated the CI flake while still asserting the default behavior",
+                "chore(git-db): made scanCommits and CommitScanResult publicly accessible",
+                "fix(git-db): fixed renderJson param type"
+            ],
+            "createdAt": "2026-01-28T10:51:45.790Z"
         }
     ]
 }

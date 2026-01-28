@@ -17,6 +17,24 @@
                 "refactor: changed project scope name"
             ],
             "createdAt": "2026-01-26T20:53:42.745Z"
+        },
+        {
+            "version": "2026-01-18T16:39:56-05:00",
+            "tag": null,
+            "fromHash": "378b3af15ea55b76b03ee56a6b82cba330d9851f",
+            "toHash": "1d5a03f4d4e7aca619d4d28a682e834dc679affe",
+            "rangeStartDate": "2026-01-15T09:23:10-05:00",
+            "rangeEndDate": "2026-01-18T16:39:56-05:00",
+            "summaryLines": [
+                "refactor: changed project scope name",
+                "chore(cli-kit): initialized new package",
+                "feat: changed typedoc configs to exclude @internal symbols",
+                "refactor(tooling-config): updated packages and apps to use new tooling-config",
+                "chore: fixed .gitignore typo",
+                "chore(tooling-config): updated typedoc.json to reference relative docs dir",
+                "feat(zod-helpers): created getSchemaMeta and getMetaValue util functions"
+            ],
+            "createdAt": "2026-01-28T10:51:45.919Z"
         }
     ]
 }
