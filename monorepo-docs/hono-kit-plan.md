@@ -67,7 +67,7 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/src/routing/route.ts`
   - `packages/hono-kit/src/server/types.ts`
   - `packages/hono-kit/src/index.ts`
-  - `packages/hono-kit/tests/unit/route.test.ts`
+  - `packages/hono-kit/tests/unit/routing/route.test.ts`
 - Commit: `feat(hono-kit): added route builder and route types`
 
 ## 7) RoutesCollection and registration (+ unit tests)

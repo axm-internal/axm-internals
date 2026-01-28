@@ -50,6 +50,24 @@ const server = createHonoServer({
 });
 
 export const app = server.app;
+
+## Route Helper Example
+
+```ts
+import { route } from "@axm-internal/hono-kit";
+import { z } from "zod";
+
+const getUser = route({
+    method: "get",
+    path: "/users/:id",
+    params: z.object({ id: z.string() }),
+    query: z.object({ includePosts: z.boolean().optional() }).optional(),
+    response: z.object({ id: z.string(), name: z.string() }),
+    authorized: true,
+    handler: async (c, input) =>
+        c.json({ id: input.params.id, name: "Ada" }),
+});
+```
 ```
 
 ## Notes
