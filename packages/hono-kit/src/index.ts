@@ -5,6 +5,8 @@ export type {
     ValidationErrorItem,
 } from './errors/responseEnvelopes';
 export { errorEnvelope, successEnvelope } from './errors/responseEnvelopes';
+export type { CreatePinoLoggerOptions } from './logging/pinoAdapter';
+export { createPinoLogger } from './logging/pinoAdapter';
 export { getRequestId } from './server/getRequestId';
 export { getIsDevelopment } from './server/isDevelopment';
 export type {

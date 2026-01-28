@@ -30,15 +30,14 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/tests/unit/server/isDevelopment.test.ts`
 - Commit: `feat(hono-kit): added core types and error handler`
 
-## 3) Logging adapters (+ unit tests)
+## 3) Pino logging integration (+ unit tests)
 
-- Goal: Provide Pino and console adapters for the logger interface.
+- Goal: Provide Pino-first logging integration (no console adapter in MVP).
 - Files:
   - `packages/hono-kit/src/logging/pinoAdapter.ts`
-  - `packages/hono-kit/src/logging/consoleAdapter.ts`
   - `packages/hono-kit/src/index.ts`
-  - `packages/hono-kit/tests/unit/loggerAdapter.test.ts`
-- Commit: `feat(hono-kit): added logger adapters`
+  - `packages/hono-kit/tests/unit/pinoAdapter.test.ts`
+- Commit: `feat(hono-kit): added pino logging integration`
 
 ## 4) Validation errors and input validation (+ unit tests)
 
