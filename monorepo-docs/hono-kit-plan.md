@@ -15,17 +15,20 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/tests/integration/.gitkeep`
 - Commit: `chore(hono-kit): scaffolded package skeleton`
 
-## 2) Core types, error types, and logger interface (+ unit tests)
+## 2) Core types, error types, and error handler (+ unit tests)
 
-- Goal: Establish shared types (auth, lifecycle, response envelope) and minimal logger contract.
+- Goal: Establish shared types (auth, lifecycle, response envelope) and the base error handler.
 - Files:
   - `packages/hono-kit/src/server/types.ts`
-  - `packages/hono-kit/src/logging/logger.ts`
-  - `packages/hono-kit/src/errors/errorTypes.ts`
-  - `packages/hono-kit/src/errors/errorEnvelope.ts`
+  - `packages/hono-kit/src/server/requestId.ts`
+  - `packages/hono-kit/src/server/isDevelopment.ts`
+  - `packages/hono-kit/src/errors/responseEnvelopes.ts`
+  - `packages/hono-kit/src/errors/errorHandler.ts`
   - `packages/hono-kit/src/index.ts`
-  - `packages/hono-kit/tests/unit/errorEnvelope.test.ts`
-- Commit: `feat(hono-kit): added core types and logger interface`
+  - `packages/hono-kit/tests/unit/errors/errorEnvelope.test.ts`
+  - `packages/hono-kit/tests/unit/server/getRequestId.test.ts`
+  - `packages/hono-kit/tests/unit/server/isDevelopment.test.ts`
+- Commit: `feat(hono-kit): added core types and error handler`
 
 ## 3) Logging adapters (+ unit tests)
 

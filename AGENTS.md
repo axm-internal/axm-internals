@@ -145,6 +145,10 @@ Typical flow:
 
 - Do not create `private` class properties or methods in TypeScript. Use `protected` instead.
 
+## Function Style
+
+- Prefer arrow functions (`const name = () => {}`) over function declarations.
+
 ## Quality & Review Pipeline
 
 Four-layer model:

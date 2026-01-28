@@ -38,7 +38,7 @@ This document lists proposed features, decisions, and a plan to ship the first v
 ## Decisions (Round 4)
 
 - Response validation is enabled by default until the user disables it explicitly.
-- Error schema uses enum-like `errorType` plus optional `errorCode` for finer-grained cases.
+- Error schema uses `statusCode` and optional `errorCode` for finer-grained cases.
 - `validationErrors` uses standardized string paths (dot/bracket notation).
 - Auth global toggle name: `authAll`.
 - Success `data` allows `null` (e.g., 204/304 scenarios).
@@ -46,15 +46,14 @@ This document lists proposed features, decisions, and a plan to ship the first v
 ## Decisions (Round 5)
 
 - No prod warning for response validation; document behavior instead.
-- Keep `errorType` enum small, aligned with Hono `HTTPException` categories.
+- Keep error schema simple; status codes carry the primary meaning.
 - Validation errors are simple `{ path, message }` objects; a class with `toJSON()` can enrich later.
 - For 204/304, omit the body entirely.
 - Auth override behavior: if `route().authorized` is set but auth is globally disabled, throw at startup.
 
 ## Decisions (Round 6)
 
-- Map `errorType` directly to Hono `HTTPException` status groups.
-- Constrain `errorCode` per `errorType`.
+- Use `HTTPException.status` as `statusCode` in the envelope.
 - Use either routes object or routes array per server (no mixing).
 - Response validation runs only when a route defines `response` schema.
 
@@ -71,7 +70,7 @@ This document lists proposed features, decisions, and a plan to ship the first v
 
 ## Decisions (Round 9)
 
-- Use union types to constrain `errorCode` per `errorType`.
+- Use `statusCode` in the envelope; `errorCode` remains optional and free-form.
 - Enforce the success envelope even when a route lacks a response schema (except 204/304).
 
 ## Decisions (Round 10)
@@ -82,7 +81,7 @@ This document lists proposed features, decisions, and a plan to ship the first v
 
 ## Decisions (Round 11)
 
-- Derive `errorType` from HTTP status via `errorTypeFromStatus(status)`.
+- Derive `statusCode` directly from `HTTPException.status`.
 - For JSON responses without a response schema, always wrap with the envelope; allow a future opt-out flag but default is always.
 - `RoutesCollection.toJSON()` includes only metadata (method/path/flags), not handlers.
 
@@ -182,7 +181,7 @@ const routes = [
     - `.mount()` to register routes after instantiation
 - Standard lifecycle hooks: `beforeStart`, `afterStart`, `beforeStop`, `afterStop` (accept a shared context object).
 - Default error handler and not-found handler with consistent JSON shape, both overridable.
-- `isDevelopment` flag to enable dev-only behaviors (e.g., response validation, warnings).
+- `isDevelopment` stored in request context (and accessible via a helper) for dev-only behaviors.
 
 ### Middleware Defaults
 
@@ -245,37 +244,12 @@ const routes = [
 {
     status: 'error',
     requestId: string,
-    errorType: 'validation' | 'auth' | 'not_found' | 'conflict' | 'rate_limit' | 'internal',
+    statusCode: number,
     errorCode?: string,
     errorMessage: string,
     validationErrors?: Array<{ path: string; message: string }>,
     errorStack?: string, // only in dev
 }
-```
-
-### errorTypeFromStatus example
-
-```ts
-function errorTypeFromStatus(status: number) {
-    if (status === 400) return 'validation';
-    if (status === 401 || status === 403) return 'auth';
-    if (status === 404) return 'not_found';
-    if (status === 409) return 'conflict';
-    if (status === 429) return 'rate_limit';
-    return 'internal';
-}
-```
-
-### errorCode union example
-
-```ts
-type ErrorCodeByType =
-    | { errorType: 'validation'; errorCode: 'missing_field' | 'invalid_format' }
-    | { errorType: 'auth'; errorCode: 'invalid_token' | 'expired_token' }
-    | { errorType: 'not_found'; errorCode: 'resource_missing' }
-    | { errorType: 'conflict'; errorCode: 'version_mismatch' }
-    | { errorType: 'rate_limit'; errorCode: 'too_many_requests' }
-    | { errorType: 'internal'; errorCode: 'unhandled_exception' };
 ```
 
 ### validationErrors path format example
@@ -428,8 +402,8 @@ packages/hono-kit/
       responseValidation.ts
       validationError.ts
     errors/
-      errorTypes.ts
-      errorEnvelope.ts
+      responseEnvelopes.ts
+      errorHandler.ts
     auth/
       bearerAuth.ts
       queryAuth.ts
@@ -459,7 +433,6 @@ packages/hono-kit/
 - `route()`: route builder that carries schemas, auth flags, and handler.
 - `registerRoutes`: wires `RoutesCollection` into the Hono instance.
 - `validationError`: validation error class with `toJSON()`.
-- `errorEnvelope`: helpers for success/error envelope formatting.
-- `errorTypes`: `errorTypeFromStatus` and related type definitions.
-- `logger`: minimal logger interface plus adapters.
+- `responseEnvelopes`: helpers for success/error envelope formatting.
+- `logger`: Pino-first logging integration.
 - `middleware/defaults`: applies trim, tracking, cors, secure headers, request logging.
