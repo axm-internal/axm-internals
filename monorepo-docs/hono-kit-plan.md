@@ -2,7 +2,7 @@
 
 This plan breaks the work into dependency-ordered, committable chunks. Each chunk includes the goal, files touched, and a conventional commit message in past tense. Each chunk includes its own unit tests where applicable.
 
-## 1) Scaffold package skeleton
+## 1) Scaffold package skeleton (complete)
 
 - Goal: Create the canonical package structure and base metadata.
 - Files:
@@ -15,12 +15,12 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/tests/integration/.gitkeep`
 - Commit: `chore(hono-kit): scaffolded package skeleton`
 
-## 2) Core types, error types, and error handler (+ unit tests)
+## 2) Core types, error types, and error handler (+ unit tests) (complete)
 
 - Goal: Establish shared types (auth, lifecycle, response envelope) and the base error handler.
 - Files:
   - `packages/hono-kit/src/server/types.ts`
-  - `packages/hono-kit/src/server/requestId.ts`
+  - `packages/hono-kit/src/server/getRequestId.ts`
   - `packages/hono-kit/src/server/isDevelopment.ts`
   - `packages/hono-kit/src/errors/responseEnvelopes.ts`
   - `packages/hono-kit/src/errors/errorHandler.ts`
@@ -30,37 +30,37 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/tests/unit/server/isDevelopment.test.ts`
 - Commit: `feat(hono-kit): added core types and error handler`
 
-## 3) Pino logging integration (+ unit tests)
+## 3) Pino logging integration (+ unit tests) (complete)
 
 - Goal: Provide Pino-first logging integration (no console adapter in MVP).
 - Files:
   - `packages/hono-kit/src/logging/pinoAdapter.ts`
   - `packages/hono-kit/src/index.ts`
-  - `packages/hono-kit/tests/unit/pinoAdapter.test.ts`
+  - `packages/hono-kit/tests/unit/logging/pinoAdapter.test.ts`
 - Commit: `feat(hono-kit): added pino logging integration`
 
-## 4) Validation errors and input validation (+ unit tests)
+## 4) Validation errors and input validation (+ unit tests) (complete)
 
 - Goal: Add validation error class, input validation utilities, and Zod error shaping.
 - Files:
-  - `packages/hono-kit/src/validation/validationError.ts`
+  - `packages/hono-kit/src/errors/ValidationError.ts`
   - `packages/hono-kit/src/validation/inputValidation.ts`
   - `packages/hono-kit/src/errors/responseEnvelopes.ts`
   - `packages/hono-kit/src/index.ts`
   - `packages/hono-kit/tests/unit/validation/inputValidation.test.ts`
 - Commit: `feat(hono-kit): implemented input validation and validation errors`
 
-## 5) Response validation (data payload only) (+ unit tests)
+## 5) Response validation (data payload only) (+ unit tests) (complete)
 
 - Goal: Validate response payload when `response` schema is provided.
 - Files:
   - `packages/hono-kit/src/validation/responseValidation.ts`
-  - `packages/hono-kit/src/errors/errorEnvelope.ts`
+  - `packages/hono-kit/src/errors/responseEnvelopes.ts`
   - `packages/hono-kit/src/index.ts`
   - `packages/hono-kit/tests/unit/validation/responseValidation.test.ts`
 - Commit: `feat(hono-kit): added response payload validation`
 
-## 6) Route builder and route types (+ unit tests)
+## 6) Route builder and route types (+ unit tests) (complete)
 
 - Goal: Add `route()` builder and route metadata shape.
 - Files:
@@ -70,7 +70,7 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/tests/unit/routing/route.test.ts`
 - Commit: `feat(hono-kit): added route builder and route types`
 
-## 7) RoutesCollection and registration (+ unit tests)
+## 7) RoutesCollection and registration (+ unit tests) (complete)
 
 - Goal: Normalize route inputs (map/array) and register routes into Hono.
 - Files:
@@ -81,7 +81,7 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/tests/unit/server/routesCollection.test.ts`
 - Commit: `feat(hono-kit): added routes collection and registration`
 
-## 8) Middleware defaults (+ unit tests)
+## 8) Middleware defaults (+ unit tests) (complete)
 
 - Goal: Add default middleware bundle and individual helpers.
 - Files:
@@ -92,7 +92,7 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/src/middleware/cors.ts`
   - `packages/hono-kit/src/middleware/secureHeaders.ts`
   - `packages/hono-kit/src/index.ts`
-  - `packages/hono-kit/tests/unit/middlewareDefaults.test.ts`
+  - `packages/hono-kit/tests/unit/middleware/defaults.test.ts`
 - Commit: `feat(hono-kit): added default middleware bundle`
 
 ## 9) Auth helpers (+ unit tests)
