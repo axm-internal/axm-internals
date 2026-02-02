@@ -1,3 +1,15 @@
+export { createBearerTokenChecker } from './auth/bearerAuth';
+export { createCompositeTokenAuth } from './auth/compositeAuth';
+export { createQueryTokenChecker } from './auth/queryAuth';
+export type {
+    BearerAuthOptions,
+    CreateBearerTokenCheckerParams,
+    CreateCompositeTokenAuthParams,
+    CreateQueryTokenCheckerParams,
+    QueryAuthOptions,
+    TokenVerifier,
+    UnauthorizedHandler,
+} from './auth/types';
 export { createErrorHandler } from './errors/errorHandler';
 export type {
     ErrorEnvelope,

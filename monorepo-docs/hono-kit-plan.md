@@ -95,7 +95,7 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/tests/unit/middleware/defaults.test.ts`
 - Commit: `feat(hono-kit): added default middleware bundle`
 
-## 9) Auth helpers (+ unit tests)
+## 9) Auth helpers (+ unit tests) (complete)
 
 - Goal: Add bearer, query, and composite auth helpers + types.
 - Files:
