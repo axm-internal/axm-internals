@@ -36,6 +36,8 @@ export type RouteDefinition<TSchemas extends RouteInputSchemas, TEnv extends App
     handler: RouteHandler<TSchemas, TEnv>;
 };
 
+export type AnyRouteDefinition = RouteDefinition<RouteInputSchemas, AppEnv>;
+
 export type RouteParams<TSchemas extends RouteInputSchemas, TEnv extends AppEnv = AppEnv> = {
     method?: HttpMethod;
     path?: string;

@@ -1,6 +1,8 @@
 import type { ErrorHandler, Hono, MiddlewareHandler, NotFoundHandler } from 'hono';
 import type { Logger } from 'pino';
 
+import type { AnyRouteDefinition, HttpMethod } from '../routing/route';
+
 type BunServe = typeof import('bun')['serve'];
 type BunServeConfig = Parameters<BunServe>[0];
 
@@ -51,3 +53,7 @@ export type HttpServerParams<T extends AppEnv = AppEnv> = {
     middlewareCollection?: MiddlewareHandler[];
     lifecycleHooks?: HttpServerLifecycleHooks<T>;
 };
+
+export type RoutesObject = Record<string, Partial<Record<HttpMethod, AnyRouteDefinition>>>;
+export type RoutesArray = AnyRouteDefinition[];
+export type RoutesInput = RoutesObject | RoutesArray;
