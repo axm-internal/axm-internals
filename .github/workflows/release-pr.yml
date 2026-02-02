@@ -1,0 +1,73 @@
+name: Release PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_branch:
+        description: "Release branch name (e.g., release/2026-01-28)"
+        required: true
+        default: "release/"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun install
+
+      - name: Update git-db index
+        run: ./repo-cli gitdb:index
+
+      - name: Update changelog JSON
+        run: ./repo-cli changelog:update --all
+
+      - name: Write changelog markdown
+        run: ./repo-cli changelog:write --all
+
+      - name: Create changesets
+        run: ./repo-cli changesets:create --all
+
+      - name: Validate release file set
+        id: changes
+        run: |
+          set -euo pipefail
+          git status --porcelain
+          allowed='^(\.changelogs/|\.changeset/|\.changeset-drafts/|CHANGELOG\.md$|packages/[^/]+/CHANGELOG\.md$|apps/[^/]+/CHANGELOG\.md$)'
+          unexpected=$(git status --porcelain | awk '{print $2}' | grep -Ev "$allowed" || true)
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected files changed:" >&2
+            echo "$unexpected" >&2
+            exit 1
+          fi
+          changesets=$(git status --porcelain | awk '{print $2}' | grep -E '^\.changeset/.*\.md$' || true)
+          if [ -z "$changesets" ]; then
+            echo "has_changesets=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "has_changesets=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create release PR
+        if: steps.changes.outputs.has_changesets == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: ${{ inputs.release_branch }}
+          title: "chore(release): prepared changesets"
+          commit-message: "chore(release): prepared changesets"
+          body: |
+            Automated release prep:
+            - gitdb:index
+            - changelog:update --all
+            - changelog:write --all
+            - changesets:create --all
+          base: main
+          delete-branch: true
+          labels: release
