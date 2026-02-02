@@ -1,6 +1,9 @@
 import type { ErrorHandler, Hono, MiddlewareHandler, NotFoundHandler } from 'hono';
 import type { Logger } from 'pino';
 
+import type { CorsOptions } from '../middleware/cors';
+import type { DefaultMiddlewareOptions } from '../middleware/defaults';
+import type { SecureHeadersOptions } from '../middleware/secureHeaders';
 import type { AnyRouteDefinition, HttpMethod } from '../routing/route';
 
 type BunServe = typeof import('bun')['serve'];
@@ -57,3 +60,26 @@ export type HttpServerParams<T extends AppEnv = AppEnv> = {
 export type RoutesObject = Record<string, Partial<Record<HttpMethod, AnyRouteDefinition>>>;
 export type RoutesArray = AnyRouteDefinition[];
 export type RoutesInput = RoutesObject | RoutesArray;
+
+export type AuthConfig<T extends AppEnv = AppEnv> = {
+    enabled: boolean;
+    authAll?: boolean;
+    middleware?: MiddlewareHandler<T>;
+};
+
+export type CreateHonoServerOptions<T extends AppEnv = AppEnv> = {
+    name: string;
+    isDevelopment?: boolean;
+    routes?: RoutesInput;
+    routePrefix?: string;
+    logger?: Logger;
+    middlewares?: MiddlewareHandler<T>[];
+    defaults?: DefaultMiddlewareOptions;
+    cors?: CorsOptions;
+    secureHeaders?: SecureHeadersOptions;
+    auth?: AuthConfig<T>;
+    errorHandler?: ErrorHandler;
+    notFoundHandler?: NotFoundHandler<T>;
+    lifecycleHooks?: HttpServerLifecycleHooks<T>;
+    honoApp?: Hono<T>;
+};

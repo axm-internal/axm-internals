@@ -107,7 +107,7 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/tests/unit/auth.test.ts`
 - Commit: `feat(hono-kit): added auth helpers`
 
-## 10) HonoServer wrapper and createHonoServer (+ unit tests)
+## 10) HonoServer wrapper and createHonoServer (+ unit tests) (complete)
 
 - Goal: Wire everything into the wrapper class with lifecycle hooks, auth enforcement, and envelope behavior.
 - Files:

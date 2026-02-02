@@ -41,12 +41,16 @@ export type {
     RouteParams,
 } from './routing/route';
 export { route } from './routing/route';
+export { createHonoServer } from './server/createHonoServer';
 export { getRequestId } from './server/getRequestId';
+export { HonoServer } from './server/HonoServer';
 export { getIsDevelopment } from './server/isDevelopment';
 export { RoutesCollection } from './server/RoutesCollection';
 export type {
     AppEnv,
+    AuthConfig,
     BunServer,
+    CreateHonoServerOptions,
     HttpServerLifecycleHooks,
     HttpServerParams,
     HttpServerStartOptions,
