@@ -24,6 +24,15 @@
         "lint:fix": {
             "cache": false
         },
+        "dup:jsinspect": {
+            "cache": true
+        },
+        "dup:jscpd": {
+            "cache": true
+        },
+        "dup:check": {
+            "cache": true
+        },
         "validate": {
             "dependsOn": ["lint", "check-types", "test"]
         }

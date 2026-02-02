@@ -48,10 +48,10 @@ Changesets changelog generation is disabled in this repo. Changelogs are built f
 
 ## Conventional Commits (Optional)
 
-If you want to generate changesets from conventional commits, use:
+If you want to generate changesets from commit history, use:
 
 ```bash
-bun changeset:from-commits
+./repo-cli changesets:create --all
 ```
 
-This uses `@bob-obringer/conventional-changesets` to infer package bumps from git history. It compares `main` to your current branch, so run it from the feature branch you want to release.
+This uses the git DB indexer and monorepo conventions to generate per-scope changeset drafts.
