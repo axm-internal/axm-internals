@@ -3,7 +3,7 @@ import type { z } from 'zod';
 import type { ValidationErrorItem } from '../errors/responseEnvelopes';
 import { ValidationError } from '../errors/ValidationError';
 
-export type ValidationSource = 'params' | 'query' | 'headers' | 'body';
+export type ValidationSource = 'params' | 'query' | 'headers' | 'body' | 'response';
 
 export const formatValidationPath = (source: ValidationSource, path: Array<PropertyKey>): string => {
     const parts: string[] = [source];

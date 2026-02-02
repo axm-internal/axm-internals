@@ -31,3 +31,4 @@ export type {
 } from './server/types';
 export type { ValidationSource } from './validation/inputValidation';
 export { formatValidationPath, validateInput } from './validation/inputValidation';
+export { validateResponseData } from './validation/responseValidation';

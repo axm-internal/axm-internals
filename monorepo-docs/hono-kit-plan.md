@@ -45,7 +45,7 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
 - Files:
   - `packages/hono-kit/src/validation/validationError.ts`
   - `packages/hono-kit/src/validation/inputValidation.ts`
-  - `packages/hono-kit/src/errors/errorEnvelope.ts`
+  - `packages/hono-kit/src/errors/responseEnvelopes.ts`
   - `packages/hono-kit/src/index.ts`
   - `packages/hono-kit/tests/unit/validation/inputValidation.test.ts`
 - Commit: `feat(hono-kit): implemented input validation and validation errors`
@@ -57,7 +57,7 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/src/validation/responseValidation.ts`
   - `packages/hono-kit/src/errors/errorEnvelope.ts`
   - `packages/hono-kit/src/index.ts`
-  - `packages/hono-kit/tests/unit/responseValidation.test.ts`
+  - `packages/hono-kit/tests/unit/validation/responseValidation.test.ts`
 - Commit: `feat(hono-kit): added response payload validation`
 
 ## 6) Route builder and route types (+ unit tests)
