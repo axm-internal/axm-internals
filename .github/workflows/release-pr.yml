@@ -5,8 +5,8 @@ on:
     inputs:
       release_branch:
         description: "Release branch name (e.g., release/2026-01-28)"
-        required: true
-        default: "release/"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -36,6 +36,16 @@ jobs:
       - name: Create changesets
         run: ./repo-cli changesets:create --all
 
+      - name: Resolve release branch
+        id: branch
+        run: |
+          set -euo pipefail
+          if [ -n "${{ inputs.release_branch }}" ]; then
+            echo "branch=${{ inputs.release_branch }}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "branch=release/$(date +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
       - name: Validate release file set
         id: changes
         run: |
@@ -59,7 +69,7 @@ jobs:
         if: steps.changes.outputs.has_changesets == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: ${{ inputs.release_branch }}
+          branch: ${{ steps.branch.outputs.branch }}
           title: "chore(release): prepared changesets"
           commit-message: "chore(release): prepared changesets"
           body: |
