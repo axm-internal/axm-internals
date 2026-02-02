@@ -4,6 +4,7 @@
     "private": true,
     "description": "Config-only shared tooling configurations (non-published)",
     "files": [
+        "dup/jscpd.json",
         "tsconfig.json",
         "tsconfig.apps.json",
         "tsconfig.packages.json",

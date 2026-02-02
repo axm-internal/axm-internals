@@ -43,6 +43,23 @@ Use the root `repo-cli` helper to run monorepo CLI workflows:
 
 See [`apps/repo-cli/README.md`](./apps/repo-cli/README.md) for the full command list.
 
+## Root Scripts
+
+Common root scripts (run from the repo root):
+
+```bash
+bun lint
+bun check-types
+bun test
+bun validate
+
+# Duplication checks (per package/app)
+bun dup:check
+
+# Duplication checks (cross workspace)
+bun dup:check:cross
+```
+
 To install dependencies:
 
 ```bash
