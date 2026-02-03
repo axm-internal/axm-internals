@@ -8,6 +8,7 @@ import { createErrorHandler } from '../errors/errorHandler';
 import { errorEnvelope, successEnvelope } from '../errors/responseEnvelopes';
 import { buildRouteInputs } from '../routing/registerRoutes';
 import type { RouteInputSchemas, RouteInputs } from '../routing/route';
+import { joinPaths } from '../utils/joinPaths';
 import { validateResponseData } from '../validation/responseValidation';
 import { getRequestId } from './getRequestId';
 import type { NormalizedRouteDefinition } from './RoutesCollection';
@@ -33,21 +34,6 @@ export type HonoServerParams<T extends AppEnv = AppEnv> = {
     auth?: AuthConfig<T>;
     isDevelopment?: boolean;
     honoApp?: Hono<T>;
-};
-
-const joinPaths = (prefix: string | undefined, path: string): string => {
-    if (!prefix) {
-        return path;
-    }
-
-    const normalizedPrefix = prefix.endsWith('/') ? prefix.slice(0, -1) : prefix;
-    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-
-    if (!normalizedPrefix) {
-        return normalizedPath || '/';
-    }
-
-    return `${normalizedPrefix}${normalizedPath}`;
 };
 
 const isJsonResponse = (response: Response): boolean => {

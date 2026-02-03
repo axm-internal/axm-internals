@@ -2,6 +2,7 @@ import type { Context, Hono, MiddlewareHandler } from 'hono';
 
 import type { NormalizedRouteDefinition, RoutesCollection } from '../server/RoutesCollection';
 import type { AppEnv } from '../server/types';
+import { joinPaths } from '../utils/joinPaths';
 import { validateInput } from '../validation/inputValidation';
 import type { RouteInputSchemas, RouteInputs } from './route';
 
@@ -46,21 +47,6 @@ export const buildRouteInputs = async <T extends AppEnv>(
         headers,
         body,
     };
-};
-
-const joinPaths = (prefix: string | undefined, path: string): string => {
-    if (!prefix) {
-        return path;
-    }
-
-    const normalizedPrefix = prefix.endsWith('/') ? prefix.slice(0, -1) : prefix;
-    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-
-    if (!normalizedPrefix) {
-        return normalizedPath || '/';
-    }
-
-    return `${normalizedPrefix}${normalizedPath}`;
 };
 
 export const registerRoutes = <T extends AppEnv>(params: {
