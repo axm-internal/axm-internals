@@ -26,7 +26,7 @@ Merge the PR to `main`.
 
 ## Publishing (CI)
 
-On merge to `main`, the existing Release workflow will:
+On merge to `main`, the existing Release workflow will run **only when changesets exist** and will:
 
 ```bash
 bunx changeset version
@@ -61,3 +61,4 @@ Open a PR, merge to `main`, and CI will publish.
 - Releases are driven by the presence of `.changeset/*.md` files.
 - If a package should not be released, do not add a changeset for it.
 - Use `.changeset-drafts/` as the source of truth for what changed since the last tag.
+- CI will skip versioning/publishing entirely when no `.changeset/*.md` files are present.
