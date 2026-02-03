@@ -52,6 +52,7 @@ const getValidationErrors = (error: HTTPException): Array<{ path: string; messag
 export const createErrorHandler =
     <T extends AppEnv = AppEnv>(): ErrorHandler<T> =>
     (error, c) => {
+        const originalStack = error instanceof Error ? error.stack : undefined;
         const exception = toHttpException(error);
         const requestId = getRequestId(c);
         const isDevelopment = getIsDevelopment(c);
@@ -61,7 +62,7 @@ export const createErrorHandler =
             statusCode: exception.status,
             errorMessage: exception.message,
             validationErrors: getValidationErrors(exception),
-            errorStack: isDevelopment ? exception.stack : undefined,
+            errorStack: isDevelopment ? (originalStack ?? exception.stack) : undefined,
         });
 
         return c.json(payload, exception.status);

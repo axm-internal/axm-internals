@@ -38,19 +38,21 @@ export const createRequestLogger =
         const storedStartTime = c.get('requestStartTime');
         const startTime = typeof storedStartTime === 'number' ? storedStartTime : Date.now();
 
-        await next();
+        try {
+            await next();
+        } finally {
+            const durationMs = Date.now() - startTime;
+            const requestId = getRequestId(c);
 
-        const durationMs = Date.now() - startTime;
-        const requestId = getRequestId(c);
-
-        logger.info(
-            {
-                requestId,
-                method: c.req.method,
-                path: c.req.path,
-                status: c.res?.status ?? 200,
-                durationMs,
-            },
-            message
-        );
+            logger.info(
+                {
+                    requestId,
+                    method: c.req.method,
+                    path: c.req.path,
+                    status: c.res?.status ?? 200,
+                    durationMs,
+                },
+                message
+            );
+        }
     };

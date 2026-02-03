@@ -46,8 +46,6 @@ export const createQueryTokenChecker = <TEnv extends AppEnv = AppEnv>(
             if (!isValid) {
                 throw new HTTPException(401, { message: 'Unauthorized' });
             }
-
-            await next();
         } catch (error) {
             if (onUnauthorized && error instanceof HTTPException && (error.status === 400 || error.status === 401)) {
                 return onUnauthorized(c);
@@ -55,5 +53,7 @@ export const createQueryTokenChecker = <TEnv extends AppEnv = AppEnv>(
 
             throw error;
         }
+
+        await next();
     };
 };

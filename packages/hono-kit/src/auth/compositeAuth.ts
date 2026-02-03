@@ -53,6 +53,10 @@ export const createCompositeTokenAuth = <TEnv extends AppEnv = AppEnv>(
                     return result;
                 }
             } catch (error) {
+                if (didCallNext) {
+                    throw error;
+                }
+
                 if (isIgnorableAuthError(error)) {
                     continue;
                 }

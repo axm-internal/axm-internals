@@ -359,7 +359,7 @@ export class HonoServer<T extends AppEnv = AppEnv> {
         const response = await params.route.handler(params.context as unknown as Context<AppEnv>, params.input);
 
         if (!(response instanceof Response)) {
-            return response as Response;
+            throw new Error('Route handler must return a Response object.');
         }
 
         if (!isJsonResponse(response) || shouldOmitBody(response.status)) {
