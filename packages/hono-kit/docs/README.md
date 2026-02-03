@@ -1,53 +1,113 @@
-# @axm-internal/hono-kit Documentation
+**@axm-internal/hono-kit**
 
-## Overview
+***
 
-Hono Kit provides an opinionated server wrapper that standardizes request
-validation, response envelopes, auth enforcement, and common middleware.
+# @axm-internal/hono-kit
 
-## Core API
+Opinionated Hono server wrapper with Zod-first validation and API-first defaults.
 
-- `createHonoServer(options)` creates a `HonoServer` wrapper.
-- `route(params)` builds route definitions with optional schemas.
-- `RoutesCollection` normalizes route inputs (object or array).
+## Install
 
-## Validation
+```bash
+bun add @axm-internal/hono-kit
+```
 
-- Input validation: `params`, `query`, `headers`, and `body` use Zod schemas.
-- Response validation runs when a `response` schema is provided (validates `data`).
-- Validation errors are normalized into the shared error envelope.
+## MVP Features
 
-## Envelopes
+- Zod validation for params, query, headers, and body.
+- Response validation runs when a `response` schema is provided (validates `data` only).
+- JSON responses are wrapped in a success envelope by default.
+- Auth can be configured globally and overridden per route.
+- Lifecycle hooks and default middleware bundle.
 
-- Successful JSON responses are wrapped as:
-  `{ status: "success", requestId, data }`.
-- Errors are wrapped as:
-  `{ status: "error", requestId, statusCode, errorMessage, validationErrors?, errorStack? }`.
-- 204/304 responses omit the body.
+## Usage
 
-## Auth
+```ts
+import { createHonoServer, route } from "@axm-internal/hono-kit";
+import { z } from "zod";
 
-- Configure auth at server creation (`auth.enabled`, `authAll`, `middleware`).
-- Override per route using `authorized: true | false`.
+const routes = {
+    "/health": {
+        get: route({
+            response: z.object({ status: z.literal("ok") }),
+            handler: async (c) => c.json({ status: "ok" }),
+        }),
+    },
+    "/users/:id": {
+        get: route({
+            params: z.object({ id: z.string() }),
+            response: z.object({ id: z.string(), name: z.string() }),
+            authorized: true,
+            handler: async (c, input) =>
+                c.json({ id: input.params.id, name: "Ada" }),
+        }),
+    },
+};
 
-## Middleware
+const server = createHonoServer({
+    name: "MyApi",
+    routes,
+    auth: {
+        enabled: true,
+        authAll: false,
+    },
+});
 
-Default middleware bundle includes:
-- Trailing slash trim
-- Request tracking (requestId, requestStartTime)
-- Optional request logging (Pino)
-- CORS and secure headers (opt-in)
+export const app = server.app;
+```
 
-## Public Exports
+## Route Helper Example
 
-See `src/index.ts` for the definitive export list, including:
-- Server wrapper and lifecycle types
-- Route builder and route types
-- Auth helpers
-- Middleware helpers
-- Validation helpers
-- Response envelopes and errors
+```ts
+import { route } from "@axm-internal/hono-kit";
+import { z } from "zod";
 
-## Typedoc
+const getUser = route({
+    method: "get",
+    path: "/users/:id",
+    params: z.object({ id: z.string() }),
+    query: z.object({ includePosts: z.boolean().optional() }).optional(),
+    response: z.object({ id: z.string(), name: z.string() }),
+    authorized: true,
+    handler: async (c, input) =>
+        c.json({ id: input.params.id, name: "Ada" }),
+});
+```
 
-Run `bun run docs` from `packages/hono-kit` to generate API docs.
+## Auth Middleware Example
+
+```ts
+import { createHonoServer, createQueryTokenChecker, route } from "@axm-internal/hono-kit";
+import { z } from "zod";
+
+const authMiddleware = createQueryTokenChecker({
+    service: {
+        verifyToken: (token) => token === "valid",
+    },
+});
+
+const server = createHonoServer({
+    name: "AuthApi",
+    auth: {
+        enabled: true,
+        authAll: true,
+        middleware: authMiddleware,
+    },
+    routes: {
+        "/secure": {
+            get: route({
+                response: z.object({ ok: z.boolean() }),
+                handler: (c) => c.json({ ok: true }),
+            }),
+        },
+    },
+});
+
+export const app = server.app;
+```
+
+## Notes
+
+- Source-first, buildless package (Bun).
+- Entry point: `src/index.ts`.
+- Response envelopes are enforced for JSON responses (except 204/304).

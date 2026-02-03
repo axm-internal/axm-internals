@@ -6,16 +6,39 @@ import { joinPaths } from '../utils/joinPaths';
 import { validateInput } from '../validation/inputValidation';
 import type { RouteInputSchemas, RouteInputs } from './route';
 
+/**
+ * @internal
+ * Callback invoked to handle a route after inputs are built.
+ *
+ * @remarks
+ * This enables custom route handling when registering routes.
+ */
 export type RegisterRouteHandler<T extends AppEnv = AppEnv> = (params: {
     route: NormalizedRouteDefinition;
     input: RouteInputs<RouteInputSchemas>;
     context: Context<T>;
 }) => Response | Promise<Response>;
 
+/**
+ * @internal
+ * Resolve middleware for a specific route.
+ *
+ * @remarks
+ * Used to attach per-route middleware when registering routes.
+ */
 export type RegisterRouteMiddleware<T extends AppEnv = AppEnv> = (
     route: NormalizedRouteDefinition
 ) => MiddlewareHandler<T>[] | undefined;
 
+/**
+ * @internal
+ * Parse a JSON body from the request if present.
+ *
+ * @param c - Request context.
+ * @returns Parsed JSON or `undefined` when parsing fails.
+ * @remarks
+ * Parsing failures are swallowed to allow optional JSON bodies.
+ */
 const readJsonBody = async <T extends AppEnv>(c: Context<T>): Promise<unknown> => {
     try {
         return await c.req.json();
@@ -24,6 +47,16 @@ const readJsonBody = async <T extends AppEnv>(c: Context<T>): Promise<unknown> =
     }
 };
 
+/**
+ * @internal
+ * Build typed route inputs using the supplied schemas.
+ *
+ * @param c - Hono request context.
+ * @param schemas - Input schemas for params, query, headers, and body.
+ * @returns Validated input data for the route handler.
+ * @remarks
+ * Each input is validated with the matching Zod schema when provided.
+ */
 export const buildRouteInputs = async <T extends AppEnv>(
     c: Context<T>,
     schemas: RouteInputSchemas
@@ -49,6 +82,18 @@ export const buildRouteInputs = async <T extends AppEnv>(
     };
 };
 
+/**
+ * Register a collection of routes on a Hono application.
+ *
+ * @param params - Application, routes, and optional hooks for registration.
+ * @returns Nothing.
+ * @remarks
+ * Routes are normalized and registered with optional middleware and custom handlers.
+ * @example
+ * ```ts
+ * registerRoutes({ app, routes, routePrefix: '/api' });
+ * ```
+ */
 export const registerRoutes = <T extends AppEnv>(params: {
     app: Hono<T>;
     routes: RoutesCollection;

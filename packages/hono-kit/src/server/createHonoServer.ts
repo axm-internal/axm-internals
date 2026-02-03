@@ -4,6 +4,18 @@ import { createDefaultMiddlewares } from '../middleware/defaults';
 import { HonoServer } from './HonoServer';
 import type { AppEnv, CreateHonoServerOptions } from './types';
 
+/**
+ * Create a `HonoServer` with defaults and middleware wiring.
+ *
+ * @param options - Server configuration and middleware options.
+ * @returns A configured `HonoServer` instance.
+ * @remarks
+ * Default middleware are computed from `options.defaults`, `cors`, and `secureHeaders`.
+ * @example
+ * ```ts
+ * const server = createHonoServer({ name: 'api', routes });
+ * ```
+ */
 export const createHonoServer = <TEnv extends AppEnv = AppEnv>(
     options: CreateHonoServerOptions<TEnv>
 ): HonoServer<TEnv> => {

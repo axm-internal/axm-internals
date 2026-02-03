@@ -36,6 +36,10 @@ jobs:
             path: packages/git-db/coverage/lcov.info
             junit: packages/git-db/junit.xml
             dir: packages/git-db
+          - target: hono-kit
+            path: packages/hono-kit/coverage/lcov.info
+            junit: packages/hono-kit/junit.xml
+            dir: packages/hono-kit
 
     steps:
       - uses: actions/checkout@v6

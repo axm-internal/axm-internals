@@ -4,8 +4,30 @@ import { HTTPException } from 'hono/http-exception';
 import type { AppEnv } from '../server/types';
 import type { CreateQueryTokenCheckerParams } from './types';
 
+/**
+ * @internal
+ * Default query parameter key used to read API tokens.
+ *
+ * @remarks
+ * This can be overridden via `QueryAuthOptions.paramKey`.
+ */
 const DEFAULT_PARAM_KEY = 'api-key';
 
+/**
+ * Create a query-parameter token authentication middleware.
+ *
+ * @param params - Configuration for verifying tokens and handling unauthorized responses.
+ * @returns A Hono middleware that enforces query token authentication.
+ * @remarks
+ * Reads the token from the configured query parameter and delegates verification to the service.
+ * @example
+ * ```ts
+ * const auth = createQueryTokenChecker({
+ *   service: { verifyToken: async (token) => token.startsWith('key_') },
+ *   options: { paramKey: 'api-key' },
+ * });
+ * ```
+ */
 export const createQueryTokenChecker = <TEnv extends AppEnv = AppEnv>(
     params: CreateQueryTokenCheckerParams<TEnv>
 ): MiddlewareHandler<TEnv> => {

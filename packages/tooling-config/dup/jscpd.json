@@ -1,13 +1,6 @@
 {
     "reporters": ["console"],
-    "ignore": [
-        "**/node_modules/**",
-        "**/dist/**",
-        "**/docs/**",
-        "**/tests/**",
-        "**/*.test.*",
-        "**/coverage/**"
-    ],
+    "ignore": ["**/node_modules/**", "**/dist/**", "**/docs/**", "**/tests/**", "**/*.test.*", "**/coverage/**"],
     "minLines": 10,
     "minTokens": 50,
     "threshold": 0,
