@@ -50,6 +50,7 @@ const server = createHonoServer({
 });
 
 export const app = server.app;
+```
 
 ## Route Helper Example
 
@@ -68,6 +69,37 @@ const getUser = route({
         c.json({ id: input.params.id, name: "Ada" }),
 });
 ```
+
+## Auth Middleware Example
+
+```ts
+import { createHonoServer, createQueryTokenChecker, route } from "@axm-internal/hono-kit";
+import { z } from "zod";
+
+const authMiddleware = createQueryTokenChecker({
+    service: {
+        verifyToken: (token) => token === "valid",
+    },
+});
+
+const server = createHonoServer({
+    name: "AuthApi",
+    auth: {
+        enabled: true,
+        authAll: true,
+        middleware: authMiddleware,
+    },
+    routes: {
+        "/secure": {
+            get: route({
+                response: z.object({ ok: z.boolean() }),
+                handler: (c) => c.json({ ok: true }),
+            }),
+        },
+    },
+});
+
+export const app = server.app;
 ```
 
 ## Notes

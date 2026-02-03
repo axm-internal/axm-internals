@@ -125,12 +125,11 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/tests/integration/server.test.ts`
 - Commit: `test(hono-kit): added server integration tests`
 
-## 12) Documentation + typedoc prep
+## 12) Documentation + typedoc prep (complete)
 
 - Goal: Document the public API and usage.
 - Files:
   - `packages/hono-kit/README.md`
-  - `packages/hono-kit/docs/README.md`
   - `packages/hono-kit/llms.txt`
 - Commit: `docs(hono-kit): documented public api`
 
