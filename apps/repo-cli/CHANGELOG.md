@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-01-28T06:26:12-05:00
+- docs: updated changelogs
+- test(repo-cli): increased test coverage
+
 ## 2026-01-28T05:50:56-05:00
 - chore(release): prepared release changesets
 - chore(release): versioned packages

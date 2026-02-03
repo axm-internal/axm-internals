@@ -1,0 +1,33 @@
+{
+    "scope": "hono-kit",
+    "entries": [
+        {
+            "version": "2026-02-03T16:45:48-05:00",
+            "tag": null,
+            "fromHash": "f9cbefdefa86cd551927e9105c6515abac01701a",
+            "toHash": "08f3444db80313596672f92b7e1d52289c098be4",
+            "rangeStartDate": "2026-01-20T20:45:23-05:00",
+            "rangeEndDate": "2026-02-03T16:45:48-05:00",
+            "summaryLines": [
+                "chore(hono-kit): scaffolded package skeleton",
+                "feat(hono-kit): added core types and error handler",
+                "feat(hono-kit): added pino logging integration",
+                "feat(hono-kit): implemented input validation and validation errors",
+                "feat(hono-kit): added route builder and route types",
+                "feat(hono-kit): added response payload validation",
+                "feat(hono-kit): added routes collection and registration",
+                "feat(hono-kit): added default middleware bundle",
+                "feat(hono-kit): added auth helpers",
+                "feat(hono-kit): implemented server wrapper and factory",
+                "chore(hono-kit): added dup check scripts",
+                "refactor(hono-kit): deduped joinPaths helper",
+                "test(hono-kit): added server integration coverage",
+                "docs(hono-kit): documented public api and usage",
+                "docs(hono-kit): documented public api and usage",
+                "chore: reducing PR size",
+                "fix(hono-kit): handled auth errors and logging correctly"
+            ],
+            "createdAt": "2026-02-03T23:06:19.536Z"
+        }
+    ]
+}
