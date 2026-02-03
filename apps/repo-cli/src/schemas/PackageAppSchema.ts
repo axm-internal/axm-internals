@@ -3,6 +3,7 @@ import { z } from 'zod';
 const validPackageApps = [
     'apps/repo-cli',
     'packages/cli-kit',
+    'packages/hono-kit',
     'packages/config-schema',
     'packages/git-db',
     'packages/tooling-config',

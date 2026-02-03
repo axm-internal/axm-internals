@@ -1,0 +1,24 @@
+# @axm-internal/hono-kit
+
+Version: 0.1.0
+
+Purpose:
+- Opinionated Hono server wrapper with Zod-first validation and API-first defaults
+
+Public surface:
+- createHonoServer, HonoServer, RoutesCollection
+- route and route types (RouteDefinition, RouteInputs, HttpMethod, etc.)
+- auth helpers (createBearerTokenChecker, createQueryTokenChecker, createCompositeTokenAuth)
+- middleware helpers (createDefaultMiddlewares, createCors, createSecureHeaders, createTrimTrailingSlash)
+- validation helpers (validateInput, validateResponseData, formatValidationPath)
+- response envelopes and errors (successEnvelope, errorEnvelope, ValidationError)
+
+Intended usage:
+- Internal API services that need consistent validation, envelopes, and auth behavior
+
+Non-goals:
+- Providing a general-purpose web framework abstraction
+- Supporting non-JSON response envelopes
+
+Stability expectations:
+- Semver within axm-internals; subject to change before 1.0
