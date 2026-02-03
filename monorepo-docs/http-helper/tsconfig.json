@@ -1,8 +1,0 @@
-{
-    "extends": "@repo/typescript-config/tsconfig.packages.json",
-    "compilerOptions": {
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "strictPropertyInitialization": false
-    }
-}
