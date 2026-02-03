@@ -118,7 +118,7 @@ This plan breaks the work into dependency-ordered, committable chunks. Each chun
   - `packages/hono-kit/tests/unit/server.test.ts`
 - Commit: `feat(hono-kit): implemented server wrapper and factory`
 
-## 11) Integration tests for server
+## 11) Integration tests for server (complete)
 
 - Goal: Validate full server behavior (middleware, auth, envelopes).
 - Files:
