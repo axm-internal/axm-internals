@@ -47,6 +47,16 @@ describe('drizzle-adapter builders', () => {
         expect(params).toEqual(['Ada', 10, 10]);
     });
 
+    it('buildSelect rejects limit with pagination', () => {
+        expect(() =>
+            buildSelect({
+                table: 'users',
+                limit: 5,
+                pagination: { page: 1, limit: 10 },
+            })
+        ).toThrow('limit and pagination cannot be used together');
+    });
+
     it('buildCount without where', () => {
         const query = buildCount({ table: 'users' });
         const { sql, params } = toQuery(query);
@@ -97,5 +107,9 @@ describe('drizzle-adapter builders', () => {
         const { sql, params } = toQuery(query);
         expect(normalize(sql)).toBe('DELETE FROM "users" WHERE "id" = ? RETURNING *');
         expect(params).toEqual([1]);
+    });
+
+    it('buildDelete rejects empty where', () => {
+        expect(() => buildDelete({ table: 'users', where: {} })).toThrow('delete where must not be empty');
     });
 });

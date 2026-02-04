@@ -23,6 +23,8 @@ export type TableSpec = {
     compositePrimaryKeys?: string[];
 };
 
+const escapeSqlString = (value: string) => value.replace(/'/g, "''");
+
 function unwrapSchema(schema: z.ZodType): z.ZodType {
     // Unwrap common wrappers
     if (schema instanceof z.ZodOptional || schema instanceof z.ZodNullable || schema instanceof z.ZodDefault) {
@@ -130,7 +132,8 @@ function columnSpecToString(columnSpec: ColumnSpec): string {
     }
     if (columnSpec.default !== null && columnSpec.default !== undefined) {
         if (columnSpec.type === 'TEXT') {
-            columnParts.push(`DEFAULT '${columnSpec.default}'`);
+            const escaped = escapeSqlString(String(columnSpec.default));
+            columnParts.push(`DEFAULT '${escaped}'`);
         } else {
             columnParts.push(`DEFAULT ${columnSpec.default}`);
         }

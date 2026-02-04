@@ -106,6 +106,9 @@ export const buildSelect = <T extends Record<string, unknown>>(params: {
     limit?: number;
     pagination?: PaginationQuery;
 }): SQL => {
+    if (params.limit !== undefined && params.pagination) {
+        throw new Error('limit and pagination cannot be used together');
+    }
     const base = sql`SELECT * FROM ${sql.identifier(params.table)}`;
     const whereSql = buildWhereSql(params.where);
     const orderSql = buildOrderBySql(params.orderBy);
@@ -167,5 +170,8 @@ export const buildUpdate = <T extends Record<string, unknown>>(params: {
 
 export const buildDelete = <T extends Record<string, unknown>>(params: { table: string; where: Where<T> }): SQL => {
     const whereSql = buildWhereSql(params.where);
+    if (!whereSql) {
+        throw new Error('delete where must not be empty');
+    }
     return sql`DELETE FROM ${sql.identifier(params.table)} WHERE ${whereSql} RETURNING *`;
 };

@@ -43,4 +43,12 @@ describe('TableSqlGenerator edge cases', () => {
         const sql = generateCreateTable({ table: 'pks', schema });
         expect(sql).toBe('CREATE TABLE IF NOT EXISTS "pks" ("id" INTEGER PRIMARY KEY NOT NULL);');
     });
+
+    it('escapes text defaults with single quotes', () => {
+        const schema = z.object({
+            note: z.string().default("O'Reilly"),
+        });
+        const sql = generateCreateTable(toConfig(schema));
+        expect(sql).toBe('CREATE TABLE IF NOT EXISTS "t" ("note" TEXT NOT NULL DEFAULT \'O\'\'Reilly\');');
+    });
 });

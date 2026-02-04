@@ -117,8 +117,8 @@ A model represents a table and its query surface.
     - `saveMany({ data, validate }) -> Item[]`
     - `update({ where, data, validate }) -> number`
     - `upsert({ where, data, validate }) -> Item`
-  - `remove({ where }) -> number`
-  - `removeMany({ where }) -> number`
+    - `remove({ where }) -> number`
+    - `removeMany({ where }) -> number`
 * Testing helpers (planned):
   - Provide fixtures + DB helper utilities (create/reset/seed) similar to `tests/helpers` and `tests/integration` to make user testing easy.
 
@@ -126,13 +126,13 @@ A model represents a table and its query surface.
 
 ### Database
 
-SchemaOrm uses `bun:sqlite` directly.
+SchemaOrm defaults to `bun:sqlite` and supports configurable adapters.
 
 * Synchronous by design
 * No connection pooling
 * Databases are defined via `defineDatabase({ databasePath, modelDefinitions })` and expose models
   by name (e.g., `database.Users`)
-* Planned: driver adapters to support other SQLite‑compatible runtimes
+* Adapters support other SQLite‑compatible runtimes
 
 ---
 

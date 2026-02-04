@@ -44,6 +44,13 @@ const truncateTestTables = (runner: SqlRunner) => {
     for (const fixture of Object.values(modelFixtures)) {
         const table = fixture.modelConfig.table;
         runner.run(`DELETE FROM "${table}"`);
-        runner.run('DELETE FROM sqlite_sequence WHERE name = ?', [table]);
+        try {
+            runner.run('DELETE FROM sqlite_sequence WHERE name = ?', [table]);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            if (!message.includes('sqlite_sequence')) {
+                throw error;
+            }
+        }
     }
 };

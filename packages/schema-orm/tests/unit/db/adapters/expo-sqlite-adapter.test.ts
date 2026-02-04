@@ -41,6 +41,6 @@ describe('ExpoSqliteAdapter', () => {
             foreign_keys: true,
         });
 
-        expect(calls).toEqual(['PRAGMA journal_mode = WAL', 'PRAGMA busy_timeout = 5000', 'PRAGMA foreign_keys = 1']);
+        expect(calls).toEqual(["PRAGMA journal_mode = 'WAL'", 'PRAGMA busy_timeout = 5000', 'PRAGMA foreign_keys = 1']);
     });
 });

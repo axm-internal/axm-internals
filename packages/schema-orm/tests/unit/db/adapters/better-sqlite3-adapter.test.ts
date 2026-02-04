@@ -34,6 +34,6 @@ describe('BetterSqlite3Adapter', () => {
             foreign_keys: true,
         });
 
-        expect(calls).toEqual(['journal_mode = WAL', 'busy_timeout = 5000', 'foreign_keys = 1']);
+        expect(calls).toEqual(["journal_mode = 'WAL'", 'busy_timeout = 5000', 'foreign_keys = 1']);
     });
 });

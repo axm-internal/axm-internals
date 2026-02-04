@@ -1,9 +1,7 @@
-import { createRequire } from 'node:module';
 import type { DatabaseConfigInput } from '../../types';
 import { BetterSqlite3Adapter } from './BetterSqlite3Adapter';
 import { BunSqliteAdapter } from './BunSqliteAdapter';
-
-const require = createRequire(import.meta.url);
+import { ExpoSqliteAdapter } from './ExpoSqliteAdapter';
 
 export const getAdapterInstance = (config: DatabaseConfigInput) => {
     switch (config.adapter) {
@@ -12,7 +10,7 @@ export const getAdapterInstance = (config: DatabaseConfigInput) => {
         case 'better-sqlite3':
             return new BetterSqlite3Adapter(config);
         case 'expo-sqlite':
-            return new (require('./ExpoSqliteAdapter').ExpoSqliteAdapter)(config);
+            return new ExpoSqliteAdapter(config);
         default:
             throw new Error(`Adapter ${config.adapter} not implemented`);
     }
