@@ -51,6 +51,9 @@ git checkout -b release/<yyyy-mm-dd>
 ./repo-cli changesets:create --all
 
 git status
+mkdir -p .release
+touch .release/ready
+git add .release/ready
 git add .
 git commit -m "chore(release): prepared release changesets"
 ```

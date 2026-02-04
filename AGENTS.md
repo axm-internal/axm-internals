@@ -130,7 +130,7 @@ Typical flow:
 2. Run `bunx changeset`.
 3. Commit the changeset with code.
 4. Merge to `main`.
-5. CI runs tests and `changesets/action` on `main` pushes when `.release/ready` is present (set by the Release PR workflow). It versions packages, publishes, and removes the marker.
+5. CI runs tests on every `main` push. Publishing via `changesets/action` only runs when `.release/ready` is present (set by the Release PR workflow); it versions packages, publishes, and removes the marker.
 
 Changelogs are generated from `.changelogs/*.json` via `./repo-cli` and rendered with `changelog:write`.
 
