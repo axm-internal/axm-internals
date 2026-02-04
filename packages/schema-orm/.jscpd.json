@@ -1,0 +1,9 @@
+{
+    "path": ["src"],
+    "reporters": ["console"],
+    "ignore": ["**/node_modules/**", "**/dist/**", "**/database/**", "**/docs/**", "**/tests/**", "**/*.test.*"],
+    "minLines": 10,
+    "minTokens": 50,
+    "threshold": 0,
+    "gitignore": true
+}
