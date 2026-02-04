@@ -38,7 +38,7 @@ Rules:
 * Entry point is always `src/index.ts`
 * No build step (TypeScript is consumed directly by Bun)
 * Turborepo orchestrates repo-wide tasks (lint, test, check-types, validate)
-* All packages are versioned and published via Changesets
+* All packages are versioned via Changesets (publishable packages are released)
 * `package.json` always follows the canonical form:
   * Exception: config-only, non-published support packages (e.g., `@axm-internal/tooling-config`)
 
@@ -55,6 +55,8 @@ Rules:
 ```
 
 Consistency is leverage.
+
+Apps live under `apps/` and are versioned but not published. They follow the same TypeScript and testing conventions unless explicitly documented otherwise.
 
 ---
 

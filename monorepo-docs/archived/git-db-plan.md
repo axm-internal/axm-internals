@@ -26,35 +26,42 @@ packages/git-db/
     index.ts
     cli/
       index.ts
+      schemas.ts
       commands/
         init.ts
-        index.ts
         query.ts
         update.ts
+        index.ts
     db/
       client.ts
       migrations.ts
       schema.ts
+      types.ts
+      meta.ts
+      paths.ts
+      database.ts
+      database-bun.ts
+      database-bun-worker.ts
+      database-node.ts
     git/
       log.ts
-      diff.ts
-      tags.ts
+      files.ts
+      types.ts
     indexer/
       commitIndexer.ts
       commitScanner.ts
+      types.ts
     queries/
+      authorQueries.ts
       commitQueries.ts
       fileQueries.ts
+      metaQueries.ts
       packageQueries.ts
-    types/
-      commit.ts
-      query.ts
-      repo.ts
     utils/
-      paths.ts
-      hash.ts
-      time.ts
-      errors.ts
+      parseConventionalCommit.ts
+      dataRenderer.ts
+      buildCliTable.ts
+      truncateString.ts
 ```
 
 ## Database Schema (v1)
@@ -102,61 +109,33 @@ Meta keys:
 ### Types
 
 ```ts
-export type CommitLog = {
-  hash: string;
-  authorId: string;
-  date: string;
-  message: string;
-  body: string;
-  refs: string | null;
-};
-
-export type Author = {
-  id: string;
-  name: string;
-  email: string;
-};
-
-export type CommitFile = {
-  hash: string;
-  path: string;
-  status?: string;
-};
-
-export type RepoIndexState = {
-  lastIndexedHash: string | null;
-  lastIndexedDate: string | null;
-  schemaVersion: number;
-};
+export type { DbClient, RepoIndexState } from './db/client';
+export type { Author, Commit, CommitFile, MetaEntry } from './db/types';
+export type { CommitScanResult } from './indexer/types';
 ```
 
 ### Functions
 
 ```ts
 // db
-export const openDb: (dbPath: string) => DbClient;
-export const initDb: (dbPath: string) => void;
-export const getIndexState: (db: DbClient) => RepoIndexState;
-export const setIndexState: (db: DbClient, next: RepoIndexState) => void;
-
-// git
-export const readCommits: (opts: { sinceHash?: string }) => CommitLog[];
-export const readCommitFiles: (hash: string) => CommitFile[];
+export { openBunDb, openBunWorkerDb, openNodeDb } from './db/client';
 
 // indexer
-export const indexCommits: (db: DbClient, commits: CommitLog[]) => void;
-export const indexCommitFiles: (db: DbClient, files: CommitFile[]) => void;
-export const indexAuthors: (db: DbClient, authors: Author[]) => void;
-export const updateIndex: (db: DbClient) => RepoIndexState;
+export { scanCommits } from './indexer/commitScanner';
 
 // queries
-export const findCommitsByMessage: (db: DbClient, query: string) => CommitLog[];
-export const findCommitsByType: (db: DbClient, type: string) => CommitLog[];
-export const findCommitsByScope: (db: DbClient, scope: string) => CommitLog[];
-export const findCommitsByPath: (db: DbClient, pathPrefix: string) => CommitLog[];
-export const findCommitsBetween: (db: DbClient, fromHash: string, toHash: string) => CommitLog[];
-export const findCommitsByAuthorEmail: (db: DbClient, email: string) => CommitLog[];
-export const findAuthors: (db: DbClient, query: string) => Author[];
+export { findAuthors, listAuthors } from './queries/authorQueries';
+export {
+  findCommitsBetween,
+  findCommitsByAuthorEmail,
+  findCommitsByMessage,
+  findCommitsByScope,
+  findCommitsByType,
+  listCommits,
+} from './queries/commitQueries';
+export { findCommitsByPath, listFiles } from './queries/fileQueries';
+export { listMeta } from './queries/metaQueries';
+export { findCommitsByPackage } from './queries/packageQueries';
 ```
 
 ## CLI Commands (v1)

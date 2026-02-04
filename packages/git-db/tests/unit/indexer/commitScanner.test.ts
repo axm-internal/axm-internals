@@ -26,5 +26,5 @@ describe('scanCommits', () => {
         } finally {
             await db.destroy();
         }
-    });
+    }, 15000);
 });

@@ -76,7 +76,7 @@ Changesets become the source of truth for:
     * Coverage
     * Quality checks
     * `changesets/action`
-6. Changesets:
+6. Changesets (when changesets exist):
 
     * Bumps package versions
     * Generates versions and publishes packages
@@ -134,17 +134,27 @@ jobs:
 
       - run: bun test
 
+      - name: Check release marker
+        id: marker
+        run: |
+          if [ -f .release/ready ]; then
+            echo "releaseReady=true" >> $GITHUB_OUTPUT
+          else
+            echo "releaseReady=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Version & Publish
         uses: changesets/action@v1
         with:
           publish: bunx changeset publish
+        if: ${{ steps.marker.outputs.releaseReady == 'true' }}
 ```
 
 This job:
 
-* Detects pending changesets
-* Versions affected packages
-* Publishes only what changed
+* Runs `changesets/action` only when `.release/ready` is present on `main`
+* The Release PR workflow creates `.release/ready` so the publish pipeline is explicitly gated
+* Versions packages, publishes, and removes the marker in the release commit
 * Commits updated versions (changelogs are handled separately)
 
 ---
