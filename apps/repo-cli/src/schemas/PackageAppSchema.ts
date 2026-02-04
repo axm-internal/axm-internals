@@ -11,6 +11,9 @@ const listPackageDirs = (root: string, folder: 'apps' | 'packages'): string[] =>
     return fs
         .readdirSync(basePath, { withFileTypes: true })
         .filter((entry) => entry.isDirectory())
+        .filter((entry) => {
+            return fs.existsSync(path.join(basePath, entry.name, 'package.json'));
+        })
         .map((entry) => `${folder}/${entry.name}`);
 };
 
