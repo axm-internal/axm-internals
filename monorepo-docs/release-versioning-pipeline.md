@@ -134,27 +134,27 @@ jobs:
 
       - run: bun test
 
-      - name: Check for changesets
-        id: changesets
+      - name: Check release marker
+        id: marker
         run: |
-          if ls .changeset/*.md >/dev/null 2>&1; then
-            echo "hasChangesets=true" >> $GITHUB_OUTPUT
+          if [ -f .release/ready ]; then
+            echo "releaseReady=true" >> $GITHUB_OUTPUT
           else
-            echo "hasChangesets=false" >> $GITHUB_OUTPUT
+            echo "releaseReady=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Version & Publish
         uses: changesets/action@v1
         with:
           publish: bunx changeset publish
-        if: ${{ steps.changesets.outputs.hasChangesets == 'true' }}
+        if: ${{ steps.marker.outputs.releaseReady == 'true' }}
 ```
 
 This job:
 
-* Detects pending changesets
-* Versions affected packages
-* Publishes only what changed
+* Runs `changesets/action` only when `.release/ready` is present on `main`
+* The Release PR workflow creates `.release/ready` so the publish pipeline is explicitly gated
+* Versions packages, publishes, and removes the marker in the release commit
 * Commits updated versions (changelogs are handled separately)
 
 ---

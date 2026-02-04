@@ -36,7 +36,6 @@ It also removes the nested `.git` folder created by `bun create`.
 - [`monorepo-docs/package-checklist.md`](./monorepo-docs/package-checklist.md)
 - [`monorepo-docs/release-versioning-pipeline.md`](./monorepo-docs/release-versioning-pipeline.md)
 - [`monorepo-docs/feat/code-quality-review-pipeline.md`](./monorepo-docs/feat/code-quality-review-pipeline.md)
-- [`monorepo-docs/initial-log-plan.md`](./monorepo-docs/initial-log-plan.md)
 
 ## Repo CLI
 
