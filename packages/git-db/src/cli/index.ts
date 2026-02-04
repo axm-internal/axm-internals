@@ -16,6 +16,7 @@ const cliApp = new CliApp({
     options: {
         logger: logger,
         pretty: true,
+        logErrors: false,
         commandDefinitions: [initCommand, updateCommand, queryCommand],
         onError: (error) => {
             if (error instanceof ZodError) {

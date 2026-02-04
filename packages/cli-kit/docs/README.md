@@ -70,6 +70,7 @@ const app = new CliApp({
   config: { name: 'my-cli', description: 'Example CLI' },
   options: {
     commandDefinitions: [helloCommand],
+    logErrors: false,
     onError: (error, container) => {
       const logger = container.resolve(CliLogger);
       logger.fatal(error, 'CLI failed');
@@ -81,6 +82,23 @@ const exitCode = await app.start();
 process.exit(exitCode);
 ```
 
+### Container Typing (Generic Alias)
+
+If your project uses a DI container like tsyringe, pass the container type as the generic argument to align the
+`container` type inside `action`:
+
+```ts
+import type { DependencyContainer } from 'tsyringe';
+
+const helloCommand = createCommandDefinition<DependencyContainer>({
+  name: 'hello',
+  description: 'says hello',
+  action: async ({ container }) => {
+    // container is typed as DependencyContainer here
+  },
+});
+```
+
 ## Highlights
 
 - Thin wrapper around Commander with typed command definitions.
@@ -89,6 +107,7 @@ process.exit(exitCode);
 - Option aliases can be defined via `meta.aliases`.
 - Optional lightweight container for dependency resolution.
 - Hooks (`onError`, `onExit`) receive the container for test-friendly flows.
+- Set `logErrors` to `false` when you handle error output yourself.
 
 ## Notes
 
@@ -97,6 +116,10 @@ process.exit(exitCode);
 - Default logger level is `fatal` (use `--debug` to switch to `debug`).
 - Positional arguments are strings by default; use `z.coerce.*` when you need numeric or boolean args.
 - Avoid Zod function defaults for CLI arguments/options; Commander treats functions as parsers.
+
+## Breaking Changes
+
+- Defaults are no longer inferred from `schema.default(...)` unless you also provide `meta({ defaultValue })`. Use `schema.meta({ defaultValue })` to keep Commander defaults and help text in sync.
 
 ## Docs
 

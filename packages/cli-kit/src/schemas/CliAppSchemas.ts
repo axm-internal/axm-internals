@@ -33,6 +33,7 @@ export const CliConfigSchema = z.object({
 /** @internal */
 export const CliOptionsSchema = z.object({
     pretty: z.boolean().default(true),
+    logErrors: z.boolean().default(true),
     container: ContainerSchema.optional(),
     commandDefinitions: z.array(CommandDefinitionSchema).optional(),
     logger: PinoInstanceSchema.optional(),

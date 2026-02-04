@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test';
+import pino from 'pino';
 import { z } from 'zod';
 import { CliApp } from '../../src/CliApp';
 import { createCommandDefinition } from '../../src/createCommandDefinition';
@@ -27,7 +28,7 @@ describe('CliApp', () => {
 
             const app = new CliApp({
                 config: { name: 'test-cli' },
-                options: { commandDefinitions: [helloCommand], pretty: false },
+                options: { commandDefinitions: [helloCommand], pretty: false, logErrors: true },
             });
 
             await app.start();
@@ -36,6 +37,45 @@ describe('CliApp', () => {
             expect(ctx.args).toEqual({ name: 'bob' });
             expect(ctx.options).toEqual({ yell: true });
             expect(ctx.container).toBeDefined();
+        } finally {
+            process.argv = originalArgv;
+        }
+    });
+
+    it('skips default error logging when logErrors is false', async () => {
+        const originalArgv = process.argv;
+        process.argv = ['bun', 'script', 'boom'];
+
+        let errorCount = 0;
+        const logger = pino({ level: 'silent' });
+        const originalError = logger.error.bind(logger);
+        logger.error = ((...args: Parameters<typeof logger.error>) => {
+            errorCount += 1;
+            return originalError(...args);
+        }) as typeof logger.error;
+
+        try {
+            const boomCommand = createCommandDefinition({
+                name: 'boom',
+                description: 'throws',
+                action: async () => {
+                    throw new Error('boom');
+                },
+            });
+
+            const app = new CliApp({
+                config: { name: 'test-cli' },
+                options: {
+                    commandDefinitions: [boomCommand],
+                    pretty: false,
+                    logger: logger,
+                    logErrors: false,
+                },
+            });
+
+            const exitCode = await app.start();
+            expect(exitCode).toBe(1);
+            expect(errorCount).toBe(0);
         } finally {
             process.argv = originalArgv;
         }

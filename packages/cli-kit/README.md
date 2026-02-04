@@ -66,6 +66,7 @@ const app = new CliApp({
   config: { name: 'my-cli', description: 'Example CLI' },
   options: {
     commandDefinitions: [helloCommand],
+    logErrors: false,
     onError: (error, container) => {
       const logger = container.resolve(CliLogger);
       logger.fatal(error, 'CLI failed');
@@ -102,6 +103,7 @@ const helloCommand = createCommandDefinition<DependencyContainer>({
 - Option aliases can be defined via `meta.aliases`.
 - Optional lightweight container for dependency resolution.
 - Hooks (`onError`, `onExit`) receive the container for test-friendly flows.
+- Set `logErrors` to `false` when you handle error output yourself.
 
 ## Notes
 

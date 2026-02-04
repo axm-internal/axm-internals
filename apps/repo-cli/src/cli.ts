@@ -19,6 +19,7 @@ const cliApp = new CliApp({
     options: {
         container: appContainer,
         pretty: true,
+        logErrors: false,
         commandDefinitions: [...promptRunnerCommands, ...gitDbCommands, ...changesetCommands, ...changelogCommands],
         onError: (error) => {
             if (error instanceof ZodError) {

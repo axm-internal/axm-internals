@@ -8,4 +8,4 @@
 
 > **CliConfig** = `z.infer`\<*typeof* `CliConfigSchema`\>
 
-Defined in: [schemas/CliAppSchemas.ts:70](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/schemas/CliAppSchemas.ts#L70)
+Defined in: [schemas/CliAppSchemas.ts:71](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/schemas/CliAppSchemas.ts#L71)
