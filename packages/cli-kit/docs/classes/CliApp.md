@@ -27,7 +27,7 @@ await app.start();
 
 > **new CliApp**(`params`): `CliApp`
 
-Defined in: [CliApp.ts:45](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L45)
+Defined in: [CliApp.ts:46](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L46)
 
 Create a new CLI app instance.
 
@@ -55,7 +55,7 @@ App configuration and options.
 
 ###### options
 
-\{ `commandDefinitions?`: `object`[]; `container?`: [`ContainerInterface`](../interfaces/ContainerInterface.md); `logger?`: `Logger`; `loggerAliases?`: [`InjectionToken`](../type-aliases/InjectionToken.md)\<`unknown`\>[]; `onError?`: `$InferOuterFunctionType`\<`ZodTuple`\<\[`ZodCustom`\<`Error`, `Error`\>\], `null`\>, `ZodVoid`\>; `onExit?`: `$InferOuterFunctionType`\<`ZodTuple`\<\[`ZodNumber`, `ZodOptional`\<`ZodCustom`\<`Error`, `Error`\>\>\], `null`\>, `ZodVoid`\>; `pretty`: `boolean`; \} = `CliOptionsSchema`
+\{ `commandDefinitions?`: `object`[]; `container?`: [`ContainerInterface`](../interfaces/ContainerInterface.md); `logErrors`: `boolean`; `logger?`: `Logger`; `loggerAliases?`: [`InjectionToken`](../type-aliases/InjectionToken.md)\<`unknown`\>[]; `onError?`: `$InferOuterFunctionType`\<`ZodTuple`\<\[`ZodCustom`\<`Error`, `Error`\>, `ZodType`\<[`ContainerInterface`](../interfaces/ContainerInterface.md), `unknown`, `$ZodTypeInternals`\<[`ContainerInterface`](../interfaces/ContainerInterface.md), `unknown`\>\>\], `null`\>, `ZodVoid`\>; `onExit?`: `$InferOuterFunctionType`\<`ZodTuple`\<\[`ZodNumber`, `ZodOptional`\<`ZodCustom`\<`Error`, `Error`\>\>, `ZodType`\<[`ContainerInterface`](../interfaces/ContainerInterface.md), `unknown`, `$ZodTypeInternals`\<[`ContainerInterface`](../interfaces/ContainerInterface.md), `unknown`\>\>\], `null`\>, `ZodVoid`\>; `pretty`: `boolean`; \} = `CliOptionsSchema`
 
 ###### options.commandDefinitions?
 
@@ -64,6 +64,10 @@ App configuration and options.
 ###### options.container?
 
 [`ContainerInterface`](../interfaces/ContainerInterface.md) = `...`
+
+###### options.logErrors
+
+`boolean` = `...`
 
 ###### options.logger?
 
@@ -75,11 +79,11 @@ App configuration and options.
 
 ###### options.onError?
 
-`$InferOuterFunctionType`\<`ZodTuple`\<\[`ZodCustom`\<`Error`, `Error`\>\], `null`\>, `ZodVoid`\> = `...`
+`$InferOuterFunctionType`\<`ZodTuple`\<\[`ZodCustom`\<`Error`, `Error`\>, `ZodType`\<[`ContainerInterface`](../interfaces/ContainerInterface.md), `unknown`, `$ZodTypeInternals`\<[`ContainerInterface`](../interfaces/ContainerInterface.md), `unknown`\>\>\], `null`\>, `ZodVoid`\> = `...`
 
 ###### options.onExit?
 
-`$InferOuterFunctionType`\<`ZodTuple`\<\[`ZodNumber`, `ZodOptional`\<`ZodCustom`\<`Error`, `Error`\>\>\], `null`\>, `ZodVoid`\> = `...`
+`$InferOuterFunctionType`\<`ZodTuple`\<\[`ZodNumber`, `ZodOptional`\<`ZodCustom`\<`Error`, `Error`\>\>, `ZodType`\<[`ContainerInterface`](../interfaces/ContainerInterface.md), `unknown`, `$ZodTypeInternals`\<[`ContainerInterface`](../interfaces/ContainerInterface.md), `unknown`\>\>\], `null`\>, `ZodVoid`\> = `...`
 
 ###### options.pretty
 
@@ -167,7 +171,7 @@ Defined in: [CliApp.ts:25](https://github.com/axm-internal/axm-internals/blob/ma
 
 > `protected` **initialized**: `boolean` = `false`
 
-Defined in: [CliApp.ts:28](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L28)
+Defined in: [CliApp.ts:29](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L29)
 
 ***
 
@@ -175,7 +179,15 @@ Defined in: [CliApp.ts:28](https://github.com/axm-internal/axm-internals/blob/ma
 
 > `protected` `optional` **lastError**: `Error`
 
-Defined in: [CliApp.ts:29](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L29)
+Defined in: [CliApp.ts:30](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L30)
+
+***
+
+### logErrors
+
+> `protected` **logErrors**: `boolean`
+
+Defined in: [CliApp.ts:28](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L28)
 
 ***
 
@@ -189,15 +201,19 @@ Defined in: [CliApp.ts:27](https://github.com/axm-internal/axm-internals/blob/ma
 
 ### onError()?
 
-> `protected` `optional` **onError**: (`error`) => `void`
+> `protected` `optional` **onError**: (`error`, `container`) => `void`
 
-Defined in: [CliApp.ts:30](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L30)
+Defined in: [CliApp.ts:31](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L31)
 
 #### Parameters
 
 ##### error
 
 `Error`
+
+##### container
+
+[`ContainerInterface`](../interfaces/ContainerInterface.md)
 
 #### Returns
 
@@ -207,9 +223,9 @@ Defined in: [CliApp.ts:30](https://github.com/axm-internal/axm-internals/blob/ma
 
 ### onExit()?
 
-> `protected` `optional` **onExit**: (`code`, `error?`) => `void`
+> `protected` `optional` **onExit**: (`code`, `error`, `container`) => `void`
 
-Defined in: [CliApp.ts:31](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L31)
+Defined in: [CliApp.ts:32](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L32)
 
 #### Parameters
 
@@ -217,9 +233,13 @@ Defined in: [CliApp.ts:31](https://github.com/axm-internal/axm-internals/blob/ma
 
 `number`
 
-##### error?
+##### error
 
-`Error`
+`Error` | `undefined`
+
+##### container
+
+[`ContainerInterface`](../interfaces/ContainerInterface.md)
 
 #### Returns
 
@@ -239,7 +259,7 @@ Defined in: [CliApp.ts:23](https://github.com/axm-internal/axm-internals/blob/ma
 
 > **addCommand**(`commandDefinition`): `void`
 
-Defined in: [CliApp.ts:141](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L141)
+Defined in: [CliApp.ts:152](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L152)
 
 Add a command definition to the app.
 
@@ -295,7 +315,7 @@ app.addCommand(definition);
 
 > **clearLastError**(): `void`
 
-Defined in: [CliApp.ts:109](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L109)
+Defined in: [CliApp.ts:120](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L120)
 
 Clear the stored last error.
 
@@ -321,7 +341,7 @@ app.clearLastError();
 
 > `protected` **createLogger**(`appName`, `pretty`, `baseLogger?`): `Logger`
 
-Defined in: [CliApp.ts:62](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L62)
+Defined in: [CliApp.ts:73](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L73)
 
 #### Parameters
 
@@ -347,7 +367,7 @@ Defined in: [CliApp.ts:62](https://github.com/axm-internal/axm-internals/blob/ma
 
 > **getLastError**(): `Error` \| `undefined`
 
-Defined in: [CliApp.ts:94](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L94)
+Defined in: [CliApp.ts:105](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L105)
 
 Get the last error captured during execution.
 
@@ -373,7 +393,7 @@ const lastError = app.getLastError();
 
 > **getProgram**(): `Command`
 
-Defined in: [CliApp.ts:79](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L79)
+Defined in: [CliApp.ts:90](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L90)
 
 Access the underlying Commander program instance.
 
@@ -400,7 +420,7 @@ program.showHelpAfterError();
 
 > `protected` **init**(): `void`
 
-Defined in: [CliApp.ts:153](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L153)
+Defined in: [CliApp.ts:164](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L164)
 
 #### Returns
 
@@ -412,7 +432,7 @@ Defined in: [CliApp.ts:153](https://github.com/axm-internal/axm-internals/blob/m
 
 > `protected` **registerCommand**(`commandDefinition`): `void`
 
-Defined in: [CliApp.ts:145](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L145)
+Defined in: [CliApp.ts:156](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L156)
 
 #### Parameters
 
@@ -452,7 +472,7 @@ Defined in: [CliApp.ts:145](https://github.com/axm-internal/axm-internals/blob/m
 
 > **setCommands**(`commandDefinitions`): `void`
 
-Defined in: [CliApp.ts:125](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L125)
+Defined in: [CliApp.ts:136](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L136)
 
 Replace the command definitions for the app.
 
@@ -486,7 +506,7 @@ app.setCommands([definition]);
 
 > **start**(): `Promise`\<`number`\>
 
-Defined in: [CliApp.ts:191](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L191)
+Defined in: [CliApp.ts:202](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/CliApp.ts#L202)
 
 Initialize and run the CLI.
 

@@ -25,6 +25,7 @@ export class CliApp {
     protected container: ContainerInterface;
     protected commandDefinitions: CommandDefinition[];
     protected logger: Logger;
+    protected logErrors: boolean;
     protected initialized = false;
     protected lastError?: Error;
     protected onError?: (error: Error, container: ContainerInterface) => void;
@@ -44,12 +45,22 @@ export class CliApp {
      */
     constructor(params: CliAppParams) {
         const { config, options } = CliAppParamsSchema.parse(params);
-        const { commandDefinitions = [], container, logger, loggerAliases, pretty = true, onError, onExit } = options;
+        const {
+            commandDefinitions = [],
+            container,
+            logger,
+            loggerAliases,
+            pretty = true,
+            logErrors = true,
+            onError,
+            onExit,
+        } = options;
 
         this.config = config;
         this.commandDefinitions = commandDefinitions;
         this.container = container ?? new InMemoryContainer();
         this.logger = this.createLogger(config.name, pretty, logger);
+        this.logErrors = logErrors;
         this.onError = onError;
         this.onExit = onExit;
         const tokens = [CliLogger, ...(loggerAliases ?? [])];
@@ -224,7 +235,9 @@ export class CliApp {
 
             this.lastError = normalizedError;
             this.onError?.(normalizedError, this.container);
-            logger.error(error, '❌ CLI Error:');
+            if (this.logErrors) {
+                logger.error(error, '❌ CLI Error:');
+            }
             this.onExit?.(1, normalizedError, this.container);
             return 1;
         }

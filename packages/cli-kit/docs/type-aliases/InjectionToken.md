@@ -8,7 +8,7 @@
 
 > **InjectionToken**\<`T`\> = (...`args`) => `T` \| `string` \| `symbol`
 
-Defined in: [interfaces/ContainerInterface.ts:13](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/interfaces/ContainerInterface.ts#L13)
+Defined in: [interfaces/ContainerInterface.ts:15](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/interfaces/ContainerInterface.ts#L15)
 
 Token used to register and resolve values from a container.
 

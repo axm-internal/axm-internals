@@ -8,4 +8,4 @@
 
 > **CliAppParams** = `z.infer`\<*typeof* `CliAppParamsSchema`\>
 
-Defined in: [schemas/CliAppSchemas.ts:72](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/schemas/CliAppSchemas.ts#L72)
+Defined in: [schemas/CliAppSchemas.ts:73](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/schemas/CliAppSchemas.ts#L73)

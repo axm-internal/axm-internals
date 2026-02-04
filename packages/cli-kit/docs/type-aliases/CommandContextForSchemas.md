@@ -4,9 +4,9 @@
 
 [@axm-internal/cli-kit](../globals.md) / CommandContextForSchemas
 
-# Type Alias: CommandContextForSchemas\<ArgsSchema, OptionsSchema\>
+# Type Alias: CommandContextForSchemas\<ArgsSchema, OptionsSchema, TContainer\>
 
-> **CommandContextForSchemas**\<`ArgsSchema`, `OptionsSchema`\> = `object`
+> **CommandContextForSchemas**\<`ArgsSchema`, `OptionsSchema`, `TContainer`\> = `object`
 
 Defined in: [createCommandDefinition.ts:15](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/createCommandDefinition.ts#L15)
 
@@ -32,21 +32,25 @@ type Ctx = CommandContextForSchemas<typeof argsSchema, typeof optionsSchema>;
 
 `OptionsSchema` *extends* `z.ZodObject`\<`z.ZodRawShape`\>
 
+### TContainer
+
+`TContainer` = [`ContainerInterface`](../interfaces/ContainerInterface.md)
+
 ## Properties
 
 ### args
 
 > **args**: `z.infer`\<`ArgsSchema`\>
 
-Defined in: [createCommandDefinition.ts:19](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/createCommandDefinition.ts#L19)
+Defined in: [createCommandDefinition.ts:20](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/createCommandDefinition.ts#L20)
 
 ***
 
 ### container
 
-> **container**: [`ContainerInterface`](../interfaces/ContainerInterface.md)
+> **container**: `TContainer`
 
-Defined in: [createCommandDefinition.ts:21](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/createCommandDefinition.ts#L21)
+Defined in: [createCommandDefinition.ts:22](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/createCommandDefinition.ts#L22)
 
 ***
 
@@ -54,4 +58,4 @@ Defined in: [createCommandDefinition.ts:21](https://github.com/axm-internal/axm-
 
 > **options**: `z.infer`\<`OptionsSchema`\>
 
-Defined in: [createCommandDefinition.ts:20](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/createCommandDefinition.ts#L20)
+Defined in: [createCommandDefinition.ts:21](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/createCommandDefinition.ts#L21)

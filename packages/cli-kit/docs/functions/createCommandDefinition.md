@@ -6,13 +6,17 @@
 
 # Function: createCommandDefinition()
 
-> **createCommandDefinition**\<`ArgsSchema`, `OptionsSchema`\>(`definition`): `object`
+> **createCommandDefinition**\<`TContainer`, `ArgsSchema`, `OptionsSchema`\>(`definition`): `object`
 
-Defined in: [createCommandDefinition.ts:42](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/createCommandDefinition.ts#L42)
+Defined in: [createCommandDefinition.ts:43](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/createCommandDefinition.ts#L43)
 
 Create a strongly-typed command definition.
 
 ## Type Parameters
+
+### TContainer
+
+`TContainer` = [`ContainerInterface`](../interfaces/ContainerInterface.md)
 
 ### ArgsSchema
 

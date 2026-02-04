@@ -6,7 +6,7 @@
 
 # Interface: ContainerInterface
 
-Defined in: [interfaces/ContainerInterface.ts:41](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/interfaces/ContainerInterface.ts#L41)
+Defined in: [interfaces/ContainerInterface.ts:43](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/interfaces/ContainerInterface.ts#L43)
 
 Minimal dependency injection container interface.
 
@@ -27,7 +27,7 @@ container.registerInstance('Logger', console);
 
 > **registerInstance**\<`T`\>(`token`, `instance`): `ContainerInterface`
 
-Defined in: [interfaces/ContainerInterface.ts:55](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/interfaces/ContainerInterface.ts#L55)
+Defined in: [interfaces/ContainerInterface.ts:57](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/interfaces/ContainerInterface.ts#L57)
 
 Register a concrete instance for a token.
 
@@ -73,7 +73,7 @@ container.registerInstance('Logger', console);
 
 > **resolve**\<`T`\>(`token`): `T`
 
-Defined in: [interfaces/ContainerInterface.ts:68](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/interfaces/ContainerInterface.ts#L68)
+Defined in: [interfaces/ContainerInterface.ts:70](https://github.com/axm-internal/axm-internals/blob/main/packages/cli-kit/src/interfaces/ContainerInterface.ts#L70)
 
 Resolve a previously registered instance.
 
