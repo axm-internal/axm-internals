@@ -76,7 +76,7 @@ Changesets become the source of truth for:
     * Coverage
     * Quality checks
     * `changesets/action`
-6. Changesets:
+6. Changesets (when changesets exist):
 
     * Bumps package versions
     * Generates versions and publishes packages
@@ -134,10 +134,20 @@ jobs:
 
       - run: bun test
 
+      - name: Check for changesets
+        id: changesets
+        run: |
+          if ls .changeset/*.md >/dev/null 2>&1; then
+            echo "hasChangesets=true" >> $GITHUB_OUTPUT
+          else
+            echo "hasChangesets=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Version & Publish
         uses: changesets/action@v1
         with:
           publish: bunx changeset publish
+        if: ${{ steps.changesets.outputs.hasChangesets == 'true' }}
 ```
 
 This job:

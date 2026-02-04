@@ -122,7 +122,7 @@ A package may be consumed by other projects only when:
 
 ## Release & Versioning Pipeline (Changesets)
 
-Use Changesets for per-package versions, changelog generation, and publishing.
+Use Changesets for per-package versions and publishing.
 
 Typical flow:
 
@@ -130,7 +130,9 @@ Typical flow:
 2. Run `bunx changeset`.
 3. Commit the changeset with code.
 4. Merge to `main`.
-5. CI runs tests and `changesets/action` to version and publish.
+5. CI runs tests and `changesets/action` to version and publish when changesets exist.
+
+Changelogs are generated from `.changelogs/*.json` via `./repo-cli` and rendered with `changelog:write`.
 
 ## Commit Messages
 

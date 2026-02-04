@@ -19,9 +19,11 @@ It also removes the nested `.git` folder created by `bun create`.
 ## Packages
 
 - [`packages/cli-kit/README.md`](./packages/cli-kit/README.md)
+- [`packages/config-schema/README.md`](./packages/config-schema/README.md)
+- [`packages/git-db/README.md`](./packages/git-db/README.md)
+- [`packages/hono-kit/README.md`](./packages/hono-kit/README.md)
 - [`packages/zod-helpers/README.md`](./packages/zod-helpers/README.md)
 - [`packages/tooling-config/README.md`](./packages/tooling-config/README.md)
-- [`apps/prompt-runner/README.md`](./apps/prompt-runner/README.md)
 - [`apps/repo-cli/README.md`](./apps/repo-cli/README.md)
 
 ## Examples Repo
@@ -30,8 +32,11 @@ It also removes the nested `.git` folder created by `bun create`.
 
 ## Docs
 
+- [`monorepo-docs/conventions.md`](./monorepo-docs/conventions.md)
 - [`monorepo-docs/package-checklist.md`](./monorepo-docs/package-checklist.md)
-- [`monorepo-docs/intro-to-changesets.md`](./monorepo-docs/intro-to-changesets.md)
+- [`monorepo-docs/release-versioning-pipeline.md`](./monorepo-docs/release-versioning-pipeline.md)
+- [`monorepo-docs/feat/code-quality-review-pipeline.md`](./monorepo-docs/feat/code-quality-review-pipeline.md)
+- [`monorepo-docs/initial-log-plan.md`](./monorepo-docs/initial-log-plan.md)
 
 ## Repo CLI
 
