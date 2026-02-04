@@ -1,5 +1,5 @@
-import { PackageAppSchema } from '../schemas/PackageAppSchema';
+import { getValidPackageApps } from '../schemas/PackageAppSchema';
 
 export const listPackageApps = (): string[] => {
-    return [...PackageAppSchema.options];
+    return getValidPackageApps();
 };
