@@ -1,0 +1,27 @@
+Version: 0.1.0
+
+Purpose:
+- Provide a sync-first ORM for Bun + SQLite built around Zod schemas.
+- Define a model schema once and get validation, typing, and table creation automatically.
+
+Public surface:
+- defineDatabase(options)
+- makeAutoIncrement(schema)
+- makePrimaryKey(schema)
+- makeUnique(schema)
+- makeJson(schema)
+- Types: DatabaseConfig, DefineDatabaseHookContext, DefineDatabaseHooks, InsertInput, InsertOptions, ModelConfig, OrderBy, PaginationQuery, UpdateOptions, Where
+
+Intended usage:
+- Use defineDatabase(...) to register Zod-backed models and obtain typed model APIs.
+- Use makePrimaryKey/makeAutoIncrement/makeUnique to annotate schema columns.
+- Use makeJson to store Zod object/array columns as JSON.
+
+Non-goals:
+- Async database adapters or non-SQLite engines.
+- Relations, eager loading, or advanced query operators (post-MVP).
+- Automatic directory creation for database paths.
+
+Stability expectations:
+- MVP in progress; APIs may change before 1.0.
+- Adapter coverage beyond bun-sqlite may evolve as runtimes are added.

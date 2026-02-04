@@ -1,0 +1,3 @@
+{
+    "extends": "@axm-internal/tooling-config/tsconfig.packages.json"
+}
