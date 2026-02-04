@@ -2,6 +2,17 @@
 
 A schema-first configuration runtime for applications.
 
+## Why
+
+Configuration is runtime infrastructure. This package treats your schema as the source of truth for:
+
+- Validation and coercion
+- Explicit env bindings
+- Deterministic boot behavior
+- Human-readable failures when config is invalid
+
+In practice, the schema *is* the runtime contract.
+
 ## Install
 
 ```bash

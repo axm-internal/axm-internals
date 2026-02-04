@@ -12,6 +12,7 @@ Use the **Release PR** workflow to prepare a release automatically.
    - `./repo-cli gitdb:index`
    - `./repo-cli changelog:update --all`
    - `./repo-cli changelog:write --all`
+   - Create `.release/ready` to flag the publish pipeline
    - `./repo-cli changesets:create --all`
 4) If no `.changeset/*.md` files are created, no PR is opened.
 5) If changesets exist, a PR is opened with only:
@@ -26,7 +27,7 @@ Merge the PR to `main`.
 
 ## Publishing (CI)
 
-On merge to `main`, the existing Release workflow will run **only when changesets exist** and will:
+On merge to `main`, the Release workflow runs **only when `.release/ready` is present** (set by the Release PR workflow). It will:
 
 ```bash
 bunx changeset version
@@ -50,6 +51,9 @@ git checkout -b release/<yyyy-mm-dd>
 ./repo-cli changesets:create --all
 
 git status
+mkdir -p .release
+touch .release/ready
+git add .release/ready
 git add .
 git commit -m "chore(release): prepared release changesets"
 ```
@@ -61,4 +65,4 @@ Open a PR, merge to `main`, and CI will publish.
 - Releases are driven by the presence of `.changeset/*.md` files.
 - If a package should not be released, do not add a changeset for it.
 - Use `.changeset-drafts/` as the source of truth for what changed since the last tag.
-- CI will skip versioning/publishing entirely when no `.changeset/*.md` files are present.
+- CI will skip versioning/publishing unless `.release/ready` is present on `main` (set by the Release PR workflow).
