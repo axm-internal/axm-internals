@@ -232,14 +232,14 @@ describe('ChangelogBuilder', () => {
         await store.writeRoot({
             entries: [
                 {
-                    scope: 'cli-kit',
-                    version: '0.1.0',
-                    tag: '@axm-internal/cli-kit@0.1.0',
+                    scope: 'root',
+                    version: '2026-01-01T00:00:00.000Z',
+                    tag: null,
                     fromHash: 'a1',
                     toHash: 'a1',
                     rangeStartDate: '2026-01-01T00:00:00.000Z',
                     rangeEndDate: '2026-01-01T00:00:00.000Z',
-                    summaryLines: ['feat(cli-kit): init'],
+                    summaryLines: ['chore: root metadata'],
                     createdAt: '2026-01-01T00:00:00.000Z',
                 },
             ],
@@ -248,6 +248,10 @@ describe('ChangelogBuilder', () => {
         try {
             process.chdir(repoRoot);
             await fs.promises.mkdir(path.join(repoRoot, 'packages/cli-kit'), { recursive: true });
+            await fs.promises.writeFile(
+                path.join(repoRoot, 'packages/cli-kit/package.json'),
+                JSON.stringify({ name: '@axm-internal/cli-kit', version: '0.1.0' })
+            );
             await builder.writeMarkdown(['packages/cli-kit']);
         } finally {
             process.chdir(cwd);
@@ -258,6 +262,7 @@ describe('ChangelogBuilder', () => {
 
         expect(packageChangelog.includes('## 0.1.0')).toBe(true);
         expect(rootChangelog.includes('## 2026-01-01T00:00:00.000Z')).toBe(true);
+        expect(rootChangelog.includes('chore: root metadata')).toBe(true);
     });
 
     it('resolves package targets from flags', () => {
