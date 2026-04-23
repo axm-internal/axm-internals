@@ -162,14 +162,15 @@ const queueConfigSchema = z.object({
   timeout: z.number().default(30000), // ms, kill hanging jobs
 });
 
-const processorSchema = z.function()
-  .args(z.any()) // payload (validated separately)
-  .returns(z.promise(z.void()));
+const processorSchema = z.function({
+  input: [z.unknown()], // payload (validated separately)
+  output: z.void(),
+});
 
 const workerConfigSchema = z.object({
   queue: z.string(),
   processor: processorSchema,
-  schema: z.instanceof(z.ZodSchema).optional(), // Payload validation
+  schema: z.instanceof(z.ZodType).optional(), // Payload validation
 });
 ```
 
@@ -225,7 +226,9 @@ const proc = Bun.spawn(['bun', 'run', 'worker-runtime.ts', jobId], {
 });
 
 // Stream logs to database
-for await (const line of proc.stdout) {
+const decoder = new TextDecoder();
+for await (const chunk of proc.stdout) {
+  const line = decoder.decode(chunk);
   await db.insert(logsTable).values({
     jobId,
     level: 'info',
@@ -272,10 +275,10 @@ if (job.execution === 'async') {
 Bun.serve({
   port: 3000,
   routes: {
-    '/api/queues': () => Response.json(await getQueueStats()),
-    '/api/jobs': (req) => Response.json(await getJobs(req.query)),
-    '/api/workers': () => Response.json(await getWorkerStatus()),
-    '/api/logs/:jobId': (req) => Response.json(await getJobLogs(req.params.jobId)),
+    '/api/queues': async () => Response.json(await getQueueStats()),
+    '/api/jobs': async (req) => Response.json(await getJobs(req.query)),
+    '/api/workers': async () => Response.json(await getWorkerStatus()),
+    '/api/logs/:jobId': async (req) => Response.json(await getJobLogs(req.params.jobId)),
     '/api/retry/:jobId': { POST: (req) => retryJob(req.params.jobId) },
     '/': () => new Response(dashboardHTML, { headers: { 'Content-Type': 'text/html' } }),
   },
