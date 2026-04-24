@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { truncateString } from '../../../src/utils/truncateString';
+import { truncateString } from '@axm-internal/cli-tools';
 
 describe('truncateString', () => {
     it('truncates long strings', () => {

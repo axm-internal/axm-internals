@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { buildCliTable } from '../../../src/utils/buildCliTable';
+import { buildCliTable } from '@axm-internal/cli-tools';
 
 describe('buildCliTable', () => {
     it('infers headers and rows when columns are omitted', () => {

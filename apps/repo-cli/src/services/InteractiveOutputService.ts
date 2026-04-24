@@ -1,5 +1,5 @@
 import { CliOutputService } from '@axm-internal/cli-kit';
-import { renderJson } from '@axm-internal/git-db/src/utils/dataRenderer';
+import { renderJson } from '@axm-internal/cli-tools';
 import yoctoSpinner from 'yocto-spinner';
 import { blue, green, red, yellow } from 'yoctocolors';
 

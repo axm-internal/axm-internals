@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { truncateString } from '../../../src/utils/truncateString';
+import { truncateString } from '@axm-internal/cli-tools';
 
 describe('truncateString', () => {
     it('returns an empty string for null/undefined', () => {

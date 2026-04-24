@@ -8,6 +8,8 @@ type BuildCliTableParams<T = unknown> = {
     tableOptions?: Omit<TableOptions, 'head'>;
 };
 
+export type { BuildCliTableParams, RowRenderer, RowValue };
+
 export const buildCliTable = <T = unknown>({ objs, columns, tableOptions }: BuildCliTableParams<T>) => {
     const headers = columns ? Object.keys(columns) : objs[0] ? Object.keys(objs[0]) : [];
 
