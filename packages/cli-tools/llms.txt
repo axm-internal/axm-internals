@@ -1,18 +1,22 @@
-# __PACKAGE_NAME__
+# @axm-internal/cli-tools
 
-Version: __PACKAGE_VERSION__
+Version: 0.1.0
 
 Purpose:
-- __PACKAGE_DESC__
+- Shared CLI formatting and output utilities consumed by @axm-internal tools (git-db, repo-cli, release-cli)
 
 Public surface:
-- export(s) from `src/index.ts`
+- `buildCliTable<T>(params)` — renders data as a cli-table3 table with column renderers
+- `truncateString(value, length?)` — truncates strings with ellipsis
+- `renderJson(objs)` — pretty-prints JSON
+- Types: `BuildCliTableParams`, `RowRenderer`, `RowValue`
 
 Intended usage:
-- Internal @axm-internal consumers
+- Import from `@axm-internal/cli-tools` in any @axm-internal CLI app or package that needs table rendering, string truncation, or JSON output
 
 Non-goals:
-- External/public API stability
+- Domain-specific renderers (those stay in their owning packages, e.g. git-db's renderCommits)
+- General-purpose string/date formatting beyond CLI output concerns
 
 Stability expectations:
 - Semver within axm-internals
