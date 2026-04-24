@@ -47,6 +47,11 @@ Replace `changesets/action` with a direct `bun publish` step:
   run: |
     for pkg in packages/*/; do
       if [ -f "$pkg/package.json" ]; then
+        private=$(node -e "console.log(require('$pkg/package.json').private || false)")
+        if [ "$private" = "true" ]; then
+          echo "Skipping private package: $pkg"
+          continue
+        fi
         cd "$pkg"
         bun publish --access public
         cd -
