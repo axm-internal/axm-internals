@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import type { Commit } from '@axm-internal/git-db';
 
-const execaResponses = new Map<string, string>();
 let commitStore: Commit[] = [];
+let hashStore: string[] = [];
 
 const buildCommit = (overrides: Partial<Commit>): Commit => ({
     hash: overrides.hash ?? 'hash',
@@ -23,7 +23,6 @@ const createMockDb = (commits: Commit[]) => {
             let hashFilter: string | null = null;
             let hashList: string[] | null = null;
             let scopeIsNull = false;
-            let pathPrefix: string | null = null;
             let orderByColumn: string | null = null;
             let orderByDirection: 'asc' | 'desc' | null = null;
 
@@ -50,9 +49,6 @@ const createMockDb = (commits: Commit[]) => {
                     if (column === 'hash' && op === 'in') {
                         hashList = value as string[];
                     }
-                    if (column === 'commit_files.path' && op === 'like') {
-                        pathPrefix = (value as string).replace(/%$/, '');
-                    }
                     return builder;
                 },
                 execute: async () => {
@@ -61,10 +57,6 @@ const createMockDb = (commits: Commit[]) => {
                         if (scopeIsNull && commit.scope !== null) return false;
                         if (hashFilter && commit.hash !== hashFilter) return false;
                         if (hashList && !hashList.includes(commit.hash)) return false;
-                        if (pathPrefix) {
-                            const path = commit.message;
-                            if (!path.startsWith(pathPrefix)) return false;
-                        }
                         return true;
                     });
                     if (orderByColumn === 'date') {
@@ -85,32 +77,73 @@ const createMockDb = (commits: Commit[]) => {
     };
 };
 
-mock.module('execa', () => ({
-    execa: (_cmd: string, args: string[]) => {
-        const key = args.join(' ');
-        const stdout = execaResponses.get(key) ?? '';
-        return Promise.resolve({ stdout, stderr: '', exitCode: 0 });
-    },
-}));
-
 mock.module('@axm-internal/git-db', () => ({
     openBunDb: async () => createMockDb(commitStore),
     findCommitsByScope: async (_db: unknown, scope: string) => commitStore.filter((commit) => commit.scope === scope),
     listCommits: async () => commitStore,
     scanCommits: async () => ({
-        insertedCommits: 0,
-        insertedFiles: 0,
-        insertedAuthors: 0,
         lastIndexedHash: null,
         lastIndexedDate: null,
+        indexedCount: 0,
     }),
+    findCommitsByTagPrefix: async (_db: unknown, tagPrefix: string) =>
+        commitStore.filter((commit) => commit.refs?.includes(tagPrefix) ?? false),
+    findHeadCommit: async (_db: unknown) => {
+        if (hashStore.length === 0) return null;
+        return commitStore.find((commit) => commit.hash === hashStore[0]) ?? null;
+    },
+    findCommitByTag: async (_db: unknown, _tag: string) => {
+        const tagHash = hashStore.find((h) => h.startsWith('tag:'));
+        if (!tagHash) return null;
+        return commitStore.find((commit) => commit.hash === tagHash.replace('tag:', '')) ?? null;
+    },
+    findCommitsBetweenHashes: async (_db: unknown, scope: string, _fromHash: string, _toHash: string) => {
+        const hashes = hashStore.filter((h) => !h.startsWith('range:') && !h.startsWith('tag:') && !h.startsWith('@'));
+        if (hashes.length === 0) return [];
+        return commitStore.filter((commit) => commit.scope === scope && hashes.includes(commit.hash));
+    },
+    findCommitsAfterHash: async (_db: unknown, scope: string, _fromHash: string, _toHash: string) => {
+        const hashes = hashStore.filter((h) => !h.startsWith('range:') && !h.startsWith('tag:') && !h.startsWith('@'));
+        if (hashes.length === 0) return [];
+        return commitStore.filter((commit) => commit.scope === scope && hashes.includes(commit.hash));
+    },
+    findCommitsBetweenHashesAll: async (_db: unknown, _fromHash: string, _toHash: string) => {
+        const hashes = hashStore.filter((h) => !h.startsWith('range:') && !h.startsWith('tag:') && !h.startsWith('@'));
+        if (hashes.length === 0) return [];
+        return commitStore.filter((commit) => hashes.includes(commit.hash));
+    },
+    findCommitsBetweenHashesUnscoped: async (_db: unknown, _fromHash: string, _toHash: string) => {
+        const hashes = hashStore.filter((h) => !h.startsWith('range:') && !h.startsWith('tag:') && !h.startsWith('@'));
+        if (hashes.length === 0) return [];
+        return commitStore.filter((commit) => commit.scope === null && hashes.includes(commit.hash));
+    },
+    findCommitsByScopeAndPath: async (
+        _db: unknown,
+        scope: string,
+        _pathPrefix: string,
+        _fromHash: string,
+        _toHash: string
+    ) => {
+        const hashes = hashStore.filter((h) => !h.startsWith('range:') && !h.startsWith('tag:') && !h.startsWith('@'));
+        if (hashes.length === 0) return [];
+        return commitStore.filter(
+            (commit) => (commit.scope === scope || commit.scope === null) && hashes.includes(commit.hash)
+        );
+    },
+    listReleaseTags: async () => hashStore.filter((h) => h.startsWith('@axm-internal')),
+    listReleaseTagsForScope: async (_scope: string, _sort?: string) =>
+        hashStore.filter((h) => h.startsWith('@axm-internal')),
+    getLatestReleaseTagForScope: async (scope: string) => {
+        const tags = hashStore.filter((h) => h.startsWith(`@axm-internal/${scope}@`));
+        return tags[0] ?? null;
+    },
 }));
 
 const { GitQuery } = await import('../../../src/services/GitQuery');
 
 describe('GitQuery', () => {
     beforeEach(() => {
-        execaResponses.clear();
+        hashStore = [];
         commitStore = [];
     });
 
@@ -151,17 +184,14 @@ describe('GitQuery', () => {
     });
 
     it('lists release tags', async () => {
-        execaResponses.set('tag --list @axm-internal/*@*', '@axm-internal/cli-kit@0.1.0\n\n');
+        hashStore = ['@axm-internal/cli-kit@0.1.0'];
         const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
         const result = await service.listReleaseTags();
         expect(result).toEqual(['@axm-internal/cli-kit@0.1.0']);
     });
 
     it('lists release tags for a scope and returns latest', async () => {
-        execaResponses.set(
-            'tag --list @axm-internal/cli-kit@* --sort=-v:refname',
-            '@axm-internal/cli-kit@0.2.0\n@axm-internal/cli-kit@0.1.0'
-        );
+        hashStore = ['@axm-internal/cli-kit@0.2.0', '@axm-internal/cli-kit@0.1.0'];
         const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
         const tags = await service.listReleaseTagsForScope('cli-kit');
         const latest = await service.getLatestTagForScope('cli-kit');
@@ -169,19 +199,24 @@ describe('GitQuery', () => {
         expect(latest).toBe('@axm-internal/cli-kit@0.2.0');
     });
 
-    it('fetches commits by hash and head', async () => {
+    it('fetches commits by hash', async () => {
         commitStore = [buildCommit({ hash: 'abc', scope: 'cli-kit' })];
-        execaResponses.set('rev-parse HEAD', 'abc');
         const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
         const commit = await service.getCommitByHash('abc');
-        const head = await service.getHeadCommit();
         expect(commit?.hash).toBe('abc');
+    });
+
+    it('fetches head commit', async () => {
+        commitStore = [buildCommit({ hash: 'abc', scope: 'cli-kit' })];
+        hashStore = ['abc'];
+        const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
+        const head = await service.getHeadCommit();
         expect(head?.hash).toBe('abc');
     });
 
     it('fetches commit for tag', async () => {
         commitStore = [buildCommit({ hash: 'taghash', scope: 'cli-kit' })];
-        execaResponses.set('rev-list -n 1 @axm-internal/cli-kit@0.1.0', 'taghash');
+        hashStore = ['tag:taghash'];
         const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
         const commit = await service.getCommitForTag('@axm-internal/cli-kit@0.1.0');
         expect(commit?.hash).toBe('taghash');
@@ -193,7 +228,7 @@ describe('GitQuery', () => {
             buildCommit({ hash: 'c2', scope: 'cli-kit' }),
             buildCommit({ hash: 'other', scope: 'other' }),
         ];
-        execaResponses.set('rev-list --reverse c1^..c2', 'c1\nc2\nother');
+        hashStore = ['c1', 'c2'];
         const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
         const commits = await service.getCommitsBetweenHashes('cli-kit', 'c1', 'c2');
         expect(commits.map((commit) => commit.hash)).toEqual(['c1', 'c2']);
@@ -205,19 +240,15 @@ describe('GitQuery', () => {
             buildCommit({ hash: 'c2', scope: 'cli-kit' }),
             buildCommit({ hash: 'other', scope: 'other' }),
         ];
-        execaResponses.set('rev-list --reverse c1..c2', 'c2\nother');
+        hashStore = ['c2'];
         const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
         const commits = await service.getCommitsAfterHash('cli-kit', 'c1', 'c2');
         expect(commits.map((commit) => commit.hash)).toEqual(['c2']);
     });
 
     it('returns commits for a package by scope or path', async () => {
-        commitStore = [
-            buildCommit({ hash: 'c1', scope: 'repo-cli', message: 'packages/cli-kit/src/index.ts' }),
-            buildCommit({ hash: 'c2', scope: 'cli-kit' }),
-            buildCommit({ hash: 'c3', scope: null }),
-        ];
-        execaResponses.set('rev-list --reverse c1^..c2', 'c1\nc2\nc3');
+        commitStore = [buildCommit({ hash: 'c1', scope: 'cli-kit' }), buildCommit({ hash: 'c2', scope: 'cli-kit' })];
+        hashStore = ['c1', 'c2'];
         const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
         const commits = await service.getCommitsBetweenHashesForPackage('cli-kit', 'packages/cli-kit/', 'c1', 'c2');
         expect(commits.map((commit) => commit.hash)).toEqual(['c1', 'c2']);
@@ -229,7 +260,7 @@ describe('GitQuery', () => {
             buildCommit({ hash: 'c2', scope: null }),
             buildCommit({ hash: 'other', scope: 'other' }),
         ];
-        execaResponses.set('rev-list --reverse c1^..c2', 'c1\nc2\nother');
+        hashStore = ['c1', 'c2', 'other'];
         const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
         const commits = await service.getCommitsBetweenHashesUnscoped('c1', 'c2');
         expect(commits.map((commit) => commit.hash)).toEqual(['c2']);
@@ -237,7 +268,7 @@ describe('GitQuery', () => {
 
     it('returns commits between two commits using commit objects', async () => {
         commitStore = [buildCommit({ hash: 'c1', scope: 'cli-kit' }), buildCommit({ hash: 'c2', scope: 'cli-kit' })];
-        execaResponses.set('rev-list --reverse c1^..c2', 'c1\nc2');
+        hashStore = ['c1', 'c2'];
         const service = new GitQuery({ dbPath: '/tmp/git-db.sqlite' });
         const commits = await service.getCommitBetween('cli-kit', commitStore[0], commitStore[1]);
         expect(commits.map((commit) => commit.hash)).toEqual(['c1', 'c2']);
