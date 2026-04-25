@@ -29,6 +29,7 @@ export {
     findCommitByTag,
     findCommitsByTagPrefix,
     findHeadCommit,
+    getHeadHash,
     getLatestReleaseTagForScope,
     listReleaseTags,
     listReleaseTagsForScope,

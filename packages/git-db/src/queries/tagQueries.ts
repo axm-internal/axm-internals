@@ -1,14 +1,19 @@
-import { execa } from 'execa';
 import { sql } from 'kysely';
 import type { DbClient } from '../db/client';
 import type { Commit } from '../db/types';
-import { resolveTag } from '../git/tags';
+import { getHeadHash, resolveTag } from '../git/tags';
 
 const escapeLikePattern = (value: string): string =>
     value.replaceAll('\\', '\\\\').replaceAll('%', '\\%').replaceAll('_', '\\_');
 
 export type { TagInfo } from '../git/tags';
-export { getLatestReleaseTagForScope, listReleaseTags, listReleaseTagsForScope, resolveTag } from '../git/tags';
+export {
+    getHeadHash,
+    getLatestReleaseTagForScope,
+    listReleaseTags,
+    listReleaseTagsForScope,
+    resolveTag,
+} from '../git/tags';
 
 export const findCommitsByTagPrefix = async (db: DbClient, tagPrefix: string): Promise<Commit[]> => {
     const pattern = `%${escapeLikePattern(tagPrefix)}%`;
@@ -40,8 +45,7 @@ export const findCommitByTag = async (db: DbClient, tag: string): Promise<Commit
 };
 
 export const findHeadCommit = async (db: DbClient): Promise<Commit | null> => {
-    const { stdout } = await execa('git', ['rev-parse', 'HEAD']);
-    const hash = stdout.trim();
+    const hash = await getHeadHash();
     if (!hash) {
         return null;
     }
