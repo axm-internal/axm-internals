@@ -271,7 +271,8 @@ export class Model<TSchema extends z.ZodObject<z.ZodRawShape>> {
     upsert({ where, data, validate }: UpsertParams<TSchema>): ModelData<TSchema> {
         const parsed = this.validateInsert(data as Record<string, unknown>, validate);
         const whereEntries = Object.entries(where as Record<string, unknown>);
-        const mergedData = { ...Object.fromEntries(whereEntries), ...parsed };
+        const whereValues = whereEntries.map(([key, val]) => [key, extractWhereValue(val)] as [string, unknown]);
+        const mergedData = { ...Object.fromEntries(whereValues), ...parsed };
         const conflictFields = whereEntries.length > 0 ? whereEntries.map(([key]) => key) : this.primaryKeyColumns;
         const conflictColumns = conflictFields
             .map((key) => this.columns[key])
@@ -394,7 +395,10 @@ export class Model<TSchema extends z.ZodObject<z.ZodRawShape>> {
     }
 
     private buildWhereClause(column: ReturnType<typeof getTableColumns>[string], value: unknown): SQL {
-        if (value === null || value === undefined || typeof value !== 'object' || Array.isArray(value)) {
+        if (value === null) {
+            return isNullSql(column);
+        }
+        if (value === undefined || typeof value !== 'object' || Array.isArray(value)) {
             return eq(column, value as never);
         }
         if ('eq' in value) return eq(column, (value as { eq: unknown }).eq as never);
@@ -405,8 +409,16 @@ export class Model<TSchema extends z.ZodObject<z.ZodRawShape>> {
         if ('lte' in value) return lte(column, (value as { lte: unknown }).lte as never);
         if ('like' in value) return like(column, (value as { like: string }).like);
         if ('notLike' in value) return notLike(column, (value as { notLike: string }).notLike);
-        if ('in' in value) return inArray(column, (value as { in: unknown[] }).in as never[]);
-        if ('notIn' in value) return notInArray(column, (value as { notIn: unknown[] }).notIn as never[]);
+        if ('in' in value) {
+            const values = (value as { in: unknown[] }).in;
+            if (values.length === 0) return sql`1 = 0`;
+            return inArray(column, values as never[]);
+        }
+        if ('notIn' in value) {
+            const values = (value as { notIn: unknown[] }).notIn;
+            if (values.length === 0) return sql`1 = 1`;
+            return notInArray(column, values as never[]);
+        }
         if ('isNull' in value) {
             return (value as { isNull: boolean }).isNull ? isNullSql(column) : isNotNull(column);
         }
@@ -434,3 +446,11 @@ export class Model<TSchema extends z.ZodObject<z.ZodRawShape>> {
         });
     }
 }
+
+const extractWhereValue = (value: unknown): unknown => {
+    if (value === null || value === undefined || typeof value !== 'object' || Array.isArray(value)) {
+        return value;
+    }
+    if ('eq' in value) return (value as { eq: unknown }).eq;
+    return value;
+};

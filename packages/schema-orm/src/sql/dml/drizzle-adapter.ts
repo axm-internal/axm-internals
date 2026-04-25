@@ -86,7 +86,10 @@ const isOperatorObject = (value: unknown): value is WhereOperator<unknown> =>
     typeof value === 'object' && value !== null && !Array.isArray(value);
 
 const buildWhereClauseSql = (field: string, value: unknown): SQL => {
-    if (value === null || value === undefined || !isOperatorObject(value)) {
+    if (value === null) {
+        return sql`${sql.identifier(field)} IS NULL`;
+    }
+    if (value === undefined || !isOperatorObject(value)) {
         return sql`${sql.identifier(field)} = ${value}`;
     }
     if ('eq' in value) return sql`${sql.identifier(field)} = ${value.eq}`;
@@ -99,11 +102,17 @@ const buildWhereClauseSql = (field: string, value: unknown): SQL => {
     if ('notLike' in value) return sql`${sql.identifier(field)} NOT LIKE ${value.notLike}`;
     if ('in' in value) {
         const values = value.in as unknown[];
+        if (values.length === 0) {
+            return sql`1 = 0`;
+        }
         const items = values.map((v) => sql`${v}`);
         return sql`${sql.identifier(field)} IN (${sql.join(items, sql`, `)})`;
     }
     if ('notIn' in value) {
         const values = value.notIn as unknown[];
+        if (values.length === 0) {
+            return sql`1 = 1`;
+        }
         const items = values.map((v) => sql`${v}`);
         return sql`${sql.identifier(field)} NOT IN (${sql.join(items, sql`, `)})`;
     }
