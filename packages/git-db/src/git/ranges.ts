@@ -7,6 +7,9 @@ const parseStdoutLines = (stdout: string): string[] =>
         .filter(Boolean);
 
 export const listHashesBetween = async (fromHash: string, toHash: string): Promise<string[]> => {
+    if (fromHash === toHash) {
+        return [fromHash];
+    }
     const { stdout } = await execa('git', ['rev-list', '--reverse', '--ancestry-path', `${fromHash}..${toHash}`]);
     const hashes = parseStdoutLines(stdout);
     const { stdout: fromStdout } = await execa('git', ['rev-parse', fromHash]);

@@ -71,10 +71,10 @@ You can skip validation or provide a custom schema per call:
 
 ```ts
 // skip validation
-await db.Users.save({ data: { name: 'Ada' }, validate: false });
+db.Users.save({ data: { name: 'Ada' }, validate: false });
 
 // custom validation
-await db.Users.save({
+db.Users.save({
   data: { name: 'Ada' },
   validate: z.object({ name: z.string().min(2) }),
 });
