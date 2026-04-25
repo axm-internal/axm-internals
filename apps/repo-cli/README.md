@@ -12,8 +12,6 @@ bun dev gitdb:index
 bun dev gitdb:package:refs packages/cli-kit
 bun dev gitdb:package:commits packages/cli-kit --from <hash> --to <hash>
 bun dev gitdb:releases
-bun dev changesets:create packages/cli-kit
-bun dev changesets:create --all --dry
 bun dev changelog:backfill packages/cli-kit --dry
 bun dev changelog:write --all
 ```
@@ -27,8 +25,6 @@ bun dev changelog:write --all
 - `gitdb:package:refs <package-path>` — Show first commit and release tags for a package.
 - `gitdb:package:commits <package-path> --from <hash> --to <hash>` — List commits between two hashes.
 - `gitdb:releases` — List released packages and tags.
-- `changesets:create <package-path>` — Create changeset drafts (writes unless `--dry`).
-- `changesets:create --all --dry` — Preview drafts for all packages without writing.
 - `changelog:backfill <package-path>` — Backfill `.changelogs` entries:
   - publishable: first commit → first tag
   - non-publishable: continue from the last JSON entry’s `toHash`
@@ -38,11 +34,6 @@ bun dev changelog:write --all
 - `changelog:update --all --dry` — Preview update report for all packages.
 - `changelog:report <package-path>` — Show backfill/report status for a package.
 - `changelog:write <package-path>` — Render markdown changelogs from `.changelogs` JSON.
-- `changesets:backfill <package-path>` — Report (and optionally backfill) missing initial changelogs.
-- `changesets:backfill --all --dry` — Preview backfill report for all packages.
-
-Draft output:
-- Drafts are written to `.changeset-drafts/` at the repo root.
 
 Changelog output:
 - JSON lives in `.changelogs/` (`root.json` and `<scope>.json` files).

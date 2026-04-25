@@ -7,6 +7,7 @@ export { scanCommits } from './indexer/commitScanner';
 export type { CommitScanResult } from './indexer/types';
 export { findAuthors, listAuthors } from './queries/authorQueries';
 export {
+    findCommitByHash,
     findCommitsBetween,
     findCommitsByAuthorEmail,
     findCommitsByMessage,

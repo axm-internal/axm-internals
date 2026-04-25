@@ -51,4 +51,18 @@ export interface CliOutputServiceInterface {
      * ```
      */
     logError(message: string): void;
+
+    /**
+     * Log a warning message to stderr with yellow formatting.
+     *
+     * @param message - The warning message to print.
+     * @returns Nothing.
+     * @remarks
+     * Uses `chalk.yellow` to format the message.
+     * @example
+     * ```ts
+     * output.logWarning('Check your config');
+     * ```
+     */
+    logWarning(message: string): void;
 }

@@ -2,8 +2,6 @@ import { InMemoryContainer } from '@axm-internal/cli-kit';
 import { appConfig } from './appConfig';
 import { ChangelogBuilder } from './services/ChangelogBuilder';
 import { ChangelogStore } from './services/ChangelogStore';
-import { ChangeSetBuilder } from './services/ChangeSetBuilder';
-import { ChangeSetWriter } from './services/ChangeSetWriter';
 import { GitQuery } from './services/GitQuery';
 import { InteractiveOutputService } from './services/InteractiveOutputService';
 import { PackageInfoService } from './services/PackageInfoService';
@@ -24,11 +22,5 @@ container.registerInstance(ChangelogStore, changelogStore);
 
 const changelogBuilder = new ChangelogBuilder(packageInfoService, changelogStore);
 container.registerInstance(ChangelogBuilder, changelogBuilder);
-
-const changeSetBuilder = new ChangeSetBuilder(packageInfoService);
-container.registerInstance(ChangeSetBuilder, changeSetBuilder);
-
-const changeSetWriter = new ChangeSetWriter();
-container.registerInstance(ChangeSetWriter, changeSetWriter);
 
 export { container as appContainer, interactiveOutputService };

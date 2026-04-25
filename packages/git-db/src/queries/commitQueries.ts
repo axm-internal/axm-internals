@@ -75,3 +75,8 @@ export const findCommitsByType = async (db: DbClient, type: string): Promise<Com
 export const findCommitsByScope = async (db: DbClient, scope: string): Promise<Commit[]> => {
     return db.selectFrom('commits').selectAll().where('scope', '=', scope).orderBy('date', 'desc').execute();
 };
+
+export const findCommitByHash = async (db: DbClient, hash: string): Promise<Commit | null> => {
+    const commit = await db.selectFrom('commits').selectAll().where('hash', '=', hash).executeTakeFirst();
+    return commit ?? null;
+};

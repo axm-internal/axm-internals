@@ -23,6 +23,7 @@ export const CommandContextSchemaFactory = (
         args: argsSchema,
         options: optionsSchema,
         container: ContainerSchema,
+        dryRun: z.boolean().default(false),
     });
 
 /**
