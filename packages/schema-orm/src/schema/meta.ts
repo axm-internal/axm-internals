@@ -76,6 +76,18 @@ export const isUnique = (schema: z.ZodType): boolean => {
     return getColumnMeta(schema).unique;
 };
 
+export const makeForeignKey = <T extends z.ZodType>(schema: T, config: { table: string; column: string }): T => {
+    return withDbMeta(schema, { references: { table: config.table, column: config.column } });
+};
+
+export const isForeignKey = (schema: z.ZodType): boolean => {
+    return getColumnMeta(schema).references !== undefined;
+};
+
+export const getForeignKey = (schema: z.ZodType): { table: string; column: string } | undefined => {
+    return getColumnMeta(schema).references;
+};
+
 export const isZodNullable = (schema: z.ZodType): schema is z.ZodNullable<z.ZodTypeAny> =>
     schema instanceof z.ZodNullable;
 
@@ -126,17 +138,18 @@ export const getDefault = (schema: z.ZodType): string | number | boolean | null 
     return (result.data === undefined ? null : result.data) as string | number | boolean | null;
 };
 
-export const getPrimaryKeyField = (schema: z.ZodType): string | null => {
+export const getPrimaryKeyFields = (schema: z.ZodType): string[] => {
     if (!(schema instanceof z.ZodObject)) {
-        return null;
+        return [];
     }
 
     const shape = schema.shape as Record<string, z.ZodType>;
-    for (const [fieldName, fieldSchema] of Object.entries(shape)) {
-        if (isPrimaryKey(fieldSchema)) {
-            return fieldName;
-        }
-    }
+    return Object.entries(shape)
+        .filter(([, fieldSchema]) => isPrimaryKey(fieldSchema))
+        .map(([fieldName]) => fieldName);
+};
 
-    return null;
+export const getPrimaryKeyField = (schema: z.ZodType): string | null => {
+    const fields = getPrimaryKeyFields(schema);
+    return fields.length > 0 ? (fields[0] as string) : null;
 };

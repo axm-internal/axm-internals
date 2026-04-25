@@ -1,5 +1,14 @@
 import * as z from 'zod';
-import { getDefault, isAutoIncrement, isJsonColumn, isNullable, isPrimaryKey, isUnique } from '../../schema/meta';
+import {
+    getDefault,
+    getForeignKey,
+    getPrimaryKeyFields,
+    isAutoIncrement,
+    isJsonColumn,
+    isNullable,
+    isPrimaryKey,
+    isUnique,
+} from '../../schema/meta';
 import type { ModelConfig } from '../../types';
 
 export type ColumnType = 'INTEGER' | 'REAL' | 'TEXT' | 'BLOB' | 'NUMERIC';
@@ -15,6 +24,7 @@ export type ColumnSpec = {
     unique: boolean;
     isJson: boolean;
     default: string | number | boolean | null;
+    references?: { table: string; column: string };
 };
 
 export type TableSpec = {
@@ -95,6 +105,8 @@ export function modelConfigToTableSpec(modelConfig: ModelConfig): TableSpec {
         columns: [],
     };
 
+    const pkFields = getPrimaryKeyFields(modelConfig.schema);
+
     for (const [columnName, columnSchema] of Object.entries(modelConfig.schema.shape)) {
         const columnSpecType = zodTypeToColumnSpecType(columnSchema);
         const columnSpec: ColumnSpec = {
@@ -107,21 +119,26 @@ export function modelConfigToTableSpec(modelConfig: ModelConfig): TableSpec {
             isJson: isJsonColumn(columnSchema),
             unique: isUnique(columnSchema),
             default: getDefault(columnSchema),
+            references: getForeignKey(columnSchema) ?? undefined,
         };
         tableSpec.columns.push(columnSpec);
+    }
+
+    if (pkFields.length > 1) {
+        tableSpec.compositePrimaryKeys = pkFields;
     }
 
     return tableSpec;
 }
 
-function columnSpecToString(columnSpec: ColumnSpec): string {
+function columnSpecToString(columnSpec: ColumnSpec, isPartOfCompositePK: boolean = false): string {
     const columnParts: string[] = [];
     columnParts.push(`"${columnSpec.name}"`);
     columnParts.push(`${columnSpec.type}`);
-    if (columnSpec.primaryKey) {
+    if (columnSpec.primaryKey && !isPartOfCompositePK) {
         columnParts.push('PRIMARY KEY');
     }
-    if (columnSpec.autoincrement && columnSpec.primaryKey && columnSpec.type === 'INTEGER') {
+    if (columnSpec.autoincrement && columnSpec.primaryKey && columnSpec.type === 'INTEGER' && !isPartOfCompositePK) {
         columnParts.push('AUTOINCREMENT');
     }
     if (columnSpec.notNull) {
@@ -138,13 +155,26 @@ function columnSpecToString(columnSpec: ColumnSpec): string {
             columnParts.push(`DEFAULT ${columnSpec.default}`);
         }
     }
+    if (columnSpec.references) {
+        columnParts.push(`REFERENCES "${columnSpec.references.table}" ("${columnSpec.references.column}")`);
+    }
 
     return columnParts.join(' ');
 }
 
 function tableSpecToCreateTable(tableSpec: TableSpec): string {
-    const columns = tableSpec.columns.map(columnSpecToString).join(', ');
-    return `CREATE TABLE IF NOT EXISTS "${tableSpec.table}" (${columns});`;
+    const compositePKSet = tableSpec.compositePrimaryKeys ? new Set(tableSpec.compositePrimaryKeys) : new Set<string>();
+
+    const columns = tableSpec.columns.map((col) => columnSpecToString(col, compositePKSet.has(col.name))).join(', ');
+
+    const constraints: string[] = [];
+    if (tableSpec.compositePrimaryKeys && tableSpec.compositePrimaryKeys.length > 1) {
+        const pkCols = tableSpec.compositePrimaryKeys.map((c) => `"${c}"`).join(', ');
+        constraints.push(`PRIMARY KEY (${pkCols})`);
+    }
+
+    const allParts = constraints.length > 0 ? `${columns}, ${constraints.join(', ')}` : columns;
+    return `CREATE TABLE IF NOT EXISTS "${tableSpec.table}" (${allParts});`;
 }
 
 export function generateCreateTable(modelConfig: ModelConfig): string {
@@ -164,8 +194,10 @@ export function tableSpecSignature(tableSpec: TableSpec): string {
                 notNull: column.notNull,
                 unique: column.unique,
                 default: column.default,
+                references: column.references ?? null,
             }))
             .sort((a, b) => a.name.localeCompare(b.name)),
+        compositePrimaryKeys: tableSpec.compositePrimaryKeys ?? [],
     };
 
     const json = JSON.stringify(normalized);

@@ -1,8 +1,28 @@
-import { and, asc, desc, eq, type SQL, sql } from 'drizzle-orm';
+import {
+    and,
+    asc,
+    between,
+    desc,
+    eq,
+    gt,
+    gte,
+    inArray,
+    isNotNull,
+    isNull as isNullSql,
+    like,
+    lt,
+    lte,
+    ne,
+    notBetween,
+    notInArray,
+    notLike,
+    type SQL,
+    sql,
+} from 'drizzle-orm';
 import type { AnySQLiteTable } from 'drizzle-orm/sqlite-core';
 import { getTableColumns } from 'drizzle-orm/utils';
 import { z } from 'zod';
-import { getPrimaryKeyField, isAutoIncrement, isNullable } from '../schema/meta';
+import { getPrimaryKeyFields, isAutoIncrement, isNullable } from '../schema/meta';
 import { PaginationQuerySchema, WriteOptionsSchema } from '../schema/schemas';
 import { modelConfigToDrizzleTable } from '../sql/dml/drizzle-adapter';
 import type {
@@ -28,7 +48,7 @@ export type ModelParams<TSchema extends z.ZodObject<z.ZodRawShape>> = {
 type ModelData<TSchema extends z.ZodObject<z.ZodRawShape>> = z.infer<TSchema>;
 
 type FindByIdParams = {
-    id: string | number;
+    id: string | number | Record<string, unknown>;
 };
 
 type FindOneParams<TSchema extends z.ZodObject<z.ZodRawShape>> = {
@@ -83,7 +103,7 @@ type RemoveParams<TSchema extends z.ZodObject<z.ZodRawShape>> = {
 };
 
 export class Model<TSchema extends z.ZodObject<z.ZodRawShape>> {
-    protected primaryKeyColumn: string | null;
+    protected primaryKeyColumns: string[];
     protected modelConfig: ModelConfigFor<TSchema>;
     protected sqliteTable: AnySQLiteTable;
     protected db: AnySQLiteDb;
@@ -133,18 +153,30 @@ export class Model<TSchema extends z.ZodObject<z.ZodRawShape>> {
         this.db = db;
         this.modelConfig = modelConfig;
         this.sqliteTable = modelConfigToDrizzleTable(modelConfig);
-        this.primaryKeyColumn = getPrimaryKeyField(this.modelConfig.schema);
+        this.primaryKeyColumns = getPrimaryKeyFields(this.modelConfig.schema);
         this.columns = getTableColumns(this.sqliteTable);
     }
 
     findById({ id }: FindByIdParams): ModelData<TSchema> | null {
-        if (!this.primaryKeyColumn) {
+        if (this.primaryKeyColumns.length === 0) {
             return null;
         }
-        const where = this.buildWhere({ [this.primaryKeyColumn]: id } as Where<ModelData<TSchema>>);
+        let where: Record<string, unknown>;
+        if (typeof id === 'object' && id !== null) {
+            where = id;
+        } else {
+            if (this.primaryKeyColumns.length !== 1) {
+                throw new Error(
+                    'findById with a scalar id requires a single primary key column; use object id for composite keys'
+                );
+            }
+            const pkField = this.primaryKeyColumns[0] as string;
+            where = { [pkField]: id };
+        }
+        const whereSql = this.buildWhere(where as Where<ModelData<TSchema>>);
         const query = this.selectFromTable();
-        if (where) {
-            query.where(where);
+        if (whereSql) {
+            query.where(whereSql);
         }
         query.limit(1);
         return (query.get() as ModelData<TSchema> | undefined) ?? null;
@@ -237,12 +269,30 @@ export class Model<TSchema extends z.ZodObject<z.ZodRawShape>> {
     }
 
     upsert({ where, data, validate }: UpsertParams<TSchema>): ModelData<TSchema> {
-        const existing = this.findOne({ where });
-        if (existing) {
-            this.update({ where, data: data as Partial<ModelData<TSchema>>, validate });
-            return this.findOne({ where }) as ModelData<TSchema>;
+        const parsed = this.validateInsert(data as Record<string, unknown>, validate);
+        const whereEntries = Object.entries(where as Record<string, unknown>);
+        const mergedData = { ...Object.fromEntries(whereEntries), ...parsed };
+        const conflictFields = whereEntries.length > 0 ? whereEntries.map(([key]) => key) : this.primaryKeyColumns;
+        const conflictColumns = conflictFields
+            .map((key) => this.columns[key])
+            .filter((col): col is NonNullable<typeof col> => col !== undefined);
+        const conflictFieldSet = new Set(conflictFields);
+        const updateSet: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(mergedData)) {
+            if (!conflictFieldSet.has(key)) {
+                updateSet[key] = value;
+            }
         }
-        return this.save({ data, validate });
+        const result = this.db
+            .insert(this.sqliteTable)
+            .values(mergedData)
+            .onConflictDoUpdate({
+                target: conflictColumns,
+                set: updateSet as Record<string, unknown>,
+            })
+            .returning()
+            .get();
+        return result as ModelData<TSchema>;
     }
 
     remove({ where }: RemoveParams<TSchema>): number {
@@ -259,6 +309,14 @@ export class Model<TSchema extends z.ZodObject<z.ZodRawShape>> {
 
     removeMany({ where }: RemoveParams<TSchema>): number {
         return this.remove({ where });
+    }
+
+    getDrizzleDb(): AnySQLiteDb {
+        return this.db;
+    }
+
+    getTable(): AnySQLiteTable {
+        return this.sqliteTable;
     }
 
     private validateInsert<TInput extends Record<string, unknown>>(data: TInput, validate?: InsertOptions['validate']) {
@@ -330,9 +388,37 @@ export class Model<TSchema extends z.ZodObject<z.ZodRawShape>> {
             if (!column) {
                 throw new Error(`Unknown column "${field}" for table "${this.modelConfig.table}"`);
             }
-            return eq(column, value as never);
+            return this.buildWhereClause(column, value);
         });
-        return clauses.length === 1 ? clauses[0] : and(...clauses);
+        return clauses.length === 1 ? (clauses[0] as SQL) : and(...clauses);
+    }
+
+    private buildWhereClause(column: ReturnType<typeof getTableColumns>[string], value: unknown): SQL {
+        if (value === null || value === undefined || typeof value !== 'object' || Array.isArray(value)) {
+            return eq(column, value as never);
+        }
+        if ('eq' in value) return eq(column, (value as { eq: unknown }).eq as never);
+        if ('ne' in value) return ne(column, (value as { ne: unknown }).ne as never);
+        if ('gt' in value) return gt(column, (value as { gt: unknown }).gt as never);
+        if ('gte' in value) return gte(column, (value as { gte: unknown }).gte as never);
+        if ('lt' in value) return lt(column, (value as { lt: unknown }).lt as never);
+        if ('lte' in value) return lte(column, (value as { lte: unknown }).lte as never);
+        if ('like' in value) return like(column, (value as { like: string }).like);
+        if ('notLike' in value) return notLike(column, (value as { notLike: string }).notLike);
+        if ('in' in value) return inArray(column, (value as { in: unknown[] }).in as never[]);
+        if ('notIn' in value) return notInArray(column, (value as { notIn: unknown[] }).notIn as never[]);
+        if ('isNull' in value) {
+            return (value as { isNull: boolean }).isNull ? isNullSql(column) : isNotNull(column);
+        }
+        if ('between' in value) {
+            const [min, max] = (value as { between: [unknown, unknown] }).between;
+            return between(column, min as never, max as never);
+        }
+        if ('notBetween' in value) {
+            const [min, max] = (value as { notBetween: [unknown, unknown] }).notBetween;
+            return notBetween(column, min as never, max as never);
+        }
+        return eq(column, value as never);
     }
 
     private buildOrderBy(orderBy?: OrderBy<ModelData<TSchema>>): SQL[] | undefined {

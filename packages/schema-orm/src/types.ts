@@ -34,7 +34,24 @@ export type OrderBy<T extends Record<string, unknown>> = Array<{
     direction: 'asc' | 'desc';
 }>;
 
-export type Where<T extends Record<string, unknown>> = Partial<T>;
+export type WhereOperator<T> =
+    | { eq: T }
+    | { ne: T }
+    | { gt: T }
+    | { gte: T }
+    | { lt: T }
+    | { lte: T }
+    | { like: string }
+    | { notLike: string }
+    | { in: T[] }
+    | { notIn: T[] }
+    | { isNull: boolean }
+    | { between: [T, T] }
+    | { notBetween: [T, T] };
+
+export type Where<T extends Record<string, unknown>> = {
+    [K in keyof T]?: T[K] | WhereOperator<T[K]>;
+};
 
 export type FindAllOptions<T extends Record<string, unknown>> = {
     pagination?: PaginationQuery;

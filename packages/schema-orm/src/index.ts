@@ -1,6 +1,11 @@
 export { defineDatabase } from './db/defineDatabase';
+export { Model } from './db/Model';
 export {
+    getForeignKey,
+    getPrimaryKeyFields,
+    isForeignKey,
     makeAutoIncrement,
+    makeForeignKey,
     makeJson,
     makePrimaryKey,
     makeUnique,
@@ -16,4 +21,5 @@ export type {
     PaginationQuery,
     UpdateOptions,
     Where,
+    WhereOperator,
 } from './types';

@@ -103,5 +103,6 @@ export const ColumnMetaSchema = z
         autoincrement: z.boolean().default(false),
         unique: z.boolean().default(false),
         json: z.boolean().default(false),
+        references: z.object({ table: z.string(), column: z.string() }).optional(),
     })
     .strict();
