@@ -1,7 +1,7 @@
 import { type SQL, sql } from 'drizzle-orm';
-import type { AnySQLiteTable } from 'drizzle-orm/sqlite-core';
-import { blob, integer, numeric, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import type { ModelConfig, OrderBy, PaginationQuery, Where } from '../../types';
+import type { AnySQLiteColumn, AnySQLiteTable } from 'drizzle-orm/sqlite-core';
+import { blob, integer, numeric, primaryKey, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import type { ModelConfig, OrderBy, PaginationQuery, Where, WhereOperator } from '../../types';
 import { type ColumnSpec, modelConfigToTableSpec, type TableSpec } from '../ddl/TableSqlGenerator';
 
 type ColumnBuilder =
@@ -11,7 +11,7 @@ type ColumnBuilder =
     | ReturnType<typeof blob>
     | ReturnType<typeof numeric>;
 
-const columnSpecToBuilder = (columnSpec: ColumnSpec): ColumnBuilder => {
+const columnSpecToBuilder = (columnSpec: ColumnSpec, compositePKSet?: Set<string>): ColumnBuilder => {
     let builder: ColumnBuilder;
 
     switch (columnSpec.type) {
@@ -39,7 +39,8 @@ const columnSpecToBuilder = (columnSpec: ColumnSpec): ColumnBuilder => {
             break;
     }
 
-    if (columnSpec.primaryKey) {
+    const isInCompositePK = compositePKSet?.has(columnSpec.name);
+    if (columnSpec.primaryKey && !isInCompositePK) {
         builder = builder.primaryKey({ autoIncrement: columnSpec.autoincrement });
     }
 
@@ -59,10 +60,18 @@ const columnSpecToBuilder = (columnSpec: ColumnSpec): ColumnBuilder => {
 };
 
 export const tableSpecToDrizzleTable = (tableSpec: TableSpec): AnySQLiteTable => {
+    const compositePKSet = tableSpec.compositePrimaryKeys ? new Set(tableSpec.compositePrimaryKeys) : undefined;
     const columns: Record<string, ColumnBuilder> = {};
 
     for (const columnSpec of tableSpec.columns) {
-        columns[columnSpec.name] = columnSpecToBuilder(columnSpec);
+        columns[columnSpec.name] = columnSpecToBuilder(columnSpec, compositePKSet);
+    }
+
+    if (tableSpec.compositePrimaryKeys && tableSpec.compositePrimaryKeys.length > 1) {
+        const pkNames = tableSpec.compositePrimaryKeys;
+        return sqliteTable(tableSpec.table, columns, (table) => [
+            primaryKey(...pkNames.map((name) => table[name] as AnySQLiteColumn)),
+        ]) as AnySQLiteTable;
     }
 
     return sqliteTable(tableSpec.table, columns);
@@ -73,12 +82,60 @@ export const modelConfigToDrizzleTable = (modelConfig: ModelConfig): AnySQLiteTa
     return tableSpecToDrizzleTable(tableSpec);
 };
 
+const isOperatorObject = (value: unknown): value is WhereOperator<unknown> =>
+    typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const buildWhereClauseSql = (field: string, value: unknown): SQL => {
+    if (value === null) {
+        return sql`${sql.identifier(field)} IS NULL`;
+    }
+    if (value === undefined || !isOperatorObject(value)) {
+        return sql`${sql.identifier(field)} = ${value}`;
+    }
+    if ('eq' in value) return sql`${sql.identifier(field)} = ${value.eq}`;
+    if ('ne' in value) return sql`${sql.identifier(field)} != ${value.ne}`;
+    if ('gt' in value) return sql`${sql.identifier(field)} > ${value.gt}`;
+    if ('gte' in value) return sql`${sql.identifier(field)} >= ${value.gte}`;
+    if ('lt' in value) return sql`${sql.identifier(field)} < ${value.lt}`;
+    if ('lte' in value) return sql`${sql.identifier(field)} <= ${value.lte}`;
+    if ('like' in value) return sql`${sql.identifier(field)} LIKE ${value.like}`;
+    if ('notLike' in value) return sql`${sql.identifier(field)} NOT LIKE ${value.notLike}`;
+    if ('in' in value) {
+        const values = value.in as unknown[];
+        if (values.length === 0) {
+            return sql`1 = 0`;
+        }
+        const items = values.map((v) => sql`${v}`);
+        return sql`${sql.identifier(field)} IN (${sql.join(items, sql`, `)})`;
+    }
+    if ('notIn' in value) {
+        const values = value.notIn as unknown[];
+        if (values.length === 0) {
+            return sql`1 = 1`;
+        }
+        const items = values.map((v) => sql`${v}`);
+        return sql`${sql.identifier(field)} NOT IN (${sql.join(items, sql`, `)})`;
+    }
+    if ('isNull' in value) {
+        return value.isNull ? sql`${sql.identifier(field)} IS NULL` : sql`${sql.identifier(field)} IS NOT NULL`;
+    }
+    if ('between' in value) {
+        const [min, max] = value.between as [unknown, unknown];
+        return sql`${sql.identifier(field)} BETWEEN ${min} AND ${max}`;
+    }
+    if ('notBetween' in value) {
+        const [min, max] = value.notBetween as [unknown, unknown];
+        return sql`${sql.identifier(field)} NOT BETWEEN ${min} AND ${max}`;
+    }
+    return sql`${sql.identifier(field)} = ${value}`;
+};
+
 const buildWhereSql = <T extends Record<string, unknown>>(where?: Where<T>): SQL | undefined => {
     if (!where || Object.keys(where).length === 0) {
         return undefined;
     }
-    const clauses = Object.entries(where).map(([field, value]) => sql`${sql.identifier(field)} = ${value}`);
-    return clauses.length === 1 ? clauses[0] : sql.join(clauses, sql` AND `);
+    const clauses = Object.entries(where).map(([field, value]) => buildWhereClauseSql(field, value));
+    return clauses.length === 1 ? (clauses[0] as SQL) : sql.join(clauses, sql` AND `);
 };
 
 const buildOrderBySql = <T extends Record<string, unknown>>(orderBy?: OrderBy<T>): SQL | undefined => {

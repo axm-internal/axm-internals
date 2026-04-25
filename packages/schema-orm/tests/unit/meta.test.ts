@@ -3,8 +3,11 @@ import { z } from 'zod';
 import {
     getColumnMeta,
     getDefault,
+    getForeignKey,
     getPrimaryKeyField,
+    getPrimaryKeyFields,
     isAutoIncrement,
+    isForeignKey,
     isJsonColumn,
     isNullable,
     isPrimaryKey,
@@ -12,6 +15,7 @@ import {
     isZodNullable,
     isZodOptional,
     makeAutoIncrement,
+    makeForeignKey,
     makeJson,
     makePrimaryKey,
     makeUnique,
@@ -91,6 +95,32 @@ describe('meta helpers', () => {
         expect(isNullable(schema)).toBe(false);
     });
 
+    describe('foreign keys', () => {
+        it('makeForeignKey sets references metadata', () => {
+            const schema = makeForeignKey(z.number().int(), { table: 'users', column: 'id' });
+            const meta = getColumnMeta(schema);
+            expect(meta.references).toEqual({ table: 'users', column: 'id' });
+        });
+
+        it('isForeignKey returns true for foreign key columns', () => {
+            const schema = makeForeignKey(z.number().int(), { table: 'users', column: 'id' });
+            expect(isForeignKey(schema)).toBe(true);
+        });
+
+        it('isForeignKey returns false for non-FK columns', () => {
+            expect(isForeignKey(z.number().int())).toBe(false);
+        });
+
+        it('getForeignKey returns reference info', () => {
+            const schema = makeForeignKey(z.number().int(), { table: 'users', column: 'id' });
+            expect(getForeignKey(schema)).toEqual({ table: 'users', column: 'id' });
+        });
+
+        it('getForeignKey returns undefined for non-FK columns', () => {
+            expect(getForeignKey(z.number().int())).toBeUndefined();
+        });
+    });
+
     it('getPrimaryKeyField returns null for non-object schemas', () => {
         expect(getPrimaryKeyField(z.string())).toBeNull();
     });
@@ -108,6 +138,36 @@ describe('meta helpers', () => {
             name: z.string(),
         });
         expect(getPrimaryKeyField(schema)).toBeNull();
+    });
+
+    describe('getPrimaryKeyFields', () => {
+        it('returns empty array for non-object schemas', () => {
+            expect(getPrimaryKeyFields(z.string())).toEqual([]);
+        });
+
+        it('returns single-element array for single PK schema', () => {
+            const schema = z.object({
+                id: makePrimaryKey(z.number().int()),
+                name: z.string(),
+            });
+            expect(getPrimaryKeyFields(schema)).toEqual(['id']);
+        });
+
+        it('returns multi-element array for composite PK schema', () => {
+            const schema = z.object({
+                userId: makePrimaryKey(z.number().int()),
+                roleId: makePrimaryKey(z.number().int()),
+                grantedAt: z.string(),
+            });
+            expect(getPrimaryKeyFields(schema)).toEqual(['userId', 'roleId']);
+        });
+
+        it('returns empty array when no primary key is defined', () => {
+            const schema = z.object({
+                name: z.string(),
+            });
+            expect(getPrimaryKeyFields(schema)).toEqual([]);
+        });
     });
 });
 
