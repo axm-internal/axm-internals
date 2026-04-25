@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { truncateString } from '../../../src/utils/truncateString';
+import { truncateString } from '../../src/index';
 
 describe('truncateString', () => {
     it('returns an empty string for null/undefined', () => {
@@ -13,6 +13,11 @@ describe('truncateString', () => {
 
     it('truncates and adds ellipsis when over limit', () => {
         expect(truncateString('abcdefghij', 5)).toBe('abcde...');
+    });
+
+    it('truncates long strings with default limit', () => {
+        const value = truncateString('abcdefghijklmnopqrstuvwxyz', 10);
+        expect(value).toBe('abcdefghij...');
     });
 
     it('stringifies non-string values', () => {

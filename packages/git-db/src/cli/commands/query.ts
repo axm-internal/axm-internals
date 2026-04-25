@@ -1,4 +1,5 @@
 import { createCommandDefinition } from '@axm-internal/cli-kit';
+import { renderJson } from '@axm-internal/cli-tools';
 import { z } from 'zod';
 import { openBunDb } from '../../db/client';
 import { findAuthors, listAuthors } from '../../queries/authorQueries';
@@ -13,7 +14,7 @@ import {
 import { findCommitsByPath, listFiles } from '../../queries/fileQueries';
 import { listMeta } from '../../queries/metaQueries';
 import { findCommitsByPackage } from '../../queries/packageQueries';
-import { renderAuthors, renderCommits, renderFiles, renderJson, renderMeta } from '../../utils/dataRenderer';
+import { renderAuthors, renderCommits, renderFiles, renderMeta } from '../../utils/dataRenderer';
 import { DBPathSchema } from '../schemas';
 
 export const queryCommand = createCommandDefinition({

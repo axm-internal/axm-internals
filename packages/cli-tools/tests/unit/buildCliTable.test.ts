@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { buildCliTable } from '../../../src/utils/buildCliTable';
+import { buildCliTable } from '../../src/index';
 
 describe('buildCliTable', () => {
     it('infers headers and rows when columns are omitted', () => {
@@ -36,5 +36,20 @@ describe('buildCliTable', () => {
         expect(output).toContain('alpha');
         expect(output).toContain('2');
         expect(output).toContain('ok');
+    });
+
+    it('renders empty string for missing values', () => {
+        const table = buildCliTable({
+            objs: [{ name: 'alpha' }],
+            columns: {
+                Name: 'name',
+                Missing: 'missing' as 'name',
+            },
+        });
+
+        const output = table.toString();
+        expect(output).toContain('Name');
+        expect(output).toContain('Missing');
+        expect(output).toContain('alpha');
     });
 });

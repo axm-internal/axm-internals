@@ -1,12 +1,11 @@
 import { createCommandDefinition } from '@axm-internal/cli-kit';
+import { buildCliTable, truncateString } from '@axm-internal/cli-tools';
 import type { Commit } from '@axm-internal/git-db';
 import { z } from 'zod';
 import { PackageAppSchema } from '../../schemas/PackageAppSchema';
 import { InteractiveOutputService } from '../../services/InteractiveOutputService';
 import { PackageInfoService } from '../../services/PackageInfoService';
-import { buildCliTable } from '../../utils/buildCliTable';
 import { splitPackageApp } from '../../utils/splitPackageApp';
-import { truncateString } from '../../utils/truncateString';
 
 export const packageCommitsCommand = createCommandDefinition({
     name: 'gitdb:package:commits',
