@@ -84,17 +84,17 @@ process.exit(exitCode);
 
 ### Container Typing (Generic Alias)
 
-If your project uses a DI container like tsyringe, pass the container type as the generic argument to align the
+If your project uses a custom DI container, pass the container type as the generic argument to align the
 `container` type inside `action`:
 
 ```ts
-import type { DependencyContainer } from 'tsyringe';
+import type { InMemoryContainer } from '@axm-internal/cli-kit';
 
-const helloCommand = createCommandDefinition<DependencyContainer>({
+const helloCommand = createCommandDefinition<InMemoryContainer>({
   name: 'hello',
   description: 'says hello',
   action: async ({ container }) => {
-    // container is typed as DependencyContainer here
+    // container is typed as InMemoryContainer here
   },
 });
 ```

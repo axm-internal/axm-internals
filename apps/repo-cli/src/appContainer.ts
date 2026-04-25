@@ -1,3 +1,4 @@
+import { InMemoryContainer } from '@axm-internal/cli-kit';
 import { appConfig } from './appConfig';
 import { ChangelogBuilder } from './services/ChangelogBuilder';
 import { ChangelogStore } from './services/ChangelogStore';
@@ -6,25 +7,28 @@ import { ChangeSetWriter } from './services/ChangeSetWriter';
 import { GitQuery } from './services/GitQuery';
 import { InteractiveOutputService } from './services/InteractiveOutputService';
 import { PackageInfoService } from './services/PackageInfoService';
-import { createContainer } from './utils/createContainer';
 
-const { container: appContainer, registerFactory } = createContainer();
+const container = new InMemoryContainer();
 
-registerFactory(InteractiveOutputService, () => new InteractiveOutputService());
-registerFactory(
-    GitQuery,
-    () =>
-        new GitQuery({
-            dbPath: appConfig.gitDb.dbPath,
-        })
-);
-registerFactory(PackageInfoService, (c) => new PackageInfoService(c.resolve(GitQuery)));
-registerFactory(ChangelogStore, () => new ChangelogStore());
-registerFactory(
-    ChangelogBuilder,
-    (c) => new ChangelogBuilder(c.resolve(PackageInfoService), c.resolve(ChangelogStore))
-);
-registerFactory(ChangeSetBuilder, (c) => new ChangeSetBuilder(c.resolve(PackageInfoService)));
-registerFactory(ChangeSetWriter, () => new ChangeSetWriter());
+const interactiveOutputService = new InteractiveOutputService();
+container.registerInstance(InteractiveOutputService, interactiveOutputService);
 
-export { appContainer };
+const gitQuery = new GitQuery({ dbPath: appConfig.gitDb.dbPath });
+container.registerInstance(GitQuery, gitQuery);
+
+const packageInfoService = new PackageInfoService(gitQuery);
+container.registerInstance(PackageInfoService, packageInfoService);
+
+const changelogStore = new ChangelogStore();
+container.registerInstance(ChangelogStore, changelogStore);
+
+const changelogBuilder = new ChangelogBuilder(packageInfoService, changelogStore);
+container.registerInstance(ChangelogBuilder, changelogBuilder);
+
+const changeSetBuilder = new ChangeSetBuilder(packageInfoService);
+container.registerInstance(ChangeSetBuilder, changeSetBuilder);
+
+const changeSetWriter = new ChangeSetWriter();
+container.registerInstance(ChangeSetWriter, changeSetWriter);
+
+export { container as appContainer, interactiveOutputService };

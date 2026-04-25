@@ -34,7 +34,7 @@ Shared CLI utilities currently duplicated between repo-cli and git-db. Lives in 
 | Direct Kysely coupling | **High** | `GitQuery` writes raw `db.selectFrom('commits')` queries bypassing git-db's query layer. Implicit contract with git-db's schema. |
 | Unused dependency: `ora` | Low | Listed in `package.json` but never imported. Uses `yocto-spinner` instead. |
 | Duplicate utilities | Medium | `buildCliTable` and `truncateString` exist in both repo-cli and git-db. |
-| tsyringe + reflect-metadata | Medium | Heavy DI for a small app. cli-kit has `InMemoryContainer`. NovaDI is a lighter alternative. |
+| tsyringe + reflect-metadata | ~~Medium~~ **Done** | Removed. Replaced with InMemoryContainer in repo-cli. NovaDI available if autowiring needed later. |
 
 #### Cleanup Actions
 
@@ -43,7 +43,7 @@ Shared CLI utilities currently duplicated between repo-cli and git-db. Lives in 
 3. **Move raw Kysely queries into git-db** — GitQuery's direct `db.selectFrom()` calls should become proper query functions in git-db
 4. **Remove `ora`** from `package.json`
 5. **Remove duplicate utilities** — import from `@axm-internal/cli-tools` instead
-6. **Replace tsyringe** with NovaDI or InMemoryContainer (see DI section below)
+6. **Replace tsyringe** ~~with NovaDI or InMemoryContainer~~ → **Done**. Used InMemoryContainer. (see DI section below)
 7. **Remove `ChangeSetBuilder`, `ChangeSetWriter`, `changesets:create`** command after release-cli is operational
 
 ### git-db (`packages/git-db`)
@@ -101,7 +101,7 @@ git-db already exports functions for programmatic use. The gap is that tag queri
 #### Current State
 
 - Provides `CliApp`, `createCommandDefinition`, `CliOutputService`, `InMemoryContainer`
-- Container-agnostic (tsyringe is a peer dep, not used internally)
+- Container-agnostic (no tsyringe dependency; ships `InMemoryContainer`)
 - Commander.js under the hood
 - Zod-based arg/option validation with auto-help
 
@@ -150,16 +150,16 @@ git-db already exports functions for programmatic use. The gap is that tag queri
 5. **Foreign key support** (medium effort) — `references` in `ColumnMetaSchema`, DDL generation, two-pass table construction.
 6. **Async support** (high effort) — separate package or generic `Model<TSchema, TMode>`.
 
-### DI Container: Replacing tsyringe
+### DI Container: tsyringe Removal (Complete)
 
-tsyringe requires `reflect-metadata` and decorators. Two better options:
+tsyringe and reflect-metadata have been removed from the monorepo. repo-cli now uses cli-kit's `InMemoryContainer` with eager construction + `registerInstance`.
 
-| Option | Decorators | reflect-metadata | Size | Autowiring |
-|--------|-----------|------------------|------|------------|
-| **NovaDI** (`@novadi/core`) | No | No | 3.9KB | Yes (fluent builder) |
-| **InMemoryContainer** (cli-kit) | No | No | Already in tree | No (manual `registerInstance`/`resolve`) |
+| Option | Decorators | reflect-metadata | Size | Autowiring | Status |
+|--------|-----------|------------------|------|------------|--------|
+| **NovaDI** (`@novadi/core`) | No | No | 3.9KB | Yes (fluent builder) | Available if needed |
+| **InMemoryContainer** (cli-kit) | No | No | Already in tree | No (manual `registerInstance`/`resolve`) | **Current choice** |
 
-**Recommendation:** Start with expanding cli-kit's `InMemoryContainer`. It's already in the tree, has zero deps, and the apps are small. If autowiring becomes necessary, migrate to NovaDI. No reason to carry tsyringe + reflect-metadata.
+If autowiring becomes necessary (e.g., release-cli with many services), migrate to NovaDI.
 
 ---
 
@@ -210,7 +210,7 @@ apps/release-cli/
 | `zod` | Command arg/option schemas |
 | `execa` | git tag, git push, bun publish |
 
-No tsyringe. Use cli-kit's `InMemoryContainer` or NovaDI.
+No tsyringe. Use cli-kit's `InMemoryContainer` (or NovaDI if autowiring needed).
 
 #### Commands
 
@@ -268,7 +268,7 @@ findCommitsByScopeAndPath(scope: string, pathPrefix: string, fromHash?: string, 
 
 - `GitQuery` becomes thinner — delegates to git-db for tag and range queries
 - Remove `ChangeSetBuilder`, `ChangeSetWriter`, and `changesets:create` command
-- Remove tsyringe + reflect-metadata
+- Remove tsyringe + reflect-metadata (**Done**)
 - Keep all `changelog:*` and `gitdb:*` commands
 - Keep `prompt:*` commands (or move to their own tool later)
 
@@ -337,7 +337,7 @@ Single workflow, single command. Manual trigger with package + bump type. Automa
 2. Replace raw Kysely queries in GitQuery with git-db function calls
 3. Remove `ora` from package.json
 4. Remove duplicate utilities (use `@axm-internal/cli-tools`)
-5. Replace tsyringe with InMemoryContainer (or NovaDI)
+5. ~~Replace tsyringe with InMemoryContainer (or NovaDI)~~ → **Done** (InMemoryContainer)
 6. Remove `ChangeSetBuilder`, `ChangeSetWriter`, `changesets:create` command
 
 ### Step 5: Clean up cli-kit
