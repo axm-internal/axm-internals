@@ -35,6 +35,7 @@ describe('registerCommandDefinition', () => {
             args: { first: 'Ada', last: 'Lovelace' },
             options: { debug: true },
             container,
+            dryRun: false,
         });
     });
 
@@ -64,6 +65,7 @@ describe('registerCommandDefinition', () => {
             args: { message: 'hello' },
             options: {},
             container,
+            dryRun: false,
         });
     });
 
@@ -124,6 +126,7 @@ describe('registerCommandDefinition', () => {
             args: { first: 'Ada', last: 'Lovelace' },
             options: { verbose: true },
             container,
+            dryRun: false,
         });
     });
 
@@ -168,6 +171,7 @@ describe('registerCommandDefinition', () => {
             args: { name: 'World' },
             options: { debug: false },
             container,
+            dryRun: false,
         });
     });
 
@@ -207,6 +211,36 @@ describe('registerCommandDefinition', () => {
             args: { name: 'World' },
             options: { count: 2 },
             container,
+            dryRun: false,
+        });
+    });
+
+    it('passes dryRun=true when --dry-run flag is set', async () => {
+        const program = new Command();
+        const container = new InMemoryContainer();
+        let received: unknown;
+
+        program.option('--dry-run', 'preview changes');
+
+        registerCommandDefinition({
+            program,
+            container,
+            definition: {
+                name: 'check',
+                description: 'checks things',
+                action: async (ctx: unknown) => {
+                    received = ctx;
+                },
+            },
+        });
+
+        await program.parseAsync(['--dry-run', 'check'], { from: 'user' });
+
+        expect(received).toEqual({
+            args: {},
+            options: {},
+            container,
+            dryRun: true,
         });
     });
 });

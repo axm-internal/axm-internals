@@ -162,7 +162,10 @@ export class CliApp {
     }
 
     protected init() {
-        this.program.name(this.config.name).option('-d, --debug', 'output extra debugging information');
+        this.program
+            .name(this.config.name)
+            .option('-d, --debug', 'output extra debugging information')
+            .option('--dry-run', 'preview changes without executing them');
 
         if (this.config.description) {
             this.program.description(this.config.description);

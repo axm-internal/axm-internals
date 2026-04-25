@@ -20,6 +20,7 @@ export type CommandContextForSchemas<
     args: z.infer<ArgsSchema>;
     options: z.infer<OptionsSchema>;
     container: TContainer;
+    dryRun: boolean;
 };
 
 /**

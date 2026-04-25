@@ -47,4 +47,15 @@ describe('CliOutputService', () => {
 
         expect(calls).toEqual(['boom']);
     });
+
+    it('logs a warning message in yellow to stderr', () => {
+        const calls: string[] = [];
+        console.error = (message: string) => {
+            calls.push(message);
+        };
+
+        service.logWarning('careful');
+
+        expect(calls).toEqual([chalk.yellow('careful')]);
+    });
 });

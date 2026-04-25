@@ -4,6 +4,7 @@ import { migrate } from '../../../src/db/migrations';
 import { indexCommitBatch } from '../../../src/indexer/commitIndexer';
 import { findAuthors, listAuthors } from '../../../src/queries/authorQueries';
 import {
+    findCommitByHash,
     findCommitsBetween,
     findCommitsByAuthorEmail,
     findCommitsByMessage,
@@ -108,6 +109,41 @@ describe('commit queries', () => {
 
             const listedAuthors = await listAuthors(db, { limit: 1 });
             expect(listedAuthors.length).toBe(1);
+        } finally {
+            await db.destroy();
+        }
+    });
+
+    it('finds a single commit by hash', async () => {
+        const db = createBunDb(':memory:');
+        try {
+            await migrate(db);
+
+            await indexCommitBatch(db, {
+                authors: [{ id: 'alice@example.com', name: 'Alice', email: 'alice@example.com' }],
+                commits: [
+                    {
+                        hash: 'a1',
+                        author_id: 'alice@example.com',
+                        date: '2026-01-01T00:00:00.000Z',
+                        message: 'feat: first',
+                        body: '',
+                        refs: null,
+                        type: 'feat',
+                        scope: null,
+                        is_breaking_change: false,
+                    },
+                ],
+                files: [],
+            });
+
+            const commit = await findCommitByHash(db, 'a1');
+            expect(commit).not.toBeNull();
+            expect(commit?.hash).toBe('a1');
+            expect(commit?.message).toBe('feat: first');
+
+            const missing = await findCommitByHash(db, 'nonexistent');
+            expect(missing).toBeNull();
         } finally {
             await db.destroy();
         }

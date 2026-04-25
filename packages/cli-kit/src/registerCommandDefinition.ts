@@ -238,6 +238,7 @@ export const registerCommandDefinition = (options: RegisterCommandDefinitionPara
             args: parsedArgs,
             options: parsedOptions,
             container,
+            dryRun: Boolean(program.opts().dryRun),
         });
     });
 };

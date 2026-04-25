@@ -79,6 +79,7 @@ const createMockDb = (commits: Commit[]) => {
 
 mock.module('@axm-internal/git-db', () => ({
     openBunDb: async () => createMockDb(commitStore),
+    findCommitByHash: async (_db: unknown, hash: string) => commitStore.find((commit) => commit.hash === hash) ?? null,
     findCommitsByScope: async (_db: unknown, scope: string) => commitStore.filter((commit) => commit.scope === scope),
     listCommits: async () => commitStore,
     scanCommits: async () => ({

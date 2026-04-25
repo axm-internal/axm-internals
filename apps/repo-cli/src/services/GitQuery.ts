@@ -3,6 +3,7 @@ import {
     type Commit,
     type CommitScanResult,
     type DbClient,
+    findCommitByHash,
     findCommitByTag,
     findCommitsAfterHash,
     findCommitsBetweenHashes,
@@ -115,9 +116,7 @@ export class GitQuery {
 
     async getCommitByHash(hash: string): Promise<Commit | null> {
         const db = await this.getDb();
-        const commit = await db.selectFrom('commits').selectAll().where('hash', '=', hash).executeTakeFirst();
-
-        return commit ?? null;
+        return findCommitByHash(db, hash);
     }
 
     async getHeadCommit(): Promise<Commit | null> {
