@@ -33,8 +33,5 @@
         "typedoc": "^0.28.16",
         "typedoc-plugin-markdown": "^4.9.0",
         "typescript": "^5"
-    },
-    "peerDependencies": {
-        "tsyringe": "^4.10.0"
     }
 }
