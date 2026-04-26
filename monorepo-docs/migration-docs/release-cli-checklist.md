@@ -50,11 +50,11 @@ Track progress for the release-cli migration. Check items off as completed.
 
 ### Step 6: Create release-cli
 
-- [ ] 6.1 Scaffold `apps/release-cli` — `feat/apps/release-cli-scaffold`
-- [ ] 6.2 Implement `VersionService` + `version` command — `feat/release-cli/version-cmd`
-- [ ] 6.3 Implement `TagService` + `tag` command — `feat/release-cli/tag-cmd`
-- [ ] 6.4 Implement `PublishService` + `publish` command — `feat/release-cli/publish-cmd`
-- [ ] 6.5 Implement `ReleaseService` + `release` command (orchestration) — `feat/release-cli/release-cmd`
+- [x] 6.1 Scaffold `apps/release-cli` — `feat/apps/release-cli-scaffold`
+- [x] 6.2 Implement `VersionService` + `version` command — `feat/release-cli/version-cmd`
+- [x] 6.3 Implement `TagService` + `tag` command — `feat/release-cli/tag-cmd`
+- [x] 6.4 Implement `PublishService` + `publish` command — `feat/release-cli/publish-cmd`
+- [x] 6.5 Implement `ReleaseService` + `release` command (orchestration) — `feat/release-cli/release-cmd`
 
 ### Step 7: Remove changesets
 

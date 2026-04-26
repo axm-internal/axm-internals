@@ -1,0 +1,20 @@
+# @axm-internal/release-cli
+Version: 0.1.0
+
+Purpose:
+- Version bumping, git tagging, npm publishing, and release orchestration for the axm-internals monorepo.
+
+Public surface:
+- CLI entry at `src/cli.ts`
+- Commands: `version`, `tag`, `publish`, `release`
+- Services: `VersionService`, `TagService`, `PublishService`, `ReleaseService`
+
+Intended usage:
+- Internal axm-internals maintainers releasing packages.
+
+Non-goals:
+- General-purpose release tool outside this monorepo.
+- Replacing changesets for external consumers.
+
+Stability expectations:
+- Semver within axm-internals.
