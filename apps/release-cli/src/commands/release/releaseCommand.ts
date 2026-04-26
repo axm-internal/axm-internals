@@ -29,17 +29,20 @@ export const releaseCommand = createCommandDefinition({
 
         const spinner = output.startSpinner('Running release...');
 
-        const result = await service.release({
-            packagePath,
-            bump,
-            cascade: options.cascade,
-            pushTag: options.push,
-            skipPublish: options['skip-publish'],
-            distTag: options['dist-tag'],
-            dryRun,
-        });
-
-        spinner.stop();
+        let result: Awaited<ReturnType<typeof service.release>>;
+        try {
+            result = await service.release({
+                packagePath,
+                bump,
+                cascade: options.cascade,
+                pushTag: options.push,
+                skipPublish: options['skip-publish'],
+                distTag: options['dist-tag'],
+                dryRun,
+            });
+        } finally {
+            spinner.stop();
+        }
 
         output.logType({
             type: 'success',

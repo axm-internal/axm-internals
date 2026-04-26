@@ -78,8 +78,8 @@ describe('ReleaseService', () => {
             'changelog-update',
             'changelog-write',
             'version',
-            'tag',
             'commit',
+            'tag',
             'publish',
         ]);
         expect(result.steps.every((s) => s.status === 'success')).toBe(true);
@@ -129,6 +129,7 @@ describe('ReleaseService', () => {
             dryRun: false,
         });
 
+        expect(execaMock).toHaveBeenCalledWith('git', ['add', 'packages/cli-kit']);
         expect(execaMock).toHaveBeenCalledWith('git', ['commit', '-m', 'chore(release): cli-kit@0.4.0']);
     });
 });

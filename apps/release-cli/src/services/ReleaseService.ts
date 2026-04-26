@@ -66,20 +66,20 @@ export class ReleaseService {
         }
         steps.push({ step: 'version', status: stepStatus('success') });
 
-        // 5. Tag
+        // 5. Commit
+        if (!dryRun) {
+            const [, scope] = splitPackageApp(packagePath);
+            await execa('git', ['add', packagePath]);
+            await execa('git', ['commit', '-m', `chore(release): ${scope}@${newVersion}`]);
+        }
+        steps.push({ step: 'commit', status: stepStatus('success') });
+
+        // 6. Tag
         await this.tagService.createTag(packagePath, newVersion, {
             push: params.pushTag,
             dryRun,
         });
         steps.push({ step: 'tag', status: stepStatus('success') });
-
-        // 6. Commit
-        if (!dryRun) {
-            const [, scope] = splitPackageApp(packagePath);
-            await execa('git', ['add', '.']);
-            await execa('git', ['commit', '-m', `chore(release): ${scope}@${newVersion}`]);
-        }
-        steps.push({ step: 'commit', status: stepStatus('success') });
 
         // 7. Publish
         if (params.skipPublish) {

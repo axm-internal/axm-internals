@@ -24,8 +24,7 @@ export const publishCommand = createCommandDefinition({
         const output = container.resolve(InteractiveOutputService);
         const service = container.resolve(PublishService);
 
-        const resolvedPath = packagePath;
-        if (!resolvedPath) {
+        if (!packagePath && !options.all) {
             throw new Error('Package path is required unless --all is provided.');
         }
 
@@ -36,11 +35,11 @@ export const publishCommand = createCommandDefinition({
                 message: dryRun ? 'Publish all (dry-run)' : 'Published all packages',
                 obj: results,
             });
-        } else {
-            const result = await service.publishPackage(resolvedPath, { distTag: options.tag, dryRun });
+        } else if (packagePath) {
+            const result = await service.publishPackage(packagePath, { distTag: options.tag, dryRun });
             output.logType({
                 type: 'success',
-                message: dryRun ? `Publish (dry-run): ${resolvedPath}` : `Published: ${resolvedPath}`,
+                message: dryRun ? `Publish (dry-run): ${packagePath}` : `Published: ${packagePath}`,
                 obj: result,
             });
         }

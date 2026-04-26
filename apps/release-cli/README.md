@@ -34,10 +34,9 @@ bun dev release packages/cli-kit patch --skip-publish
 
 - `--dry-run`: Preview all changes without executing them.
 
-## Docs
+## Scripts
 
-Generated documentation lives in `docs/` and can be updated with:
-
-```bash
-bun run docs
-```
+- `bun dev` — Run the CLI.
+- `bun run test` — Run unit tests.
+- `bun run lint` — Run Biome linter.
+- `bun run check-types` — Run TypeScript type checker.
