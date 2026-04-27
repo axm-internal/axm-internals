@@ -39,7 +39,7 @@ To publish all packages at once via GitHub Actions:
 
 The workflow will:
 - Run `./repo-cli gitdb:index`
-- Run `./release-cli publish --all --push`
+- Run `./release-cli publish --all`
 
 This publishes every publishable package and pushes all release tags.
 

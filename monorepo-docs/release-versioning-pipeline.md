@@ -44,8 +44,8 @@ This runs the full release flow:
 2. `./repo-cli changelog:update <package>` — append new `.changelogs/` JSON entries
 3. `./repo-cli changelog:write <package>` — render `CHANGELOG.md`
 4. Bump the package version in `package.json`
-5. Create an annotated git tag (`@axm-internal/<scope>@<version>`)
-6. Commit with `chore(release): <scope>@<version>`
+5. Commit with `chore(release): <scope>@<version>`
+6. Create an annotated git tag (`@axm-internal/<scope>@<version>`)
 7. `bun publish --access public`
 
 Use `--dry-run` to preview without executing. Use `--skip-publish` to stop after step 6.
@@ -113,7 +113,7 @@ The workflow runs:
 
 ```bash
 ./repo-cli gitdb:index
-./release-cli publish --all --push
+./release-cli publish --all
 ```
 
 This publishes every publishable package and pushes all release tags.
