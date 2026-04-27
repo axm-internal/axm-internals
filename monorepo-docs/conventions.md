@@ -141,7 +141,6 @@ Biome:
 Remark is scoped to:
 
 * `packages/**/README.md`
-* `.changeset/*.md`
 * `monorepo-docs/**/*.md`
 
 Documentation is part of the product.

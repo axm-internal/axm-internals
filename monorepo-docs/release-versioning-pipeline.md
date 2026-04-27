@@ -1,90 +1,124 @@
-# axm‑internals – Release & Versioning Pipeline
+# axm-internals – Release & Versioning Pipeline
 
-This document defines how internal packages in `axm‑internals` are versioned and released.
+This document defines how internal packages in `axm-internals` are versioned and released.
 
 The goals are:
 
-* Per‑package versioning in a monorepo
+* Per-package versioning in a monorepo
 * Zero surprise breakage for consuming projects
 * Clear, intentional upgrades
 * JSON-backed changelogs rendered by repo-cli
-* Seamless publishing of public packages
+* Manual releases — nothing publishes automatically
 
-The chosen tool for this is **Changesets**.
+The chosen tool for this is **release-cli** (apps/release-cli).
 
 ---
 
-## Why Changesets
+## Why release-cli
 
-Changesets is designed specifically for multi‑package monorepos. It provides:
+release-cli replaces the old Changesets-based workflow. It provides:
 
-* Package‑level versioning
-* Human‑authored change intent
-* Changelog generation is handled by repo-cli (not Changesets)
-* CI‑driven publishing
-* Compatibility with any registry
+* Package-level versioning via explicit commands
+* Semver bumping (patch, minor, major) with optional cascade to dependents
+* Annotated git tags (`@axm-internal/<scope>@<version>`)
+* Integration with repo-cli for changelog generation
+* Manual CI publishing — nothing happens automatically
 
-It fits the axm‑internals philosophy:
+It fits the axm-internals philosophy:
 
 > Changes are intentional. Promotion is explicit. Nothing breaks by surprise.
-
-Unlike ad‑hoc version bumps or single‑version monorepos, Changesets lets each package evolve independently while living in one repository.
 
 ---
 
 ## Mental Model
 
-Every meaningful change to a package includes a **changeset**:
+Every meaningful change to a package is released with an explicit command:
 
 ```bash
-bunx changeset
+bun run release-cli release <package-path> <bump>
 ```
 
-This creates a small markdown file describing:
+This runs the full release flow:
 
-* Which packages changed
-* Whether the change is `patch`, `minor`, or `major`
-* A human explanation of what changed
+1. `./repo-cli gitdb:index` — update the commit SQLite index
+2. `./repo-cli changelog:update <package>` — append new `.changelogs/` JSON entries
+3. `./repo-cli changelog:write <package>` — render `CHANGELOG.md`
+4. Bump the package version in `package.json`
+5. Create an annotated git tag (`@axm-internal/<scope>@<version>`)
+6. Commit with `chore(release): <scope>@<version>`
+7. `bun publish --access public`
 
-Example:
+Use `--dry-run` to preview without executing. Use `--skip-publish` to stop after step 6.
 
-```md
 ---
-"@axm-internal/cli-helper": minor
----
 
-Add structured logging and improve error output.
+## Commands
+
+### Release a single package
+
+```bash
+bun run release-cli release packages/cli-kit minor --push
 ```
 
-Changesets become the source of truth for:
+- `--push`: Push the git tag to origin after creation.
+- `--cascade`: Also patch-bump all internal packages that depend on this one.
+- `--skip-publish`: Run everything except the publish step.
+- `--dist-tag <tag>`: Apply an npm dist-tag (e.g. `next`, `beta`).
+- `--dry-run`: Preview all changes without executing them.
 
-* Version bumps
-* Changelog entries
-* Release notes
+### Bump version only
+
+```bash
+bun run release-cli version packages/cli-kit patch --cascade
+```
+
+This bumps the version (and optionally cascades) without tagging, committing, or publishing.
+
+### Create a tag
+
+```bash
+bun run release-cli tag packages/cli-kit --push
+```
+
+Creates an annotated tag for the package at its current version.
+
+### Publish a package
+
+```bash
+bun run release-cli publish packages/cli-kit --tag next
+```
+
+Publishes the package to the npm registry.
+
+### Publish all packages
+
+```bash
+bun run release-cli publish --all
+```
+
+Publishes every publishable package under `packages/` (excludes `tooling-config`).
 
 ---
 
-## Publishing Flow
+## Bulk Publish (CI)
 
-1. Developer makes changes to one or more packages
-2. Developer runs `bunx changeset`
-3. A changeset file is committed with the code
-4. Code is merged into `main`
-5. GitHub Actions runs:
+To publish all packages at once via GitHub Actions:
 
-    * Tests
-    * Coverage
-    * Quality checks
-    * `changesets/action`
-6. Changesets (when changesets exist):
+1. Go to **Actions → Release** in the GitHub UI.
+2. Click **Run workflow**.
+3. Check the **Publish packages** checkbox.
+4. Click **Run workflow**.
 
-    * Bumps package versions
-    * Generates versions and publishes packages
-    * Publishes only affected packages
-7. Packages are pushed to the registry
-8. A release commit and tags are created
+The workflow runs:
 
-Projects consuming `@axm-internal/*` now have new versions available and can upgrade intentionally.
+```bash
+./repo-cli gitdb:index
+./release-cli publish --all --push
+```
+
+This publishes every publishable package and pushes all release tags.
+
+**Releases never run automatically.** The workflow only triggers when you explicitly invoke it with `publish = true`.
 
 ---
 
@@ -113,49 +147,21 @@ GitHub Actions automatically provides `GITHUB_TOKEN`, enabling secure publishing
 
 ---
 
-## CI Release Workflow (Conceptual)
+## Changelogs
 
-```yaml
-name: Release
+Changelogs are JSON-backed and rendered by repo-cli:
 
-on:
-  push:
-    branches: [main]
+- JSON lives in `.changelogs/` (`root.json` and `<scope>.json` files).
+- Markdown rendering writes `CHANGELOG.md` at the repo root and inside each package/app.
+- Root changelog entries include unscoped commits only.
 
-jobs:
-  publish:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+To generate both JSON and markdown:
 
-      - uses: oven-sh/setup-bun@v1
-
-      - run: bun install
-
-      - run: bun test
-
-      - name: Check release marker
-        id: marker
-        run: |
-          if [ -f .release/ready ]; then
-            echo "releaseReady=true" >> $GITHUB_OUTPUT
-          else
-            echo "releaseReady=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Version & Publish
-        uses: changesets/action@v1
-        with:
-          publish: bunx changeset publish
-        if: ${{ steps.marker.outputs.releaseReady == 'true' }}
+```bash
+./repo-cli gitdb:index
+./repo-cli changelog:update --all
+./repo-cli changelog:write --all
 ```
-
-This job:
-
-* Runs `changesets/action` only when `.release/ready` is present on `main`
-* The Release PR workflow creates `.release/ready` so the publish pipeline is explicitly gated
-* Versions packages, publishes, and removes the marker in the release commit
-* Commits updated versions (changelogs are handled separately)
 
 ---
 
@@ -163,10 +169,8 @@ This job:
 
 Releases are not mechanical side effects—they are *decisions*.
 
-* Every change declares its intent
 * Every version bump is explicit
+* Every tag is intentional
 * Every consumer opts in
 
-This keeps `axm‑internals` fast to evolve while remaining safe to depend on.
-
-It scales from a single package to dozens without changing the workflow—only the number of changesets grows.
+This keeps `axm-internals` fast to evolve while remaining safe to depend on.

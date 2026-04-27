@@ -1,68 +1,65 @@
 # Releasing
 
-This repo uses Changesets for versioning and publishing. Releases are driven by repo-cli workflows and a release PR workflow that prepares changelogs and changesets.
+This repo uses `release-cli` for versioning, git tagging, and publishing. Releases are **manual-only** — they do not happen automatically on merge to `main`.
 
-## One-Click Release PR (Preferred)
+## Per-Package Release (Preferred)
 
-Use the **Release PR** workflow to prepare a release automatically.
-
-1) In GitHub Actions, run **Release PR** (workflow_dispatch).
-2) Provide a release branch name (e.g., `release/2026-01-28`).
-3) The workflow will:
-   - `./repo-cli gitdb:index`
-   - `./repo-cli changelog:update --all`
-   - `./repo-cli changelog:write --all`
-   - Create `.release/ready` to flag the publish pipeline
-   - `./repo-cli changesets:create --all`
-4) If no `.changeset/*.md` files are created, no PR is opened.
-5) If changesets exist, a PR is opened with only:
-   - `.changelogs/**`
-   - `.changeset/**`
-   - `.changeset-drafts/**`
-   - `CHANGELOG.md`
-   - `packages/*/CHANGELOG.md`
-   - `apps/*/CHANGELOG.md`
-
-Merge the PR to `main`.
-
-## Publishing (CI)
-
-On merge to `main`, the Release workflow runs **only when `.release/ready` is present** (set by the Release PR workflow). It will:
+Use `release-cli` locally to bump, tag, and publish a single package:
 
 ```bash
-bunx changeset version
-bunx changeset publish
+# Preview the release without making changes
+bun run release-cli release packages/cli-kit patch --dry-run
+
+# Actually release
+bun run release-cli release packages/cli-kit minor --push
+
+# Release with cascade bump (bump internal dependents too)
+bun run release-cli release packages/cli-kit minor --cascade --push
 ```
 
-This produces the version commit (`chore(release): versioned packages`) and publishes to the registry.
+The `release` command runs the full flow:
+1. `repo-cli gitdb:index` — update commit index
+2. `repo-cli changelog:update` — generate `.changelogs/` JSON
+3. `repo-cli changelog:write` — render `CHANGELOG.md`
+4. Bump version in `package.json`
+5. Create annotated git tag (`@axm-internal/<scope>@<version>`)
+6. Commit with `chore(release): <scope>@<version>`
+7. `bun publish --access public`
 
-## Manual Release Flow (Fallback)
+Pass `--skip-publish` if you only want steps 1-6.
 
-If you need to run the steps locally instead of the workflow:
+## Bulk Publish (CI)
+
+To publish all packages at once via GitHub Actions:
+
+1. Go to **Actions → Release** in the GitHub UI.
+2. Click **Run workflow**.
+3. Check the **Publish packages** checkbox.
+4. Click **Run workflow**.
+
+The workflow will:
+- Run `./repo-cli gitdb:index`
+- Run `./release-cli publish --all --push`
+
+This publishes every publishable package and pushes all release tags.
+
+**Releases never run automatically.** The workflow only triggers when you explicitly invoke it with `publish = true`.
+
+## Manual Changelog Prep
+
+If you want to prepare changelogs without releasing:
 
 ```bash
-git checkout main
-git pull
-git checkout -b release/<yyyy-mm-dd>
-
 ./repo-cli gitdb:index
 ./repo-cli changelog:update --all
 ./repo-cli changelog:write --all
-./repo-cli changesets:create --all
-
-git status
-mkdir -p .release
-touch .release/ready
-git add .release/ready
-git add .
-git commit -m "chore(release): prepared release changesets"
 ```
 
-Open a PR, merge to `main`, and CI will publish.
+This updates `.changelogs/` and `CHANGELOG.md` files across the repo.
 
 ## Notes
 
-- Releases are driven by the presence of `.changeset/*.md` files.
-- If a package should not be released, do not add a changeset for it.
-- Use `.changeset-drafts/` as the source of truth for what changed since the last tag.
-- CI will skip versioning/publishing unless `.release/ready` is present on `main` (set by the Release PR workflow).
+- Use `release-cli version` to bump versions without tagging or publishing.
+- Use `release-cli tag` to create a tag for the current version.
+- Use `release-cli publish` to publish a single package.
+- The old changeset-based workflow has been removed.
