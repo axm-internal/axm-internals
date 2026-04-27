@@ -58,10 +58,10 @@ Track progress for the release-cli migration. Check items off as completed.
 
 ### Step 7: Remove changesets
 
-- [ ] 7.1 Remove `@changesets/cli` from root package.json — `chore/remove-changesets`
-- [ ] 7.2 Delete `.changeset/`, `.changeset-drafts/` — (included above)
-- [ ] 7.3 Remove `release-pr.yml` workflow — (included above)
-- [ ] 7.4 Rewrite `release.yml` to use release-cli — `chore/rewrite-release-workflow`
+- [x] 7.1 Remove `@changesets/cli` from root package.json — `chore/remove-changesets`
+- [x] 7.2 Delete `.changeset/`, `.changeset-drafts/` — (included above)
+- [x] 7.3 Remove `release-pr.yml` workflow — (included above)
+- [x] 7.4 Rewrite `release.yml` to use release-cli — `chore/rewrite-release-workflow`
 
 ### Step 8: Migrate to npmjs.com
 
