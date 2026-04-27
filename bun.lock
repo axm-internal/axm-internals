@@ -17,6 +17,25 @@
         "typescript": "^5.9.3",
       },
     },
+    "apps/release-cli": {
+      "name": "@axm-internal/release-cli",
+      "version": "0.1.0",
+      "dependencies": {
+        "@axm-internal/cli-kit": "*",
+        "@axm-internal/cli-tools": "*",
+        "@axm-internal/config-schema": "*",
+        "@axm-internal/git-db": "*",
+        "execa": "^9.6.1",
+        "yocto-spinner": "^1.0.0",
+        "yoctocolors": "^2.1.2",
+        "zod": "^4.3.5",
+      },
+      "devDependencies": {
+        "@axm-internal/tooling-config": "*",
+        "@types/bun": "^1.3",
+        "typescript": "^5",
+      },
+    },
     "apps/repo-cli": {
       "name": "@axm-internal/repo-cli",
       "version": "0.4.0",
@@ -202,6 +221,8 @@
     "@axm-internal/git-db": ["@axm-internal/git-db@workspace:packages/git-db"],
 
     "@axm-internal/hono-kit": ["@axm-internal/hono-kit@workspace:packages/hono-kit"],
+
+    "@axm-internal/release-cli": ["@axm-internal/release-cli@workspace:apps/release-cli"],
 
     "@axm-internal/repo-cli": ["@axm-internal/repo-cli@workspace:apps/repo-cli"],
 
