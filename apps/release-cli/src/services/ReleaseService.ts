@@ -57,9 +57,13 @@ export class ReleaseService {
 
         // 4. Version bump
         let newVersion: string;
+        const bumpedPaths: string[] = [packagePath];
         if (params.cascade) {
             const result = this.versionService.cascadeBump(packagePath, bump, dryRun);
             newVersion = result.primary.newVersion;
+            for (const cascaded of result.cascaded) {
+                bumpedPaths.push(cascaded.packagePath);
+            }
         } else {
             const result = this.versionService.bumpPackage(packagePath, bump, dryRun);
             newVersion = result.newVersion;
@@ -69,7 +73,7 @@ export class ReleaseService {
         // 5. Commit
         if (!dryRun) {
             const [, scope] = splitPackageApp(packagePath);
-            await execa('git', ['add', packagePath]);
+            await execa('git', ['add', ...bumpedPaths]);
             await execa('git', ['commit', '-m', `chore(release): ${scope}@${newVersion}`]);
         }
         steps.push({ step: 'commit', status: stepStatus('success') });

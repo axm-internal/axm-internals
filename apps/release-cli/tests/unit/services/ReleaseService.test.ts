@@ -132,4 +132,15 @@ describe('ReleaseService', () => {
         expect(execaMock).toHaveBeenCalledWith('git', ['add', 'packages/cli-kit']);
         expect(execaMock).toHaveBeenCalledWith('git', ['commit', '-m', 'chore(release): cli-kit@0.4.0']);
     });
+
+    it('stages all cascade-bumped packages in commit', async () => {
+        await service.release({
+            packagePath: 'packages/cli-kit',
+            bump: 'minor',
+            cascade: true,
+            dryRun: false,
+        });
+
+        expect(execaMock).toHaveBeenCalledWith('git', ['add', 'packages/cli-kit', 'packages/git-db']);
+    });
 });
