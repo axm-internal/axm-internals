@@ -38,7 +38,7 @@ packages/<name>/
   "type": "module",
   "main": "src/index.ts",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   }
 }
 ```
@@ -48,7 +48,7 @@ packages/<name>/
 See `monorepo-docs/package-checklist.md` before considering a package “dev complete.”
 
 - No build step. No `dist/`. TypeScript is consumed directly by Bun.
-- All packages are versioned and published via Changesets.
+- All packages are versioned and published via release-cli.
 
 ## Creating New Packages
 
@@ -109,7 +109,7 @@ Every package must provide:
 - `patch`: internal refactors, no behavior change
 - `minor`: new capability, backwards compatible
 - `major`: consumer code must change
-- Every meaningful change requires a Changeset.
+- Every meaningful change is released explicitly via release-cli.
 
 ## Promotion Policy
 
@@ -120,17 +120,16 @@ A package may be consumed by other projects only when:
 - It has at least one published version
 - Documentation requirements are met
 
-## Release & Versioning Pipeline (Changesets)
+## Release & Versioning Pipeline
 
-Use Changesets for per-package versions and publishing.
+Use release-cli for per-package versions and publishing.
 
 Typical flow:
 
 1. Make changes.
-2. Run `bunx changeset`.
-3. Commit the changeset with code.
-4. Merge to `main`.
-5. CI runs tests on every `main` push. Publishing via `changesets/action` only runs when `.release/ready` is present (set by the Release PR workflow); it versions packages, publishes, and removes the marker.
+2. Run `bun run release-cli release <package-path> <bump>` locally.
+3. This bumps the version, updates changelogs, commits, tags, and publishes.
+4. Bulk publish via the GitHub Actions Release workflow (manual trigger only).
 
 Changelogs are generated from `.changelogs/*.json` via `./repo-cli` and rendered with `changelog:write`.
 

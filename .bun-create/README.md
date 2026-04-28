@@ -18,7 +18,7 @@ Notes:
 
 The `axm-package` template creates:
 
-- Canonical `package.json` (ESM, `src/index.ts`, GitHub Packages registry)
+- Canonical `package.json` (ESM, `src/index.ts`, public npm access)
 - `src/index.ts`
 - `tests/unit/example.test.ts`
 - `README.md`

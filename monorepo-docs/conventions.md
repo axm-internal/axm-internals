@@ -49,7 +49,7 @@ Rules:
   "type": "module",
   "main": "src/index.ts",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   }
 }
 ```

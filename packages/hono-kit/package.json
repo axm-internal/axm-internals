@@ -11,7 +11,7 @@
     },
     "description": "Opinionated Hono server wrapper with Zod-first validation",
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com"
+        "access": "public"
     },
     "scripts": {
         "test": "bun test",

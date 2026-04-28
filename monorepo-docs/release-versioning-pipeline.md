@@ -124,14 +124,14 @@ This publishes every publishable package and pushes all release tags.
 
 ## Registry Integration
 
-Each package declares its registry:
+Each package declares public access:
 
 ```json
 {
   "name": "@axm-internal/cli-helper",
   "version": "0.1.0",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   }
 }
 ```
@@ -139,11 +139,10 @@ Each package declares its registry:
 The repository includes an `.npmrc` for publishing:
 
 ```txt
-@axm-internal:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+//registry.npmjs.org/:_authToken=${NPM_TOKEN}
 ```
 
-GitHub Actions automatically provides `GITHUB_TOKEN`, enabling secure publishing without secrets.
+Add `NPM_TOKEN` as a repository secret under Settings > Secrets and variables > Actions.
 
 ---
 
