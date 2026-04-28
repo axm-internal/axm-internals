@@ -127,7 +127,7 @@ Use release-cli for per-package versions and publishing.
 Typical flow:
 
 1. Make changes.
-2. Run `bun run release-cli release <package> <bump>` locally.
+2. Run `bun run release-cli release <package-path> <bump>` locally.
 3. This bumps the version, updates changelogs, commits, tags, and publishes.
 4. Bulk publish via the GitHub Actions Release workflow (manual trigger only).
 
