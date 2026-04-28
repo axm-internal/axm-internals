@@ -106,21 +106,12 @@ bun clean
 
 ## Package Installation
 
-`@axm-internal/*` packages are public and published to GitHub Packages. GitHub Packages
-still requires authentication for installs, so consumers must configure an auth token.
+`@axm-internal/*` packages are published to the public npm registry.
 
-Local setup (one-time):
-
-```bash
-echo "@axm-internal:registry=https://npm.pkg.github.com" >> ~/.npmrc
-echo "//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN" >> ~/.npmrc
-```
-
-Then install as usual:
+Install as usual:
 
 ```bash
 bun add @axm-internal/zod-helpers
 ```
 
-CI setup should write the token to the repo `.npmrc` and include `packages: read`
-permissions for the workflow.
+No registry configuration is required for consumers.

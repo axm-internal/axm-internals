@@ -65,11 +65,11 @@ Track progress for the release-cli migration. Check items off as completed.
 
 ### Step 8: Migrate to npmjs.com
 
-- [ ] 8.1 Follow steps in `npm-registry.md` — `chore/npmjs-migration`
-- [ ] 8.2 Update all publish configs to `"access": "public"` — (included above)
-- [ ] 8.3 Update `.npmrc` to use `NPM_TOKEN` — (included above)
-- [ ] 8.4 Test publish with a single package — (included above)
-- [ ] 8.5 Deprecate GitHub Packages — (included above)
+- [x] 8.1 Follow steps in `npm-registry.md` — `chore/npmjs-migration`
+- [x] 8.2 Update all publish configs to `"access": "public"` — (included above)
+- [x] 8.3 Update `.npmrc` to use `NPM_TOKEN` — (included above)
+- [ ] 8.4 Test publish with a single package — pending `NPM_TOKEN` secret
+- [ ] 8.5 Deprecate GitHub Packages — pending first npmjs.com publish
 
 ### Step 9: Clean up monorepo-docs
 
